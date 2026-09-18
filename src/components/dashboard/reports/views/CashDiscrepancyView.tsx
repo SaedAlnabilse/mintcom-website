@@ -191,7 +191,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             currency={currencySymbol} 
             className={`text-2xl ${stats.netVariance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}
           />
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
             {stats.netVariance >= 0 ? t('orders.reports.cashGap.overExpected') : t('orders.reports.cashGap.underExpected')}
           </p>
         </motion.div>
@@ -201,7 +201,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
+          className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
@@ -214,7 +214,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             currency={currencySymbol} 
             className="text-2xl text-amber-600 dark:text-amber-400"
           />
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
             {t('orders.reports.cashGap.shiftsOver', { count: stats.overCount })}
           </p>
         </motion.div>
@@ -224,7 +224,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
+          className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center">
@@ -237,7 +237,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             currency={currencySymbol} 
             className="text-2xl text-red-600 dark:text-red-400"
           />
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
             {t('orders.reports.cashGap.shiftsShort', { count: stats.shortCount })}
           </p>
         </motion.div>
@@ -247,7 +247,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] transition-all duration-300"
+          className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 transition-all duration-300"
         >
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
@@ -260,7 +260,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
             isPercentage={true} 
             className="text-2xl"
           />
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
             {t('orders.reports.cashGap.shiftsBalanced', { count: stats.balancedCount, total: stats.totalShifts })}
           </p>
           {/* Auto-closed drawers are excluded above, so say so — otherwise the
@@ -314,12 +314,12 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
       )}
 
       {/* Discrepancy Breakdown Chart */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-6 shadow-sm">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-6 shadow-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
             <TrendingUp size={20} />
           </div>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.cashGap.overview')}</h3>
+          <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{t('orders.reports.cashGap.overview')}</h3>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="flex flex-col items-center text-center p-5 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-100 dark:border-amber-500/10">
@@ -332,19 +332,19 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
               isInteger
               containerClassName="justify-center w-full"
             />
-            <p className="text-xs font-bold text-gray-500 mt-1.5">{t('orders.reports.cashGap.cashOver')}</p>
+            <p className="text-xs font-bold text-stone-500 mt-1.5">{t('orders.reports.cashGap.cashOver')}</p>
           </div>
-          <div className="flex flex-col items-center text-center p-5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
-            <div className="w-12 h-12 mb-3 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center">
-              <Scale size={24} className="text-gray-500" />
+          <div className="flex flex-col items-center text-center p-5 rounded-xl bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800">
+            <div className="w-12 h-12 mb-3 rounded-full bg-stone-200 dark:bg-zinc-800 flex items-center justify-center">
+              <Scale size={24} className="text-stone-500" />
             </div>
             <StatValue
               value={stats.balancedCount}
-              className="text-3xl font-black text-gray-700 dark:text-gray-300"
+              className="text-3xl font-black text-stone-700 dark:text-zinc-300"
               isInteger
               containerClassName="justify-center w-full"
             />
-            <p className="text-xs font-bold text-gray-500 mt-1.5">{t('orders.reports.cashGap.balanced')}</p>
+            <p className="text-xs font-bold text-stone-500 mt-1.5">{t('orders.reports.cashGap.balanced')}</p>
           </div>
           <div className="flex flex-col items-center text-center p-5 rounded-xl bg-red-50 dark:bg-red-500/5 border border-red-100 dark:border-red-500/10">
             <div className="w-12 h-12 mb-3 rounded-full bg-red-500/10 flex items-center justify-center">
@@ -356,26 +356,26 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
               isInteger
               containerClassName="justify-center w-full"
             />
-            <p className="text-xs font-bold text-gray-500 mt-1.5">{t('orders.reports.cashGap.cashShort')}</p>
+            <p className="text-xs font-bold text-stone-500 mt-1.5">{t('orders.reports.cashGap.cashShort')}</p>
           </div>
         </div>
       </div>
 
       {/* Detailed Shifts Table */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-gray-200 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-stone-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
               <Scale size={20} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.cashGap.details')}</h3>
-              <p className="text-xs text-gray-500 mt-1">
+              <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{t('orders.reports.cashGap.details')}</h3>
+              <p className="text-xs text-stone-500 mt-1">
                 {t('orders.reports.cashGap.detailsDesc')}
               </p>
             </div>
           </div>
-          <span className="text-xs font-bold text-gray-400 whitespace-nowrap shrink-0">
+          <span className="text-xs font-bold text-stone-400 whitespace-nowrap shrink-0">
             {t('common.showing')}{' '}
             {Math.min(paginatedShifts.length, itemsPerPage).toLocaleString(t('common.locale'))}
             {' '}{t('common.of')}{' '}
@@ -385,7 +385,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
         </div>
 
         {/* Filter Pills */}
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.01] flex flex-wrap items-center gap-2">
+        <div className="px-6 py-4 border-b border-stone-200 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40 flex flex-wrap items-center gap-2">
           {[
             { id: 'all', label: t('orders.reports.cashGap.all'), icon: Scale, color: 'gray' },
             { id: 'over', label: t('orders.reports.cashGap.over'), icon: TrendingUp, color: 'amber' },
@@ -405,15 +405,15 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                       : filter.color === 'red'
                         ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/20'
                         : filter.color === 'blue'
-                          ? 'bg-gray-500 text-white border-gray-500 shadow-lg shadow-gray-500/20'
-                          : 'bg-gray-900 dark:bg-white text-white dark:text-black border-gray-900 dark:border-white shadow-lg shadow-gray-900/20 dark:shadow-white/20'
-                    : 'bg-white dark:bg-white/5 text-gray-500 border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'
+                          ? 'bg-stone-500 text-white border-stone-500 shadow-lg shadow-stone-500/20'
+                          : 'bg-stone-900 dark:bg-white text-white dark:text-black border-stone-900 dark:border-white shadow-lg shadow-stone-900/20 dark:shadow-white/20'
+                    : 'bg-white dark:bg-zinc-800 text-stone-500 border-stone-200 dark:border-zinc-800 hover:bg-stone-50 dark:hover:bg-zinc-800'
                 }`}
               >
                 <filter.icon size={14} />
                 {filter.label}
                 <span className={`ml-1 px-1.5 py-0.5 rounded-lg text-[10px] ${
-                  isSelected ? 'bg-black/10 dark:bg-white/20' : 'bg-gray-100 dark:bg-white/10'
+                  isSelected ? 'bg-black/10 dark:bg-zinc-800' : 'bg-stone-100 dark:bg-zinc-800'
                 }`}>
                   {filter.id === 'all'
                     ? closedShifts.length
@@ -442,8 +442,8 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
           <>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                  <tr className="border-b border-gray-200 dark:border-white/5">
+                <thead className="bg-stone-50 dark:bg-zinc-800/40">
+                  <tr className="border-b border-stone-200 dark:border-zinc-800">
                     <th className="px-5 py-4 text-start label-strong font-sans whitespace-nowrap">{t('orders.reports.cashGap.staff')}</th>
                     <th className="px-5 py-4 text-start label-strong font-sans whitespace-nowrap">{t('orders.reports.cashGap.period')}</th>
                     <th className="px-5 py-4 text-end label-strong font-sans whitespace-nowrap">{t('orders.reports.cashGap.opening')}</th>
@@ -455,7 +455,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                     <th className="px-5 py-4 text-end label-strong font-sans whitespace-nowrap">{t('orders.reports.cashGap.countType', { defaultValue: 'Count' })}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                   {paginatedShifts.map((shift: any, idx: number) => {
                     const discrepancy = getDiscrepancy(shift);
                     const expected = getExpectedBalance(shift);
@@ -471,30 +471,30 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: idx * 0.05 }}
-                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                        className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                       >
                         <td className="px-5 py-4 text-start">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-xs shrink-0">
                               <User size={14} />
                             </div>
-                            <span className="font-bold text-gray-900 dark:text-white text-sm">
+                            <span className="font-bold text-stone-900 dark:text-zinc-100 text-sm">
                               {shift.user?.username || t('common.unknown')}
                             </span>
                           </div>
                         </td>
                         <td className="px-5 py-4 text-start">
                           <div className="flex flex-col">
-                            <span className="text-xs font-bold text-gray-900 dark:text-white">
+                            <span className="text-xs font-bold text-stone-900 dark:text-zinc-100">
                               {format(new Date(shift.startTime), 'MMM d, yyyy', { locale: getDateLocale(t('common.locale')) })}
                             </span>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-stone-500">
                               {format(new Date(shift.startTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) })} - {format(new Date(shift.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) })}
                             </span>
                           </div>
                         </td>
                         <td className="px-5 py-4 text-end">
-                          {formatCurrency(shift.openingBalance || 0, 'text-sm font-medium text-gray-600 dark:text-gray-400', 'end')}
+                          {formatCurrency(shift.openingBalance || 0, 'text-sm font-medium text-stone-600 dark:text-zinc-400', 'end')}
                         </td>
                         <td className="px-5 py-4 text-end">
                           <StatValue
@@ -510,7 +510,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                               the drawer mid-shift and are invisible everywhere
                               else in the reports. */}
                           {payIn < 0.001 && payOut < 0.001 ? (
-                            <span className="text-sm text-gray-400 font-normal">-</span>
+                            <span className="text-sm text-stone-400 font-normal">-</span>
                           ) : (
                             <div className="flex flex-col items-end gap-0.5">
                               {payIn > 0.001 && (
@@ -527,13 +527,13 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                           )}
                         </td>
                         <td className="px-5 py-4 text-end">
-                          {formatCurrency(expected, 'text-sm font-medium text-gray-500', 'end')}
+                          {formatCurrency(expected, 'text-sm font-medium text-stone-500', 'end')}
                         </td>
                         <td className="px-5 py-4 text-end">
                           {counted
-                            ? formatCurrency(getClosingBalance(shift), 'text-sm font-bold text-gray-900 dark:text-white', 'end')
+                            ? formatCurrency(getClosingBalance(shift), 'text-sm font-bold text-stone-900 dark:text-zinc-100', 'end')
                             : (
-                              <span className="text-xs font-bold text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                              <span className="text-xs font-bold text-stone-400 dark:text-zinc-500 whitespace-nowrap">
                                 {t('orders.reports.cashGap.neverCounted', { defaultValue: 'Not counted' })}
                               </span>
                             )}
@@ -548,7 +548,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                               // says why, and a wall of identical warning chips
                               // reads as noise rather than as information.
                               <span
-                                className="text-sm font-bold text-gray-300 dark:text-gray-600"
+                                className="text-sm font-bold text-stone-300 dark:text-zinc-600"
                                 title={t('orders.reports.cashGap.notVerified', { defaultValue: 'Unverified' })}
                               >
                                 —
@@ -559,7 +559,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                                   ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
                                   : isShort
                                     ? 'bg-red-100 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20'
-                                    : 'bg-gray-100 text-gray-700 border-gray-200 dark:bg-white/10 dark:text-gray-300 dark:border-white/10'
+                                    : 'bg-stone-100 text-stone-700 border-stone-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-800'
                               }`}>
                                 {isOver ? <TrendingUp size={12} className="shrink-0" /> : isShort ? <TrendingDown size={12} className="shrink-0" /> : <Scale size={12} className="shrink-0" />}
                                 <StatValue
@@ -587,7 +587,7 @@ export const CashDiscrepancyView = React.memo(function CashDiscrepancyView({ shi
                             {/* Why the POS closed it for them — inactivity,
                                 logout, user switch — is the actionable part. */}
                             {!counted && shift.closeReason && (
-                              <span className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                              <span className="text-[11px] font-semibold text-stone-400 dark:text-zinc-500 whitespace-nowrap">
                                 {t(`orders.reports.cashGap.closeReasons.${shift.closeReason}`, {
                                   defaultValue: String(shift.closeReason).replace(/_/g, ' ').toLowerCase(),
                                 })}

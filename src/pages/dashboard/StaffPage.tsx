@@ -460,7 +460,7 @@ export function StaffPage() {
       case 'ACCOUNT_OWNER':
         return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
       case 'ADMIN':
-        return 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20';
+        return 'bg-stone-500/10 text-stone-600 dark:text-zinc-300 border-stone-500/20';
       case 'MANAGER':
         return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
       default:
@@ -512,7 +512,7 @@ export function StaffPage() {
         ].map((stat, i) => (
           <div
             key={i}
-            className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+            className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10">
@@ -524,7 +524,7 @@ export function StaffPage() {
               <div>
                 <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                 <StatValue value={stat.value} isInteger={true} className="text-2xl mb-1" />
-                <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{stat.info}</p>
+                <p className="hidden sm:block text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{stat.info}</p>
               </div>
             </div>
           </div>
@@ -580,31 +580,31 @@ export function StaffPage() {
       </div>
 
       {/* Main List */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
             <p className="label-strong font-sans">{t('staff.messages.loading')}</p>
           </div>
         ) : filteredStaff.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-gray-50/30 dark:bg-black/10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
-              <Users size={32} className="sm:w-10 sm:h-10 text-gray-300" />
+          <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-stone-50/30 dark:bg-black/10">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 border border-stone-200 dark:border-zinc-800 shadow-sm">
+              <Users size={32} className="sm:w-10 sm:h-10 text-stone-300" />
             </div>
             <h3 className="dashboard-card-value mb-2">{staffEmptyTitle}</h3>
             {staffEmptyDescription ? (
-              <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{staffEmptyDescription}</p>
+              <p className="text-sm font-medium text-stone-500 max-w-xs mx-auto">{staffEmptyDescription}</p>
             ) : null}
           </div>
         ) : (
           <>
             {/* Mobile Card View */}
-            <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+            <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
               {currentItems.map((member) => (
                 <div
                   key={member.id}
                   data-member-id={member.id}
-                  className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerStaff(member) ? 'bg-amber-50/50 dark:bg-amber-500/[0.04]' : ''}`}
+                  className={`p-4 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors ${isOwnerStaff(member) ? 'bg-amber-50/50 dark:bg-amber-500/[0.04]' : ''}`}
                 >
                   {/* Card Header */}
                   <div className="flex items-start justify-between mb-3">
@@ -613,10 +613,10 @@ export function StaffPage() {
                         {getDisplayInitial(member.name, member.username)}
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                        <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm flex items-center gap-2">
                           <span>{member.name?.trim() || member.username}</span>
                         </p>
-                        <p className="text-xs text-gray-500">{member.username}</p>
+                        <p className="text-xs text-stone-500">{member.username}</p>
                       </div>
                     </div>
                     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(member.role)}`}>
@@ -626,16 +626,16 @@ export function StaffPage() {
                   </div>
 
                   {/* Card Details */}
-                  <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
+                  <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-stone-100 dark:border-zinc-800">
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.form.emailLabel')}</p>
-                      <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 dark:text-white truncate">
-                        <Mail size={12} className="text-gray-400 flex-shrink-0" />
+                      <p className="text-xs text-stone-500 dark:text-zinc-400 mb-0.5">{t('staff.form.emailLabel')}</p>
+                      <div className="flex items-center gap-1.5 text-sm font-bold text-stone-900 dark:text-zinc-100 truncate">
+                        <Mail size={12} className="text-stone-400 flex-shrink-0" />
                         <span className="truncate">{member.email || t('common.notAvailable')}</span>
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('common.status.label', 'Status')}</p>
+                      <p className="text-xs text-stone-500 dark:text-zinc-400 mb-0.5">{t('common.status.label', 'Status')}</p>
                       <div className="flex items-center gap-1.5 text-xs font-bold">
                          <span className={`px-2 py-0.5 rounded-md ${member.isActive ? 'bg-mintcom-green/10 text-mintcom-green' : 'bg-mintcom-red/10 text-mintcom-red'}`}>
                            {member.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
@@ -643,8 +643,8 @@ export function StaffPage() {
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
-                      <div className={`flex items-center gap-2 font-bold text-xs ${member.isClockedIn ? 'text-mintcom-green' : 'text-gray-400'}`}>
+                      <p className="text-xs text-stone-500 dark:text-zinc-400 mb-0.5">{t('staff.table.status')}</p>
+                      <div className={`flex items-center gap-2 font-bold text-xs ${member.isClockedIn ? 'text-mintcom-green' : 'text-stone-400'}`}>
                         {member.isClockedIn ? (
                           <>
                             <div className="relative flex h-2 w-2">
@@ -655,7 +655,7 @@ export function StaffPage() {
                           </>
                         ) : (
                           <>
-                            <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+                            <div className="h-2 w-2 rounded-full bg-stone-300 dark:bg-zinc-600" />
                             <span>{t('staff.status.offline')}</span>
                           </>
                         )}
@@ -664,10 +664,10 @@ export function StaffPage() {
                   </div>
 
                   {/* Card Actions */}
-                  <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5">
+                  <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-100 dark:border-zinc-800">
                     <button
                       onClick={() => openEditModal(member)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all text-xs font-bold touch-target"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all text-xs font-bold touch-target"
                     >
                       <Edit2 size={14} />
                       {t('common.edit')}
@@ -690,8 +690,8 @@ export function StaffPage() {
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                  <tr className="border-b border-gray-200 dark:border-white/5">
+                <thead className="bg-stone-50 dark:bg-zinc-800/40">
+                  <tr className="border-b border-stone-200 dark:border-zinc-800">
                     <th
                       className="px-6 py-4 text-start dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
                       onClick={() => handleSort('username')}
@@ -724,12 +724,12 @@ export function StaffPage() {
                     <th className="px-6 py-4 text-end dashboard-card-label whitespace-nowrap">{t('owner.locations.actions')}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                   {currentItems.map((member) => (
                     <tr
                       key={member.id}
                       data-member-id={member.id}
-                      className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerStaff(member) ? 'bg-amber-50/40 dark:bg-amber-500/[0.04]' : ''}`}
+                      className={`group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors ${isOwnerStaff(member) ? 'bg-amber-50/40 dark:bg-amber-500/[0.04]' : ''}`}
                     >
                       <td className="px-6 py-4 text-start">
                         <div className="flex items-center gap-4">
@@ -737,10 +737,10 @@ export function StaffPage() {
                             {getDisplayInitial(member.name, member.username)}
                           </div>
                           <div>
-                            <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                            <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm flex items-center gap-2">
                               <span>{member.name?.trim() || member.username}</span>
                             </p>
-                            <p className="text-xs text-gray-500">{member.username}</p>
+                            <p className="text-xs text-stone-500">{member.username}</p>
                           </div>
                         </div>
                       </td>
@@ -752,12 +752,12 @@ export function StaffPage() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="space-y-1 flex flex-col items-center justify-center">
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <Mail size={12} className="text-gray-400" />
+                          <div className="flex items-center gap-2 text-xs text-stone-500">
+                            <Mail size={12} className="text-stone-400" />
                             <span className="font-medium">{member.email || t('owner.staff.noEmail')}</span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <Phone size={12} className="text-gray-400" />
+                          <div className="flex items-center gap-2 text-xs text-stone-500">
+                            <Phone size={12} className="text-stone-400" />
                             <span className="font-medium">{member.phone || t('owner.staff.noPhone')}</span>
                           </div>
                         </div>
@@ -768,7 +768,7 @@ export function StaffPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${member.isClockedIn ? 'text-mintcom-green' : 'text-gray-400'}`}>
+                        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${member.isClockedIn ? 'text-mintcom-green' : 'text-stone-400'}`}>
                           {member.isClockedIn ? (
                             <>
                               <div className="relative flex h-2 w-2">
@@ -779,7 +779,7 @@ export function StaffPage() {
                             </>
                           ) : (
                             <>
-                              <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+                              <div className="h-2 w-2 rounded-full bg-stone-300 dark:bg-zinc-600" />
                               <span>{t('staff.status.offline')}</span>
                             </>
                           )}
@@ -790,7 +790,7 @@ export function StaffPage() {
                           <button
                             onClick={() => openEditModal(member)}
                             aria-label={t('staff.editEmployee')}
-                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                            className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-90"
                           >
                             <Edit2 size={18} />
                           </button>
@@ -803,7 +803,7 @@ export function StaffPage() {
                               }}
                               aria-label={t('common.actions')}
                               aria-expanded={activeDropdown === member.id}
-                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                              className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeDropdown === member.id ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-white dark:bg-zinc-800 border-stone-100 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:bg-stone-50 dark:hover:bg-zinc-800'}`}
                             >
                               <MoreVertical size={18} />
                             </button>
@@ -822,7 +822,7 @@ export function StaffPage() {
                                   // (same behaviour as the backoffice app).
                                   openEditModal(member);
                                 }}
-                                className="w-full flex items-center gap-3 px-4 py-3 label-strong font-sans text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                className="w-full flex items-center gap-3 px-4 py-3 label-strong font-sans text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors text-left"
                               >
                                 <Key size={14} className="text-mintcom-green" />
                                 <span>{t('staff.actions.resetPassword')}</span>
@@ -830,7 +830,7 @@ export function StaffPage() {
                               <button
                                 onClick={() => { setActiveDropdown(null); handleDelete(member.id, member.username, member); }}
                                 disabled={isOwnerStaff(member)}
-                                className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-sans transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerStaff(member) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
+                                className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-sans transition-colors text-left border-t border-stone-100 dark:border-zinc-800 ${isOwnerStaff(member) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                               >
                                 <Trash2 size={14} />
                                 <span>

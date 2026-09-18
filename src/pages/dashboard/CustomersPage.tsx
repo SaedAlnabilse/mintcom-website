@@ -21,7 +21,7 @@ import { PortalDropdown } from '../../components/PortalDropdown';
 import { exportTable } from '../../utils/export';
 import type { ExportFormat } from '../../utils/export';
 import { ExportMenu } from '../../components/ExportMenu';
-import { SearchInput, Pagination, PageHeader, Badge } from '../../components/ui';
+import { ListFilterBar, Pagination, PageHeader, Badge } from '../../components/ui';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { useCurrency } from '../../context/CurrencyContext';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -67,7 +67,7 @@ function TableActionMenu({ customer, onOpenCustomer, onDelete }: TableActionMenu
         className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all cursor-pointer ${
           isOpen 
             ? 'bg-mintcom-green text-black border-mintcom-green' 
-            : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/10'
+            : 'bg-stone-50 dark:bg-zinc-800 border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800'
         }`}
       >
         <MoreVertical size={18} />
@@ -85,7 +85,7 @@ function TableActionMenu({ customer, onOpenCustomer, onDelete }: TableActionMenu
               onOpenCustomer(customer, 'profile');
               setIsOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer"
           >
             <Eye size={14} className="text-mintcom-green" />
             {t('customers.messages.viewProfile')}
@@ -95,7 +95,7 @@ function TableActionMenu({ customer, onOpenCustomer, onDelete }: TableActionMenu
               onOpenCustomer(customer, 'loyalty');
               setIsOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors text-left cursor-pointer"
           >
             <Award size={14} className="text-amber-500" />
             {t('customers.details.managePoints', { defaultValue: 'Manage Loyalty Points' })}
@@ -105,7 +105,7 @@ function TableActionMenu({ customer, onOpenCustomer, onDelete }: TableActionMenu
               onDelete(customer);
               setIsOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-mintcom-red hover:bg-mintcom-red/10 transition-colors text-left border-t border-gray-100 dark:border-white/5 cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-mintcom-red hover:bg-mintcom-red/10 transition-colors text-left border-t border-stone-100 dark:border-zinc-800 cursor-pointer"
           >
             <Trash2 size={14} />
             {t('customers.messages.removeCustomer')}
@@ -423,7 +423,7 @@ export function CustomersPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="group relative p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
+            className="group relative p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden transition-all duration-300 min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 ${stat.bg} rounded-full blur-2xl -translate-y-1/2 translate-x-1/2`} />
             <div className="flex items-center gap-3 sm:gap-4 relative z-10">
@@ -445,32 +445,27 @@ export function CustomersPage() {
       </div>
 
       {/* Control Bar */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 p-3 sm:p-4 shadow-sm">
-        <div className="relative flex-1 w-full">
-          <SearchInput
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onClear={() => setSearchQuery('')}
-            placeholder={formatInputPlaceholder(t('customers.searchPlaceholder'), t('common.locale'))}
-            className="w-full"
-          />
-        </div>
-      </div>
+      <ListFilterBar
+        searchValue={searchQuery}
+        onSearchChange={(e) => setSearchQuery(e.target.value)}
+        onSearchClear={() => setSearchQuery('')}
+        searchPlaceholder={formatInputPlaceholder(t('customers.searchPlaceholder'), t('common.locale'))}
+      />
 
       {/* Main List */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm min-h-[250px] lg:min-h-[350px] flex flex-col">
         {isLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32">
             <div className="w-12 h-12 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
             <p className="label-strong font-sans">{t('customers.messages.loading')}</p>
           </div>
         ) : customers.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-gray-50/30 dark:bg-black/10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center mb-4 sm:mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
-              <User size={32} className="sm:w-10 sm:h-10 text-gray-300" />
+          <div className="flex-1 flex flex-col items-center justify-center p-16 sm:p-32 text-center bg-stone-50/30 dark:bg-black/10">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-stone-50 dark:bg-zinc-800 rounded-xl flex items-center justify-center mb-4 sm:mb-6 border border-stone-200 dark:border-zinc-800 shadow-sm">
+              <User size={32} className="sm:w-10 sm:h-10 text-stone-300" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('customers.messages.noCustomers')}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs mx-auto">
+            <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2">{t('customers.messages.noCustomers')}</h3>
+            <p className="text-sm text-stone-500 dark:text-zinc-400 max-w-xs mx-auto">
               {searchQuery.trim()
                 ? t('customers.messages.noResults', { defaultValue: 'No customers found matching your search' })
                 : t('customers.messages.noCustomersDesc', { defaultValue: 'Create your customers to see them here' })}
@@ -481,21 +476,21 @@ export function CustomersPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
-                    <th className="px-6 py-4 text-start text-[11px] font-bold text-gray-400 tracking-widest uppercase whitespace-nowrap">{t('common.name', { defaultValue: 'Name' })}</th>
-                    <th className="px-6 py-4 text-start text-[11px] font-bold text-gray-400 tracking-widest uppercase whitespace-nowrap">{t('customers.form.phone')}</th>
-                    <th className="px-6 py-4 text-end text-[11px] font-bold text-gray-400 tracking-widest uppercase whitespace-nowrap">{t('customers.details.points')}</th>
-                    <th className="px-6 py-4 text-end text-[11px] font-bold text-gray-400 tracking-widest uppercase whitespace-nowrap">{t('customers.details.spent')}</th>
-                    <th className="px-6 py-4 text-end text-[11px] font-bold text-gray-400 tracking-widest uppercase whitespace-nowrap">{t('common.actions')}</th>
+                  <tr className="border-b border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40">
+                    <th className="px-6 py-4 text-start text-[11px] font-bold text-stone-400 tracking-widest uppercase whitespace-nowrap">{t('common.name', { defaultValue: 'Name' })}</th>
+                    <th className="px-6 py-4 text-start text-[11px] font-bold text-stone-400 tracking-widest uppercase whitespace-nowrap">{t('customers.form.phone')}</th>
+                    <th className="px-6 py-4 text-end text-[11px] font-bold text-stone-400 tracking-widest uppercase whitespace-nowrap">{t('customers.details.points')}</th>
+                    <th className="px-6 py-4 text-end text-[11px] font-bold text-stone-400 tracking-widest uppercase whitespace-nowrap">{t('customers.details.spent')}</th>
+                    <th className="px-6 py-4 text-end text-[11px] font-bold text-stone-400 tracking-widest uppercase whitespace-nowrap">{t('common.actions')}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                   {customers.map((customer) => (
                     <motion.tr
                       key={customer.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                      className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                     >
                       <td className="px-6 py-4 text-start">
                         <button
@@ -507,12 +502,12 @@ export function CustomersPage() {
                           <div className="w-10 h-10 rounded-full bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-bold text-sm shrink-0">
                             {(customer.name || customer.phone || '#').charAt(0).toUpperCase()}
                           </div>
-                          <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors underline-offset-2 group-hover:underline decoration-mintcom-green/40">
+                          <span className="text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors underline-offset-2 group-hover:underline decoration-mintcom-green/40">
                             {customer.name || customer.phone}
                           </span>
                         </button>
                       </td>
-                      <td className="px-6 py-4 text-start text-sm text-gray-500 dark:text-gray-400 font-medium">{customer.phone || '—'}</td>
+                      <td className="px-6 py-4 text-start text-sm text-stone-500 dark:text-zinc-400 font-medium">{customer.phone || '—'}</td>
                       <td className="px-6 py-4 text-end">
                         <button
                           type="button"
@@ -520,19 +515,19 @@ export function CustomersPage() {
                           className="inline-flex items-center gap-1 justify-end group/points hover:opacity-80 transition-opacity cursor-pointer"
                           title={t('customers.details.managePoints', { defaultValue: 'Manage Loyalty Points' })}
                         >
-                          <span className="text-sm font-bold text-gray-900 dark:text-white group-hover/points:text-mintcom-green transition-colors">{customer.points.toLocaleString()}</span>
-                          <span className="text-[10px] font-bold text-gray-400">{t('customers.details.points')}</span>
+                          <span className="text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover/points:text-mintcom-green transition-colors">{customer.points.toLocaleString()}</span>
+                          <span className="text-[10px] font-bold text-stone-400">{t('customers.details.points')}</span>
                         </button>
                       </td>
                       <td className="px-6 py-4 text-end">
-                        <p className="text-sm font-bold text-gray-900 dark:text-white">{formatAmount(customer.totalSpent)}</p>
-                        <p className="text-[10px] font-bold text-gray-400">{customer.totalVisits} {t('customers.details.visits')}</p>
+                        <p className="text-sm font-bold text-stone-900 dark:text-zinc-100">{formatAmount(customer.totalSpent)}</p>
+                        <p className="text-[10px] font-bold text-stone-400">{customer.totalVisits} {t('customers.details.visits')}</p>
                       </td>
                       <td className="px-6 py-4 text-end">
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => setCustomerModalConfig({ isOpen: true, customer, initialTab: 'profile' })}
-                            className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-mintcom-green hover:text-black hover:border-mintcom-green transition-all cursor-pointer"
+                            className="p-2.5 rounded-xl bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:bg-mintcom-green hover:text-black hover:border-mintcom-green transition-all cursor-pointer"
                             aria-label="Edit"
                           >
                             <Edit2 size={16} />
@@ -550,7 +545,7 @@ export function CustomersPage() {
               </table>
             </div>
 
-            <div className="mt-auto border-t border-gray-100 dark:border-white/5 p-4 bg-gray-50/50 dark:bg-white/[0.02]">
+            <div className="mt-auto border-t border-stone-100 dark:border-zinc-800 p-4 bg-stone-50/50 dark:bg-zinc-800/40">
               <Pagination
                 currentPage={page}
                 totalPages={totalPages}

@@ -503,7 +503,7 @@ export function PaymentMethodsPage() {
       />
 
       {/* Card Types Section */}
-      <section className="bg-white dark:bg-[#1E293B] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 shadow-sm overflow-hidden relative">
+      <section className="bg-white dark:bg-zinc-900/60 rounded-[32px] border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 shadow-sm overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-mintcom-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 relative z-10">
@@ -512,10 +512,10 @@ export function PaymentMethodsPage() {
               <CreditCard size={22} />
             </div>
             <div className="min-w-0">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+              <h2 className="text-xl sm:text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight leading-tight">
                 {t('paymentMethods.cardBrands')}
               </h2>
-              <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-xs sm:text-sm font-medium text-stone-500 dark:text-zinc-400 mt-0.5">
                 {t('paymentMethods.cardBrandsSubtitle')}
               </p>
             </div>
@@ -539,31 +539,31 @@ export function PaymentMethodsPage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4 relative z-10">
           {cardTypes.length === 0 ? (
-            <div className="col-span-full py-16 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-2xl border border-dashed border-gray-200 dark:border-white/5">
-              <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{t('paymentMethods.noCardBrands')}</p>
+            <div className="col-span-full py-16 text-center bg-stone-50/50 dark:bg-zinc-800/40 rounded-2xl border border-dashed border-stone-200 dark:border-zinc-800">
+              <p className="text-stone-400 font-black tracking-[0.2em] text-xs uppercase">{t('paymentMethods.noCardBrands')}</p>
             </div>
           ) : visibleCardTypes.length === 0 ? (
-            <div className="col-span-full py-16 text-center bg-gray-50/50 dark:bg-white/[0.01] rounded-2xl border border-dashed border-gray-200 dark:border-white/5">
-              <p className="text-gray-400 font-black tracking-[0.2em] text-xs uppercase">{cardTypesEmptyLabel}</p>
+            <div className="col-span-full py-16 text-center bg-stone-50/50 dark:bg-zinc-800/40 rounded-2xl border border-dashed border-stone-200 dark:border-zinc-800">
+              <p className="text-stone-400 font-black tracking-[0.2em] text-xs uppercase">{cardTypesEmptyLabel}</p>
             </div>
           ) : (
             visibleCardTypes.map((card) => (
               <motion.div
                 layout
                 key={card.id}
-                className={`group relative bg-white dark:bg-white/[0.02] rounded-2xl border border-gray-100 dark:border-white/5 transition-all duration-300 flex flex-col overflow-hidden ${
+                className={`group relative bg-white dark:bg-zinc-800/40 rounded-2xl border border-stone-100 dark:border-zinc-800 transition-all duration-300 flex flex-col overflow-hidden ${
                   card.isActive === false ? 'opacity-60' : 'hover:shadow-lg hover:shadow-black/5 hover:-translate-y-0.5'
                 }`}
               >
                 {/* Image/Icon Container */}
-                <div className="h-24 sm:h-28 flex items-center justify-center p-3 sm:p-4 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-300">
+                <div className="h-24 sm:h-28 flex items-center justify-center p-3 sm:p-4 bg-stone-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-300">
                   <div className="relative w-full h-full max-w-[120px] max-h-[48px] sm:max-h-[56px] flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
                     {(() => {
                       const displayUrl = resolveCardLogoUrl(card);
                       // Plain <img> always at full opacity — OptimizedImage left
                       // Visa/MC tiles blank until a hard refresh.
                       if (!displayUrl) {
-                        return <CreditCard size={28} className="text-gray-300 dark:text-gray-600" />;
+                        return <CreditCard size={28} className="text-stone-300 dark:text-zinc-600" />;
                       }
                       return (
                         <img
@@ -590,9 +590,9 @@ export function PaymentMethodsPage() {
                 </div>
 
                 {/* Info & Actions */}
-                <div className="p-3 sm:p-3.5 flex flex-col gap-2.5 border-t border-gray-100 dark:border-white/5">
+                <div className="p-3 sm:p-3.5 flex flex-col gap-2.5 border-t border-stone-100 dark:border-zinc-800">
                   <div className="flex items-center justify-between gap-1.5 min-w-0">
-                    <h3 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate" title={formatPaymentBrandName(card.name)}>
+                    <h3 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-zinc-100 truncate" title={formatPaymentBrandName(card.name)}>
                       {formatPaymentBrandName(card.name)}
                     </h3>
                     <Badge tone={card.isActive === false ? 'red' : 'green'}>
@@ -603,14 +603,14 @@ export function PaymentMethodsPage() {
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => { setEditingCard(card); setNewCardName(card.name); setCardImagePreview(resolveCardLogoUrl(card)); setSelectedCardImage(null); setShowCardModal(true); setCardErrors({}); }}
-                      className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-[11px] active:scale-95"
+                      className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-stone-100 dark:border-zinc-800 transition-all font-bold text-[11px] active:scale-95"
                     >
                       <Edit2 size={13} /> {t('common.edit')}
                     </button>
                     {card.isActive === false ? (
                       <button
                         onClick={() => reactivateCardType(card.id)}
-                        className="p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90 shrink-0"
+                        className="p-1.5 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-stone-100 dark:border-zinc-800 transition-all active:scale-90 shrink-0"
                         title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                       >
                         <RotateCcw size={14} />
@@ -618,7 +618,7 @@ export function PaymentMethodsPage() {
                     ) : (
                       <button
                         onClick={() => handleDeleteCardType(card.id, card.name)}
-                        className="p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90 shrink-0"
+                        className="p-1.5 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-red-500 hover:bg-red-500/10 border border-stone-100 dark:border-zinc-800 transition-all active:scale-90 shrink-0"
                         title={t('common.deactivate')}
                       >
                         <Trash2 size={14} />
@@ -635,19 +635,19 @@ export function PaymentMethodsPage() {
             <motion.button
               layout
               onClick={openCreateCardTypeModal}
-              className="group relative min-h-[145px] sm:min-h-[160px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-3 sm:p-4 cursor-pointer hover:border-mintcom-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-2.5"
+              className="group relative min-h-[145px] sm:min-h-[160px] bg-stone-50/50 dark:bg-zinc-800/40 border-2 border-dashed border-stone-200 dark:border-zinc-800 rounded-2xl p-3 sm:p-4 cursor-pointer hover:border-mintcom-green/50 hover:bg-white dark:hover:bg-zinc-800/40 transition-all flex flex-col items-center justify-center gap-2.5"
             >
-              <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all shadow-sm">
-                <Plus size={20} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
+              <div className="w-10 h-10 bg-white dark:bg-zinc-800 rounded-xl flex items-center justify-center border border-stone-200 dark:border-zinc-800 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all shadow-sm">
+                <Plus size={20} className="text-stone-400 group-hover:text-mintcom-green transition-colors" />
               </div>
-              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors text-center px-1">{t('paymentMethods.addBrand')}</span>
+              <span className="text-xs font-bold text-stone-500 dark:text-zinc-400 group-hover:text-stone-900 dark:group-hover:text-zinc-100 transition-colors text-center px-1">{t('paymentMethods.addBrand')}</span>
             </motion.button>
           )}
         </div>
       </section>
 
       {/* Main Section */}
-      <section className="bg-white dark:bg-[#1E293B] rounded-[32px] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 shadow-sm overflow-hidden relative">
+      <section className="bg-white dark:bg-zinc-900/60 rounded-[32px] border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 shadow-sm overflow-hidden relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-mintcom-green/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8 relative z-10">
@@ -656,10 +656,10 @@ export function PaymentMethodsPage() {
               <Wallet size={22} />
             </div>
             <div className="min-w-0">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+              <h2 className="text-xl sm:text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight leading-tight">
                 {t('paymentMethods.paymentTypes')}
               </h2>
-              <p className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-xs sm:text-sm font-medium text-stone-500 dark:text-zinc-400 mt-0.5">
                 {t('paymentMethods.paymentTypesSubtitle')}
               </p>
             </div>
@@ -684,7 +684,7 @@ export function PaymentMethodsPage() {
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4 relative z-10">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="min-h-[145px] sm:min-h-[160px] rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse" />
+              <div key={i} className="min-h-[145px] sm:min-h-[160px] rounded-2xl bg-stone-100 dark:bg-zinc-800 animate-pulse" />
             ))}
           </div>
         ) : (
@@ -693,13 +693,13 @@ export function PaymentMethodsPage() {
               <motion.div
                 layout
                 key={method.id}
-                className={`group relative bg-white dark:bg-white/[0.02] rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${method.isActive
-                  ? 'border-gray-100 dark:border-white/5 hover:shadow-lg hover:shadow-black/5 hover:-translate-y-0.5'
-                  : 'border-gray-100 dark:border-white/5 opacity-50 grayscale'
+                className={`group relative bg-white dark:bg-zinc-800/40 rounded-2xl border transition-all duration-300 flex flex-col overflow-hidden ${method.isActive
+                  ? 'border-stone-100 dark:border-zinc-800 hover:shadow-lg hover:shadow-black/5 hover:-translate-y-0.5'
+                  : 'border-stone-100 dark:border-zinc-800 opacity-50 grayscale'
                   }`}
               >
                 {/* Icon Container */}
-                <div className="h-24 sm:h-28 flex items-center justify-center p-3 sm:p-4 bg-gray-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-300">
+                <div className="h-24 sm:h-28 flex items-center justify-center p-3 sm:p-4 bg-stone-50/50 dark:bg-black/20 relative group-hover:bg-white dark:group-hover:bg-black/40 transition-colors duration-300">
                   <div className="relative w-full h-full max-w-[120px] max-h-[48px] sm:max-h-[56px] flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
                     {getImageUrl(method.imageUrl || method.logo) || getFallbackLogo(method.name) ? (
                       <OptimizedImage
@@ -709,7 +709,7 @@ export function PaymentMethodsPage() {
                         objectFit="contain"
                       />
                     ) : (
-                      <div className="text-gray-400 dark:text-gray-500">
+                      <div className="text-stone-400 dark:text-zinc-500">
                         {getMethodIcon(method.name, 32)}
                       </div>
                     )}
@@ -724,9 +724,9 @@ export function PaymentMethodsPage() {
                 </div>
 
                 {/* Info & Actions */}
-                <div className="p-3 sm:p-3.5 flex flex-col gap-2.5 border-t border-gray-100 dark:border-white/5">
+                <div className="p-3 sm:p-3.5 flex flex-col gap-2.5 border-t border-stone-100 dark:border-zinc-800">
                   <div className="flex items-center justify-between gap-1.5 min-w-0">
-                    <h3 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white truncate" title={method.name}>{method.name}</h3>
+                    <h3 className="text-xs sm:text-sm font-bold text-stone-900 dark:text-zinc-100 truncate" title={method.name}>{method.name}</h3>
                     <Badge tone={method.isActive ? 'green' : 'red'}>
                       {method.isActive ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                     </Badge>
@@ -737,14 +737,14 @@ export function PaymentMethodsPage() {
                       <>
                         <button
                           onClick={() => { setEditingMethod(method); reset({ name: method.name, isActive: method.isActive }); setImagePreview(method.imageUrl || null); setShowModal(true); }}
-                          className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all font-bold text-[11px] active:scale-95"
+                          className="flex-1 flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-stone-100 dark:border-zinc-800 transition-all font-bold text-[11px] active:scale-95"
                         >
                           <Edit2 size={13} /> {t('common.edit')}
                         </button>
                         {method.isActive ? (
                           <button
                             onClick={() => handleDelete(method.id, method.name)}
-                            className="p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-500/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90 shrink-0"
+                            className="p-1.5 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-red-500 hover:bg-red-500/10 border border-stone-100 dark:border-zinc-800 transition-all active:scale-90 shrink-0"
                             title={t('common.deactivate')}
                           >
                             <Trash2 size={14} />
@@ -752,7 +752,7 @@ export function PaymentMethodsPage() {
                         ) : (
                           <button
                             onClick={() => reactivatePaymentMethod(method.id)}
-                            className="p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-gray-100 dark:border-white/5 transition-all active:scale-90 shrink-0"
+                            className="p-1.5 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 border border-stone-100 dark:border-zinc-800 transition-all active:scale-90 shrink-0"
                             title={t('common.reactivate', { defaultValue: 'Reactivate' })}
                           >
                             <RotateCcw size={14} />
@@ -760,7 +760,7 @@ export function PaymentMethodsPage() {
                         )}
                       </>
                     ) : (
-                      <div className="flex-1 py-1.5 text-center text-[9px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-100 dark:border-white/5">
+                      <div className="flex-1 py-1.5 text-center text-[9px] font-bold text-stone-400 uppercase tracking-wider bg-stone-50 dark:bg-zinc-800 rounded-lg border border-stone-100 dark:border-zinc-800">
                         {t('common.systemDefault', 'System Default')}
                       </div>
                     )}
@@ -774,12 +774,12 @@ export function PaymentMethodsPage() {
               <motion.button
                 layout
                 onClick={openCreatePaymentMethodModal}
-                className="group relative min-h-[145px] sm:min-h-[160px] bg-gray-50/50 dark:bg-white/[0.01] border-2 border-dashed border-gray-200 dark:border-white/[0.05] rounded-2xl p-3 sm:p-4 cursor-pointer hover:border-mintcom-green/50 hover:bg-white dark:hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center gap-2.5"
+                className="group relative min-h-[145px] sm:min-h-[160px] bg-stone-50/50 dark:bg-zinc-800/40 border-2 border-dashed border-stone-200 dark:border-zinc-800 rounded-2xl p-3 sm:p-4 cursor-pointer hover:border-mintcom-green/50 hover:bg-white dark:hover:bg-zinc-800/40 transition-all flex flex-col items-center justify-center gap-2.5"
               >
-                <div className="w-10 h-10 bg-white dark:bg-white/5 rounded-xl flex items-center justify-center border border-gray-200 dark:border-white/10 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all shadow-sm">
-                  <Plus size={20} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
+                <div className="w-10 h-10 bg-white dark:bg-zinc-800 rounded-xl flex items-center justify-center border border-stone-200 dark:border-zinc-800 group-hover:bg-mintcom-green/10 group-hover:border-mintcom-green transition-all shadow-sm">
+                  <Plus size={20} className="text-stone-400 group-hover:text-mintcom-green transition-colors" />
                 </div>
-                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors text-center px-1">{t('paymentMethods.addPayment')}</span>
+                <span className="text-xs font-bold text-stone-500 dark:text-zinc-400 group-hover:text-stone-900 dark:group-hover:text-zinc-100 transition-colors text-center px-1">{t('paymentMethods.addPayment')}</span>
               </motion.button>
             )}
           </div>
@@ -797,7 +797,7 @@ export function PaymentMethodsPage() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody className="space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all hover:border-mintcom-green/50">
+                  <div className="w-32 h-32 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center border-2 border-dashed border-stone-200 dark:border-zinc-800 overflow-hidden relative group transition-all hover:border-mintcom-green/50">
                     {imagePreview ? (
                       <>
                         <img src={imagePreview} alt="Preview" className="w-full h-full object-contain p-4" loading="lazy" decoding="async" />
@@ -811,26 +811,26 @@ export function PaymentMethodsPage() {
                       </>
                     ) : (
                       <div className="flex flex-col items-center gap-2">
-                        <Upload size={32} className="text-gray-300" />
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.upload')}</span>
+                        <Upload size={32} className="text-stone-300" />
+                        <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{t('common.upload')}</span>
                         <input  maxLength={255}type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleImageChange} />
                       </div>
                     )}
                   </div>
-                  <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-2 text-center px-4">
+                  <p className="text-[10px] font-medium text-stone-400 dark:text-zinc-500 mt-2 text-center px-4">
                     {t('common.imageRecommendation', { defaultValue: 'Recommended: 512x512px (Square) or 4:3. PNG or SVG for transparency.' })}
                   </p>
                 </div>
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-normal text-gray-400 tracking-[0.2em]  px-1 flex items-center gap-2">
+                    <label className="block text-[10px] font-normal text-stone-400 tracking-[0.2em]  px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
                     <input maxLength={255}
                       type="text"
                       {...register('name')}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm`}
+                      className={`w-full px-5 py-4 bg-stone-50 dark:bg-black/20 border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl text-stone-900 dark:text-zinc-100 font-normal focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm`}
                       placeholder={formatInputPlaceholder(t('paymentMethods.form.namePlaceholder'), t('common.locale'))}
                     />
                     {errors.name && <p className="text-mintcom-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{errors.name.message}</p>}
@@ -889,7 +889,7 @@ export function PaymentMethodsPage() {
 
         <ModalBody className="space-y-8">
                 <div className="flex flex-col items-center gap-4">
-                  <div className={`w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-3xl flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 overflow-hidden relative group transition-all ${isEditingSystemCard ? '' : 'hover:border-mintcom-green/50'}`}>
+                  <div className={`w-32 h-32 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center border-2 border-dashed border-stone-200 dark:border-zinc-800 overflow-hidden relative group transition-all ${isEditingSystemCard ? '' : 'hover:border-mintcom-green/50'}`}>
                     {isEditingSystemCard ? (
                       <>
                         <img src={cardImagePreview || resolveCardLogoUrl(editingCard!) || undefined} alt={editingCard!.name} className="w-full h-full object-contain p-4" />
@@ -910,13 +910,13 @@ export function PaymentMethodsPage() {
                       </>
                     ) : (
                       <div className="flex flex-col items-center gap-2">
-                        <Upload size={32} className="text-gray-300" />
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{t('common.upload')}</span>
+                        <Upload size={32} className="text-stone-300" />
+                        <span className="text-[10px] font-black text-stone-400 uppercase tracking-widest">{t('common.upload')}</span>
                         <input  maxLength={255}type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={handleCardImageChange} />
                       </div>
                     )}
                   </div>
-                  <p className="text-[10px] font-medium text-gray-400 dark:text-gray-500 mt-2 text-center px-4">
+                  <p className="text-[10px] font-medium text-stone-400 dark:text-zinc-500 mt-2 text-center px-4">
                     {isEditingSystemCard
                       ? t('paymentMethods.form.systemBrandLocked')
                       : t('common.imageRecommendation', { defaultValue: 'Recommended: 512x512px (Square) or 4:3. PNG or SVG for transparency.' })}
@@ -925,7 +925,7 @@ export function PaymentMethodsPage() {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-normal text-gray-400 tracking-[0.2em]  px-1 flex items-center gap-2">
+                    <label className="block text-[10px] font-normal text-stone-400 tracking-[0.2em]  px-1 flex items-center gap-2">
                       {t('paymentMethods.form.nameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
                     <input maxLength={255}
@@ -936,7 +936,7 @@ export function PaymentMethodsPage() {
                         if (cardErrors.cardName) setCardErrors({ ...cardErrors, cardName: '' });
                       }}
                       disabled={isEditingSystemCard}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${cardErrors.cardName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-60`}
+                      className={`w-full px-5 py-4 bg-stone-50 dark:bg-black/20 border ${cardErrors.cardName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl text-stone-900 dark:text-zinc-100 font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all shadow-sm disabled:cursor-not-allowed disabled:opacity-60`}
                       placeholder={formatInputPlaceholder(t('paymentMethods.form.brandPlaceholder'), t('common.locale'))}
                     />
                     {cardErrors.cardName && <p className="text-mintcom-red text-[10px] font-black mt-2 px-1 uppercase tracking-widest">{cardErrors.cardName}</p>}

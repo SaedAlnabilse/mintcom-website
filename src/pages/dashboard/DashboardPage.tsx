@@ -669,7 +669,7 @@ export const DashboardPage = () => {
               {/* Real Shift Status Badge */}
               <span className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold tracking-wide border ${shiftStatus?.shiftStatus === 'ACTIVE'
                 ? 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'
-                : 'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
+                : 'bg-stone-500/10 text-stone-600 dark:text-zinc-400 border-stone-500/20'
                 }`}>
                 {shiftStatus?.shiftStatus === 'ACTIVE'
                   ? t('dashboard.shiftStatus.active', { name: getShiftEmployeeName() })
@@ -684,7 +684,7 @@ export const DashboardPage = () => {
                         <span>{formatDate()}</span>
                         {currentEstablishment?.name && (
                             <>
-                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20 hidden sm:block" />
+                                <span className="w-1 h-1 rounded-full bg-stone-300 dark:bg-zinc-800 hidden sm:block" />
                                 <Badge>{currentEstablishment.name}</Badge>
                             </>
                         )}
@@ -696,7 +696,7 @@ export const DashboardPage = () => {
                         <div id="tour-view-mode" className="relative flex-1 sm:flex-none" ref={viewModeRef}>
                           <button
                             onClick={() => setIsViewModeOpen(!isViewModeOpen)}
-                            className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-[color,background-color,border-color,box-shadow,ring] min-w-[180px] ${isViewModeOpen ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green bg-gray-50' : ''}`}
+                            className={`w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2 px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 text-stone-900 dark:text-zinc-100 font-bold text-sm border border-stone-200 dark:border-zinc-800 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-[color,background-color,border-color,box-shadow,ring] min-w-[180px] ${isViewModeOpen ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green bg-stone-50' : ''}`}
                           >
                             {currentViewModeInfo?.icon}
                             <span className="flex-1 text-left">{currentViewModeInfo?.label}</span>
@@ -709,7 +709,7 @@ export const DashboardPage = () => {
                                 initial={{ opacity: 0, y: -5 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -5 }}
-                                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden z-50"
+                                className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-xl overflow-hidden z-50"
                               >
                                 {getAvailableViewModes().map((mode) => (
                                   <button
@@ -718,15 +718,15 @@ export const DashboardPage = () => {
                                       setViewMode(mode.mode);
                                       setIsViewModeOpen(false);
                                     }}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors ${viewMode === mode.mode ? 'bg-mintcom-green/10' : ''
+                                    className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors ${viewMode === mode.mode ? 'bg-mintcom-green/10' : ''
                                       }`}
                                   >
-                                    <span className={viewMode === mode.mode ? 'text-mintcom-green' : 'text-gray-400'}>{mode.icon}</span>
+                                    <span className={viewMode === mode.mode ? 'text-mintcom-green' : 'text-stone-400'}>{mode.icon}</span>
                                     <div className="flex-1 text-left">
-                                      <p className={`text-sm font-bold ${viewMode === mode.mode ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
+                                      <p className={`text-sm font-bold ${viewMode === mode.mode ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-100'}`}>
                                         {mode.label}
                                       </p>
-                                      <p className="text-xs text-gray-500 dark:text-gray-400">{mode.description}</p>
+                                      <p className="text-xs text-stone-500 dark:text-zinc-400">{mode.description}</p>
                                     </div>
                                   </button>
                                 ))}
@@ -743,7 +743,7 @@ export const DashboardPage = () => {
                           {canOpenReportsPage && (
                             <button
                               onClick={() => navigate(`/dashboard/${locationSlug}/reports/sales`)}
-                              className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all touch-target"
+                              className="flex items-center gap-2 px-4 sm:px-5 py-3 rounded-xl bg-white dark:bg-zinc-800 text-stone-900 dark:text-zinc-100 font-bold text-sm border border-stone-200 dark:border-zinc-800 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-all touch-target"
                             >
                               <FileBarChart size={18} className="text-mintcom-green" />
                               <span className="hidden xs:inline">{t('dashboard.menu.salesAndReporting')}</span>
@@ -755,13 +755,13 @@ export const DashboardPage = () => {
             />
 
             {/* View Mode Info Bar */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 shadow-sm shadow-gray-200/70 dark:shadow-black/20 ring-1 ring-gray-200/60 dark:ring-white/5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3.5 rounded-xl bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 shadow-sm shadow-stone-200/70 dark:shadow-black/20 ring-1 ring-stone-200/60 dark:ring-zinc-800">
               <div className="flex items-center gap-3">
                 {currentViewModeInfo?.icon && (
                   <span className="text-mintcom-green">{currentViewModeInfo.icon}</span>
                 )}
                 <div>
-                  <span className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">
+                  <span className="text-xs sm:text-sm font-bold text-stone-900 dark:text-zinc-100">
                     {viewMode === 'current_shift' && shiftStatus?.activeShift && (
                       <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a', { locale: getDateLocale(t('common.locale')) }) })}</>
                     )}
@@ -770,7 +770,7 @@ export const DashboardPage = () => {
                   </span>
                 </div>
               </div>
-              <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">
+              <span className="text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-wide">
                 {t('dashboard.lastUpdated')} {format(lastRefresh, 'h:mm a', { locale: getDateLocale(t('common.locale')) })}
               </span>
             </div>

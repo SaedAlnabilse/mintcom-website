@@ -65,7 +65,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Discount Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 flex items-center gap-4 transition-all duration-300">
           <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
             <BiIcon icon="bi-percent" size={24} />
           </div>
@@ -78,7 +78,7 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
             />
           </div>
         </div>
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 flex items-center gap-4 transition-all duration-300">
           <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
             <BiIcon icon="bi-tags" size={24} />
           </div>
@@ -94,40 +94,40 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
       </div>
 
       {/* Discounts Table */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-gray-100 dark:border-white/5">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-stone-100 dark:border-zinc-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
               <BiIcon icon="bi-tags" size={20} />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.discounts.breakdown')}</h3>
+            <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{t('orders.reports.discounts.breakdown')}</h3>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-white/[0.02]">
-              <tr className="border-b border-gray-200 dark:border-white/5">
+            <thead className="bg-stone-50 dark:bg-zinc-800/40">
+              <tr className="border-b border-stone-200 dark:border-zinc-800">
                 <th
-                  className="px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer hover:text-stone-600 dark:hover:text-zinc-300 transition-colors"
                   onClick={() => requestSort('name')}
                 >
                   {t('orders.reports.discounts.name')}
                 </th>
                 <th
-                  className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer hover:text-stone-600 dark:hover:text-zinc-300 transition-colors"
                   onClick={() => requestSort('count')}
                 >
                   {t('orders.reports.discounts.count')}
                 </th>
                 <th
-                  className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer hover:text-stone-600 dark:hover:text-zinc-300 transition-colors"
                   onClick={() => requestSort('value')}
                 >
                   {t('orders.reports.discounts.value')}
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+            <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
               {sortedDiscounts.length > 0 ? (
                 sortedDiscounts
                   .slice((discountPage - 1) * itemsPerPage, discountPage * itemsPerPage)
@@ -137,12 +137,12 @@ export const DiscountsView = React.memo(function DiscountsView({ salesData, isFe
                       initial={{ opacity: 0 }}
                       animate={{ opacity: isFetching ? 0.5 : 1 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                      className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                     >
                       <td className="px-6 py-4 text-start">
-                        <span className="font-bold text-gray-900 dark:text-white text-sm">{item.name}</span>
+                        <span className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{item.name}</span>
                       </td>
-                      <td className="px-6 py-4 text-end font-bold text-gray-700 dark:text-gray-300">
+                      <td className="px-6 py-4 text-end font-bold text-stone-700 dark:text-zinc-300">
                         <StatValue value={item.count} isInteger={true} className="text-sm" containerClassName="justify-end w-full" />
                       </td>
                       <td className="px-6 py-4 text-end font-black text-orange-500">

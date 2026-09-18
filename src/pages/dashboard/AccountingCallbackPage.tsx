@@ -84,17 +84,17 @@ export const AccountingCallbackPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.05] rounded-3xl p-8 shadow-xl text-center space-y-6">
+    <div className="min-h-screen bg-stone-50 dark:bg-black flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-8 shadow-xl text-center space-y-6">
         {isProcessing ? (
           <div className="space-y-4 py-8">
             <div className="w-16 h-16 rounded-2xl bg-[#13B5EA]/10 text-[#13B5EA] flex items-center justify-center mx-auto">
               <Loader2 size={32} className="animate-spin" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold text-stone-900 dark:text-zinc-100">
               Connecting to Accounting Provider...
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-stone-500 dark:text-zinc-400">
               Please wait while we complete authorization and secure your connection.
             </p>
           </div>
@@ -103,7 +103,7 @@ export const AccountingCallbackPage: React.FC = () => {
             <div className="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto">
               <AlertCircle size={32} />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold text-stone-900 dark:text-zinc-100">
               Connection Failed
             </h2>
             <p className="text-sm text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/20 p-3 rounded-xl break-words">
@@ -112,7 +112,7 @@ export const AccountingCallbackPage: React.FC = () => {
             <button
               type="button"
               onClick={handleReturn}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gray-900 text-white dark:bg-white dark:text-gray-900 text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-stone-900 text-white dark:bg-white dark:text-zinc-900 text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               <ArrowLeft size={16} />
               Return to Settings
@@ -123,10 +123,10 @@ export const AccountingCallbackPage: React.FC = () => {
             <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
               <CheckCircle2 size={32} />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl font-bold text-stone-900 dark:text-zinc-100">
               Connected Successfully!
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-stone-500 dark:text-zinc-400">
               Redirecting you back to your accounting settings...
             </p>
           </div>

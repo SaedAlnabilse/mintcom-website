@@ -156,7 +156,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             case 'COMPLETED': return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
             case 'PENDING': return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
             case 'REFUNDED': return 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20';
-            default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+            default: return 'bg-stone-500/10 text-stone-500 border-stone-500/20';
         }
     };
 
@@ -243,14 +243,14 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex items-center gap-4 transition-all duration-300"
+                        className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 flex items-center gap-4 transition-all duration-300"
                     >
                         <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
                             <stat.icon size={20} />
                         </div>
                         <div>
                             <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                            <div className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                            <div className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                                 <StatValue 
                                     value={stat.value} 
                                     currency={stat.isCurrency ? currencySymbol : null}
@@ -263,22 +263,22 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 relative group bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/[0.05] hover:border-mintcom-green/50 transition-all p-1">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="flex-1 relative group bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/50 transition-all p-1">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
                     <input maxLength={255}
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && searchOrder()}
                         placeholder={formatInputPlaceholder(t('orders.reports.receipts.searchReceiptPlaceholder'), t('common.locale'))}
-                        className="w-full pl-10 pr-11 py-2.5 bg-transparent border-none text-sm font-medium text-gray-900 dark:text-white focus:ring-0"
+                        className="w-full pl-10 pr-11 py-2.5 bg-transparent border-none text-sm font-medium text-stone-900 dark:text-zinc-100 focus:ring-0"
                     />
                     {searchQuery && (
                       <button
                         type="button"
                         onClick={() => setSearchQuery('')}
                         aria-label={t('common.clearSearch', 'Clear search')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                       >
                         <X size={12} strokeWidth={2.75} />
                       </button>
@@ -302,7 +302,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                         <button
                             onClick={handleExport}
                             disabled={isExporting}
-                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.05] text-gray-900 dark:text-white font-bold text-xs hover:bg-gray-50 dark:hover:bg-white/5 transition-all disabled:opacity-50"
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-900 dark:text-zinc-100 font-bold text-xs hover:bg-stone-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50"
                         >
                             <Download size={16} className="text-mintcom-green" />
                             <span>{t('orders.export')}</span>
@@ -311,11 +311,11 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
+            <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]">
                 {isLoading ? (
                     <div className="flex-1 flex flex-col items-center justify-center py-20">
                         <div className="w-10 h-10 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
-                        <p className="text-xs font-bold text-gray-400">{t('common.loading')}</p>
+                        <p className="text-xs font-bold text-stone-400">{t('common.loading')}</p>
                     </div>
                 ) : orders.length === 0 ? (
                     <AnalyticsEmptyState
@@ -329,7 +329,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                     <div className="w-full">
                         <div className="hidden md:block">
                             <table className="w-full">
-                                <thead className="bg-gray-50/50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                                <thead className="bg-stone-50/50 dark:bg-zinc-800/40 border-b border-stone-100 dark:border-zinc-800">
                                     <tr>
                                         <th className="px-6 py-4 text-start label-strong font-sans whitespace-nowrap">{t('orders.table.order')}</th>
                                         <th className="px-6 py-4 text-start label-strong font-sans whitespace-nowrap">{t('orders.table.customer')}</th>
@@ -338,7 +338,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                         <th className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap">{t('orders.table.actions')}</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                                     <AnimatePresence mode='popLayout'>
                                         {orders.map((order) => (
                                             <motion.tr
@@ -347,7 +347,7 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0 }}
                                                 onClick={() => setSelectedOrder(order)}
-                                                className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                                                className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer"
                                             >
                                                 <td className="px-6 py-4 text-start">
                                                     <div className="flex items-center gap-3">
@@ -355,18 +355,18 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                                                             <Receipt size={16} />
                                                         </div>
                                                         <div>
-                                                            <p className="font-bold text-gray-900 dark:text-white text-xs">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
-                                                            <p className="text-xs text-gray-500 font-medium">{formatDate(order.createdAt)}</p>
+                                                            <p className="font-bold text-stone-900 dark:text-zinc-100 text-xs">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
+                                                            <p className="text-xs text-stone-500 font-medium">{formatDate(order.createdAt)}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-start">
-                                                    <p className="font-bold text-gray-700 dark:text-gray-300 text-xs">{order.customer?.name || t('orders.table.walkIn')}</p>
-                                                    <p className="text-xs text-gray-400">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
+                                                    <p className="font-bold text-stone-700 dark:text-zinc-300 text-xs">{order.customer?.name || t('orders.table.walkIn')}</p>
+                                                    <p className="text-xs text-stone-400">{order.user?.username ? `${t('orders.table.staff')}: ${order.user.username}` : t('common.pos')}</p>
                                                 </td>
                                                 <td className="px-6 py-4 text-end">
-                                                    <div className="font-bold text-gray-900 dark:text-white text-xs">{formatCurrency(order.total || 0)}</div>
-                                                    <p className="text-xs text-gray-400 uppercase">
+                                                    <div className="font-bold text-stone-900 dark:text-zinc-100 text-xs">{formatCurrency(order.total || 0)}</div>
+                                                    <p className="text-xs text-stone-400 uppercase">
                                                         {order.tenders && order.tenders.length > 1
                                                             ? t('orders.payment.splitCount', { count: order.tenders.length, defaultValue: `Split (${order.tenders.length})` })
                                                             : (order.otherPaymentMethod || (order.cardType ? `CARD (${order.cardType})` : order.paymentMethod))}
@@ -391,22 +391,22 @@ export function ReceiptsReport({ startDate, endDate, employeeId }: ReceiptsRepor
                             </table>
                         </div>
 
-                        <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                        <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
                             {orders.map((order) => (
-                                <div key={order.id} className="p-4 active:bg-gray-50 dark:active:bg-white/5" onClick={() => setSelectedOrder(order)}>
+                                <div key={order.id} className="p-4 active:bg-stone-50 dark:active:bg-zinc-800" onClick={() => setSelectedOrder(order)}>
                                     <div className="flex justify-between items-start mb-2">
                                         <div>
-                                            <span className="font-bold text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</span>
-                                            <span className="mx-2 text-gray-300">|</span>
-                                            <span className="text-xs text-gray-500">{formatDate(order.createdAt)}</span>
+                                            <span className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</span>
+                                            <span className="mx-2 text-stone-300">|</span>
+                                            <span className="text-xs text-stone-500">{formatDate(order.createdAt)}</span>
                                         </div>
                                         <span className={`px-1.5 py-0.5 rounded text-xs font-bold ${getStatusStyle(order.paymentStatus || order.status || 'PENDING')}`}>
                                             {getOrderStatusLabel(order)}
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center mt-2">
-                                        <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{order.customer?.name || t('orders.table.walkIn')}</span>
-                                        <div className="font-bold text-sm text-gray-900 dark:text-white">{formatCurrency(order.total || 0, "text-sm font-bold")}</div>
+                                        <span className="text-xs font-medium text-stone-600 dark:text-zinc-400">{order.customer?.name || t('orders.table.walkIn')}</span>
+                                        <div className="font-bold text-sm text-stone-900 dark:text-zinc-100">{formatCurrency(order.total || 0, "text-sm font-bold")}</div>
                                     </div>
                                 </div>
                             ))}

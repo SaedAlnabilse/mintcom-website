@@ -340,7 +340,7 @@ export function CustomRolesPage() {
   const getBaseRoleStyle = (role: string) => {
     switch (role?.toUpperCase()) {
       case 'ADMIN':
-        return 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20';
+        return 'bg-stone-500/10 text-stone-600 dark:text-zinc-300 border-stone-500/20';
       case 'MANAGER':
         return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
       case 'CASHIER':
@@ -390,17 +390,17 @@ export function CustomRolesPage() {
           />
         </div>
         {/* View Mode Toggle */}
-        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
+        <div className="flex items-center bg-stone-50 dark:bg-zinc-800 rounded-xl border border-stone-200 dark:border-zinc-800 p-1 h-[44px]">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-800 text-mintcom-green shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
             title={t('dashboard.roles.gridView')}
           >
             <Grid3X3 size={18} />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-mintcom-green shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
             title={t('dashboard.roles.listView')}
           >
             <List size={18} />
@@ -410,17 +410,17 @@ export function CustomRolesPage() {
 
       {/* Main Content */}
       {isLoading ? (
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col items-center justify-center p-20 sm:p-32">
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col items-center justify-center p-20 sm:p-32">
           <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
           <p className="label-strong font-sans">{t('dashboard.roles.loading')}</p>
         </div>
       ) : filteredRoles.length === 0 ? (
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col items-center justify-center p-16 sm:p-24 text-center bg-gray-50/30 dark:bg-black/10">
-          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
-            <Shield size={40} className="text-gray-300" />
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col items-center justify-center p-16 sm:p-24 text-center bg-stone-50/30 dark:bg-black/10">
+          <div className="w-20 h-20 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 border border-stone-200 dark:border-zinc-800 shadow-sm">
+            <Shield size={40} className="text-stone-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('dashboard.roles.noRoles')}</h3>
-          <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{t('dashboard.roles.noRolesDesc')}</p>
+          <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2">{t('dashboard.roles.noRoles')}</h3>
+          <p className="text-sm font-medium text-stone-500 max-w-xs mx-auto">{t('dashboard.roles.noRolesDesc')}</p>
         </div>
       ) : viewMode === 'grid' ? (
         /* Grid View */
@@ -429,7 +429,7 @@ export function CustomRolesPage() {
             {currentItems.map((role) => (
               <div
                 key={role.id}
-                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-6 transition-all shadow-sm overflow-hidden"
+                className="group relative bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-6 transition-all shadow-sm overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
                 
@@ -440,7 +440,7 @@ export function CustomRolesPage() {
                       <Shield size={24} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                      <h3 className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{getRoleDisplayName(role.name)}</h3>
                       {role.isGlobal && (
                         <span className="inline-flex items-center gap-1 mt-1 me-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10">
                           <Globe size={10} />
@@ -458,7 +458,7 @@ export function CustomRolesPage() {
                       <button
                         onClick={() => handleDuplicateToBranch(role)}
                         disabled={duplicatingRoleId === role.id}
-                        className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all disabled:opacity-50"
+                        className="p-2 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all disabled:opacity-50"
                         title={t('dashboard.roles.duplicateToBranch')}
                       >
                         <Copy size={16} />
@@ -467,7 +467,7 @@ export function CustomRolesPage() {
                       <>
                         <button
                           onClick={() => handleEdit(role)}
-                          className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"
+                          className="p-2 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all"
                           title={t('dashboard.roles.editRole')}
                         >
                           <Edit2 size={16} />
@@ -485,7 +485,7 @@ export function CustomRolesPage() {
                 </div>
 
                 {/* Stats */}
-                <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl mb-6 relative z-10">
+                <div className="bg-stone-50 dark:bg-zinc-800 p-3 rounded-xl mb-6 relative z-10">
                   <span className="label-strong font-sans block mb-2">{t('dashboard.roles.permissions')}</span>
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
@@ -500,8 +500,8 @@ export function CustomRolesPage() {
                 </div>
 
                 {/* Date */}
-                <div className="pt-4 border-t border-gray-100 dark:border-white/5 relative z-10">
-                  <span className="text-xs text-gray-400 font-medium">
+                <div className="pt-4 border-t border-stone-100 dark:border-zinc-800 relative z-10">
+                  <span className="text-xs text-stone-400 font-medium">
                     {t('dashboard.roles.created')} {new Date(role.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                   </span>
                 </div>
@@ -518,13 +518,13 @@ export function CustomRolesPage() {
         </div>
       ) : (
         /* List View */
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
           {/* Mobile Card View */}
-          <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+          <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
             {currentItems.map((role) => (
               <div
                 key={role.id}
-                className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                className="p-4 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -532,7 +532,7 @@ export function CustomRolesPage() {
                       <Shield size={20} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                      <h3 className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{getRoleDisplayName(role.name)}</h3>
                       {role.isGlobal && (
                         <span className="inline-flex items-center gap-1 mt-1 me-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10">
                           <Globe size={10} />
@@ -550,7 +550,7 @@ export function CustomRolesPage() {
                       <button
                         onClick={() => handleDuplicateToBranch(role)}
                         disabled={duplicatingRoleId === role.id}
-                        className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 disabled:opacity-50"
+                        className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400 disabled:opacity-50"
                         title={t('dashboard.roles.duplicateToBranch')}
                       >
                         <Copy size={16} />
@@ -559,7 +559,7 @@ export function CustomRolesPage() {
                       <>
                         <button
                           onClick={() => handleEdit(role)}
-                          className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
+                          className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400"
                         >
                           <Edit2 size={16} />
                         </button>
@@ -575,16 +575,16 @@ export function CustomRolesPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                    <span className="text-gray-500 block mb-1">{t('dashboard.roles.permissions')}</span>
+                  <div className="bg-stone-50 dark:bg-zinc-800 p-2 rounded-lg">
+                    <span className="text-stone-500 block mb-1">{t('dashboard.roles.permissions')}</span>
                     <div className="flex gap-2">
                       <span className="font-bold text-mintcom-green">{t('dashboard.roles.pos')}: {(getPosPermissionCount(role.permissions)).toLocaleString(t('common.locale'))}</span>
                       <span className="font-bold text-blue-500">{t('dashboard.roles.office')}: {getBackofficePermissionCount(role.backofficePermissions).toLocaleString(t('common.locale'))}</span>
                     </div>
                   </div>
-                  <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                    <span className="text-gray-500 block mb-1">{t('dashboard.roles.date')}</span>
-                    <span className="font-bold text-gray-900 dark:text-white">
+                  <div className="bg-stone-50 dark:bg-zinc-800 p-2 rounded-lg">
+                    <span className="text-stone-500 block mb-1">{t('dashboard.roles.date')}</span>
+                    <span className="font-bold text-stone-900 dark:text-zinc-100">
                       {new Date(role.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                     </span>
                   </div>
@@ -596,8 +596,8 @@ export function CustomRolesPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                <tr className="border-b border-gray-200 dark:border-white/5">
+              <thead className="bg-stone-50 dark:bg-zinc-800/40">
+                <tr className="border-b border-stone-200 dark:border-zinc-800">
                   <th
                     className="px-6 py-4 text-start label-strong font-sans cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
                     onClick={() => handleSort('name')}
@@ -629,11 +629,11 @@ export function CustomRolesPage() {
                   <th className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap">{t('dashboard.roles.actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+              <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                 {currentItems.map((role) => (
                   <tr
                     key={role.id}
-                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                   >
                     <td className="px-6 py-4 text-start">
                       <div className="flex items-center gap-4">
@@ -641,7 +641,7 @@ export function CustomRolesPage() {
                           <Shield size={20} />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</p>
+                          <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{getRoleDisplayName(role.name)}</p>
                           {role.isGlobal && (
                             <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border border-blue-200 dark:border-blue-500/30 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10">
                               <Globe size={10} />
@@ -661,16 +661,16 @@ export function CustomRolesPage() {
                       <div className="flex flex-col items-center gap-1">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-mintcom-green"></span>
-                          <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.pos')}: {(getPosPermissionCount(role.permissions)).toLocaleString(t('common.locale'))}</span>
+                          <span className="text-xs text-stone-500 font-medium">{t('dashboard.roles.pos')}: {(getPosPermissionCount(role.permissions)).toLocaleString(t('common.locale'))}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                          <span className="text-xs text-gray-500 font-medium">{t('dashboard.roles.office')}: {getBackofficePermissionCount(role.backofficePermissions).toLocaleString(t('common.locale'))}</span>
+                          <span className="text-xs text-stone-500 font-medium">{t('dashboard.roles.office')}: {getBackofficePermissionCount(role.backofficePermissions).toLocaleString(t('common.locale'))}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-start">
-                      <p className="text-xs text-gray-500 font-medium">
+                      <p className="text-xs text-stone-500 font-medium">
                         {new Date(role.createdAt).toLocaleDateString(t('common.locale') === 'ar' ? 'ar-EG' : 'en-US')}
                       </p>
                     </td>
@@ -680,7 +680,7 @@ export function CustomRolesPage() {
                           <button
                             onClick={() => handleDuplicateToBranch(role)}
                             disabled={duplicatingRoleId === role.id}
-                            className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90 disabled:opacity-50"
+                            className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-90 disabled:opacity-50"
                             title={t('dashboard.roles.duplicateToBranch')}
                           >
                             <Copy size={16} />
@@ -689,14 +689,14 @@ export function CustomRolesPage() {
                           <>
                             <button
                               onClick={() => handleEdit(role)}
-                              className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                              className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-90"
                               title={t('dashboard.roles.editRole')}
                             >
                               <Edit2 size={16} />
                             </button>
                             <button
                               onClick={() => handleDeleteClick(role)}
-                              className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-mintcom-red/60 hover:text-mintcom-red hover:bg-mintcom-red/5 transition-all shadow-sm active:scale-90"
+                              className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-mintcom-red/60 hover:text-mintcom-red hover:bg-mintcom-red/5 transition-all shadow-sm active:scale-90"
                               title={t('dashboard.roles.deleteRole')}
                             >
                               <Trash2 size={16} />

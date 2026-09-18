@@ -4,12 +4,10 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   Plus,
-  Search,
   Package,
   Edit2,
   Trash2,
   ChevronDown,
-  X,
   MousePointerClick,
   CheckSquare,
   RotateCcw
@@ -22,7 +20,7 @@ import api from '../../config/api';
 import { useCurrency } from '../../context/CurrencyContext';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
-import { EmptyState, Pagination, SelectInput, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge, Toggle, Button } from '../../components/ui';
+import { EmptyState, Pagination, SelectInput, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, PageHeader, Badge, Toggle, Button, ListFilterBar } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { usePermissionGuard } from '../../hooks/usePermissionGuard';
 import { QuickInfo } from '../../components/QuickInfo';
@@ -666,7 +664,7 @@ export function AddonsPage() {
           { label: t('attributes.stats.options'), value: stats.totalOptions, icon: biIcon('bi-box-seam'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
           { label: t('attributes.stats.sales'), value: stats.paidOptions, sub: t('attributes.stats.withPrice'), icon: biIcon('bi-cash-coin'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
         ].map((stat, i) => (
-          <div key={i} className="p-6 rounded-3xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden text-left relative">
+          <div key={i} className="p-6 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden text-left relative">
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-5">
               <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color}`}>
@@ -677,7 +675,7 @@ export function AddonsPage() {
                 <div className="flex items-baseline gap-2">
                   <StatValue value={stat.value} isInteger={true} />
                 </div>
-                {stat.sub && <p className="text-xs font-medium text-gray-400 dark:text-gray-500">{stat.sub}</p>}
+                {stat.sub && <p className="text-xs font-medium text-stone-400 dark:text-zinc-500">{stat.sub}</p>}
               </div>
             </div>
           </div>
@@ -685,120 +683,94 @@ export function AddonsPage() {
       </div>
 
       {/* Control Bar & Filters */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-4 shadow-sm space-y-4">
-        <div className="relative w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input maxLength={255}
-            type="text"
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-            placeholder={formatInputPlaceholder(t('attributes.filters.searchPlaceholder'), t('common.locale'))}
-            className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl pl-12 pr-10 py-3.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 transition-all font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green"
+      <ListFilterBar
+        searchValue={searchQuery}
+        onSearchChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+        onSearchClear={() => { setSearchQuery(''); setPage(1); }}
+        searchPlaceholder={formatInputPlaceholder(t('attributes.filters.searchPlaceholder'), t('common.locale'))}
+      >
+        {/* Status Filter */}
+        <div className="w-full sm:w-36 lg:w-36 shrink-0">
+          <SelectInput
+            value={filterStatus === 'ALL' ? null : filterStatus}
+            onChange={(value) => {
+              setFilterStatus((value as StatusFilterValue) || 'ALL');
+              setPage(1);
+            }}
+            options={[
+              { label: t('common.active', 'Active'), value: 'ACTIVE' },
+              { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+            ]}
+            allOptionLabel={t('common.allStatuses', 'All Statuses')}
+            placeholder={t('common.allStatuses', 'All Statuses')}
+            searchable={false}
+            buttonClassName="!h-[42px] !rounded-xl !text-xs sm:!text-sm !font-medium"
           />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => { setSearchQuery(''); setPage(1); }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors rounded-lg"
-            >
-              <X size={12} strokeWidth={2.75} />
-            </button>
-          )}
         </div>
-
-        <div className="flex flex-wrap lg:flex-nowrap items-end gap-3.5">
-          {/* Status Filter */}
-          <div className="w-full sm:w-36 lg:w-36 shrink-0 space-y-1.5">
-            <p className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest px-1 h-4 flex items-center">{t('common.status.label', 'Status')}</p>
-            <SelectInput
-              value={filterStatus === 'ALL' ? null : filterStatus}
-              onChange={(value) => {
-                setFilterStatus((value as StatusFilterValue) || 'ALL');
-                setPage(1);
-              }}
-              options={[
-                { label: t('common.active', 'Active'), value: 'ACTIVE' },
-                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
-              ]}
-              allOptionLabel={t('common.allStatuses', 'All Statuses')}
-              placeholder={t('common.allStatuses', 'All Statuses')}
-              searchable={false}
-              buttonClassName="!h-[42px] !rounded-xl !text-xs sm:!text-sm !font-medium"
-            />
-          </div>
-
-          {/* Selection Filter */}
-          <div className="flex-1 min-w-[170px] space-y-1.5">
-            <p className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest px-1 h-4 flex items-center">{t('attributes.filters.selection')}</p>
-            <div className="h-[42px] flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
-              {['ALL', 'SINGLE_SELECT', 'MULTI_SELECT'].map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => { setFilterSelection(f); setPage(1); }}
-                  className={`flex-1 h-full flex items-center justify-center text-xs font-medium tracking-tight rounded-lg transition-all ${filterSelection === f ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                >
-                  {f === 'SINGLE_SELECT' ? t('attributes.filters.single') : f === 'MULTI_SELECT' ? t('attributes.filters.multi') : t('attributes.filters.all')}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Requirement Filter */}
-          <div className="flex-1 min-w-[170px] space-y-1.5">
-            <p className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest px-1 h-4 flex items-center">{t('attributes.filters.required')}</p>
-            <div className="h-[42px] flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
-              {['ALL', 'MANDATORY', 'OPTIONAL'].map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => { setFilterRequirement(f); setPage(1); }}
-                  className={`flex-1 h-full flex items-center justify-center text-xs font-medium tracking-tight rounded-lg transition-all ${filterRequirement === f ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                >
-                  {f === 'MANDATORY' ? t('attributes.filters.mandatory') : f === 'OPTIONAL' ? t('attributes.filters.optional') : t('attributes.filters.all')}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Pricing Model */}
-          <div className="flex-1 min-w-[150px] space-y-1.5">
-            <p className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest px-1 h-4 flex items-center">{t('attributes.filters.price')}</p>
-            <div className="h-[42px] flex items-center bg-gray-50 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/10">
-              {['ALL', 'FREE', 'PAID'].map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => handleQuickFilter(f as any)}
-                  className={`flex-1 h-full flex items-center justify-center text-xs font-medium tracking-tight rounded-lg transition-all ${filterPricing === f ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                >
-                  {f === 'FREE' ? t('attributes.filters.free') : f === 'PAID' ? t('attributes.filters.paid') : t('attributes.filters.all')}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Reset Action */}
-          <div className="w-full sm:w-auto shrink-0 flex flex-col justify-end space-y-1.5">
-            <div className="hidden lg:block h-4" />
-            <button
-              type="button"
-              onClick={() => {
-                setFilterSelection('ALL');
-                setFilterRequirement('ALL');
-                setFilterPricing('ALL');
-                setFilterStatus('ACTIVE');
-                setSearchQuery('');
-                setPage(1);
-              }}
-              className="h-[42px] flex items-center justify-center gap-2 px-3.5 text-xs font-bold text-gray-500 hover:text-mintcom-red bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl transition-all active:scale-95 group whitespace-nowrap"
-            >
-              <RotateCcw size={14} className="group-hover:rotate-[-120deg] transition-transform duration-300" />
-              <span>{t('attributes.filters.reset')}</span>
-            </button>
+        {/* Selection Filter */}
+        <div className="flex-1 min-w-[150px]">
+          <div className="h-[42px] flex items-center bg-stone-50 dark:bg-zinc-800 p-1 rounded-xl border border-stone-200 dark:border-zinc-800">
+            {['ALL', 'SINGLE_SELECT', 'MULTI_SELECT'].map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => { setFilterSelection(f); setPage(1); }}
+                className={`flex-1 h-full flex items-center justify-center text-xs font-medium tracking-tight rounded-lg transition-all ${filterSelection === f ? 'bg-white dark:bg-zinc-800 text-mintcom-green shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                {f === 'SINGLE_SELECT' ? t('attributes.filters.single') : f === 'MULTI_SELECT' ? t('attributes.filters.multi') : t('attributes.filters.all')}
+              </button>
+            ))}
           </div>
         </div>
-      </div>
+        {/* Requirement Filter */}
+        <div className="flex-1 min-w-[150px]">
+          <div className="h-[42px] flex items-center bg-stone-50 dark:bg-zinc-800 p-1 rounded-xl border border-stone-200 dark:border-zinc-800">
+            {['ALL', 'MANDATORY', 'OPTIONAL'].map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => { setFilterRequirement(f); setPage(1); }}
+                className={`flex-1 h-full flex items-center justify-center text-xs font-medium tracking-tight rounded-lg transition-all ${filterRequirement === f ? 'bg-white dark:bg-zinc-800 text-mintcom-green shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                {f === 'MANDATORY' ? t('attributes.filters.mandatory') : f === 'OPTIONAL' ? t('attributes.filters.optional') : t('attributes.filters.all')}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Pricing Model */}
+        <div className="flex-1 min-w-[130px]">
+          <div className="h-[42px] flex items-center bg-stone-50 dark:bg-zinc-800 p-1 rounded-xl border border-stone-200 dark:border-zinc-800">
+            {['ALL', 'FREE', 'PAID'].map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => handleQuickFilter(f as any)}
+                className={`flex-1 h-full flex items-center justify-center text-xs font-medium tracking-tight rounded-lg transition-all ${filterPricing === f ? 'bg-white dark:bg-zinc-800 text-mintcom-green shadow-sm' : 'text-stone-400 hover:text-stone-600'}`}
+              >
+                {f === 'FREE' ? t('attributes.filters.free') : f === 'PAID' ? t('attributes.filters.paid') : t('attributes.filters.all')}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Reset Action */}
+        <div className="w-full sm:w-auto shrink-0 flex flex-col justify-end">
+          <button
+            type="button"
+            onClick={() => {
+              setFilterSelection('ALL');
+              setFilterRequirement('ALL');
+              setFilterPricing('ALL');
+              setFilterStatus('ACTIVE');
+              setSearchQuery('');
+              setPage(1);
+            }}
+            className="h-[42px] flex items-center justify-center gap-2 px-3.5 text-xs font-bold text-stone-500 hover:text-mintcom-red bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl transition-all active:scale-95 group whitespace-nowrap"
+          >
+            <RotateCcw size={14} className="group-hover:rotate-[-120deg] transition-transform duration-300" />
+            <span>{t('attributes.filters.reset')}</span>
+          </button>
+        </div>
+      </ListFilterBar>
 
       {/* Add-ons List */}
       {isLoading ? (
@@ -812,13 +784,13 @@ export function AddonsPage() {
           description={addonsEmptyDescription}
         />
       ) : (
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
           <div className="p-6 space-y-4">
             {paginatedAttributes.map((attr) => (
               <div
                 key={attr.id}
                 id={`group-${attr.id}`}
-                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden transition-all duration-300 ${
+                className={`group relative bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden transition-all duration-300 ${
                   isAttributeActive(attr) ? 'hover:shadow-sm' : 'opacity-75'
                 }`}
               >
@@ -826,15 +798,15 @@ export function AddonsPage() {
                 <div className="absolute left-0 top-0 h-full w-1 bg-mintcom-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div
                   onClick={() => setExpandedId(expandedId === attr.id ? null : attr.id)}
-                  className="flex min-w-0 items-start justify-between gap-4 p-6 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group cursor-pointer sm:items-center"
+                  className="flex min-w-0 items-start justify-between gap-4 p-6 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors group cursor-pointer sm:items-center"
                 >
                   <div className="flex min-w-0 flex-1 items-start gap-5 sm:items-center">
-                    <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-white/10'}`}>
+                    <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center font-black border ${attr.isRequired ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-400 border-stone-200 dark:border-zinc-800'}`}>
                       {attr.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="min-w-0 overflow-safe-wrap line-clamp-2 font-bold text-gray-900 dark:text-white text-lg leading-snug" title={attr.name}>{attr.name}</h3>
-                      <p className="text-xs font-medium text-gray-400 tracking-widest mt-1 uppercase capitalize-none">
+                      <h3 className="min-w-0 overflow-safe-wrap line-clamp-2 font-bold text-stone-900 dark:text-zinc-100 text-lg leading-snug" title={attr.name}>{attr.name}</h3>
+                      <p className="text-xs font-medium text-stone-400 tracking-widest mt-1 uppercase capitalize-none">
                         {attr.inputType === 'SINGLE_SELECT' ? t('attributes.list.singleChoice') : t('attributes.list.multipleChoice')} &bull; {attr.subAttributes?.length || 0}
                       </p>
                     </div>
@@ -861,15 +833,15 @@ export function AddonsPage() {
                           <Plus size={20} strokeWidth={3} />
                         </button>
                       )}
-                      <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-colors" title={t('common.edit')}>
+                      <button onClick={(e) => { e.stopPropagation(); openAttributeModal(attr); }} className="p-2 rounded-xl bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-colors" title={t('common.edit')}>
                         <Edit2 size={16} />
                       </button>
                       {isAttributeActive(attr) ? (
-                        <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-mintcom-red hover:border-mintcom-red/30 transition-colors" title={t('common.archive')}>
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteAttribute(attr); }} className="p-2 rounded-xl bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:text-mintcom-red hover:border-mintcom-red/30 transition-colors" title={t('common.archive')}>
                           <Trash2 size={16} />
                         </button>
                       ) : (
-                        <button onClick={(e) => { e.stopPropagation(); handleReactivateAttribute(attr); }} className="p-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}>
+                        <button onClick={(e) => { e.stopPropagation(); handleReactivateAttribute(attr); }} className="p-2 rounded-xl bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}>
                           <RotateCcw size={16} />
                         </button>
                       )}
@@ -879,7 +851,7 @@ export function AddonsPage() {
                         e.stopPropagation();
                         setExpandedId(expandedId === attr.id ? null : attr.id);
                       }}
-                      className={`p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-all ${expandedId === attr.id ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-300'}`}
+                      className={`p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all ${expandedId === attr.id ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-stone-300'}`}
                     >
                       <ChevronDown className={`w-5 h-5 transition-transform duration-500 ${expandedId === attr.id ? 'rotate-180' : ''}`} />
                     </button>
@@ -887,9 +859,9 @@ export function AddonsPage() {
                 </div>
 
                 {expandedId === attr.id && (
-                  <div className="border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 p-6">
+                  <div className="border-t border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-black/20 p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-xs font-medium text-gray-400 dark:text-gray-500 tracking-widest uppercase capitalize-none border-b-2 border-mintcom-green/30 pb-1 inline-block">
+                      <h4 className="text-xs font-medium text-stone-400 dark:text-zinc-500 tracking-widest uppercase capitalize-none border-b-2 border-mintcom-green/30 pb-1 inline-block">
                         {t('attributes.list.optionsTitle', 'Group Options')}
                       </h4>
                       {isAttributeActive(attr) && (
@@ -910,10 +882,10 @@ export function AddonsPage() {
                           return true;
                         })
                         .map((sub) => (
-                          <div key={sub.id} className="flex min-w-0 items-start justify-between gap-3 p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 group/sub hover:border-mintcom-green/30 transition-all shadow-sm">
+                          <div key={sub.id} className="flex min-w-0 items-start justify-between gap-3 p-4 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 group/sub hover:border-mintcom-green/30 transition-all shadow-sm">
                             <div className="min-w-0 flex-1">
                               <div className="flex min-w-0 items-center gap-2 flex-wrap">
-                                <p className="min-w-0 flex-1 overflow-safe-wrap line-clamp-2 font-bold text-gray-900 dark:text-white text-base leading-snug" title={sub.name}>{sub.name}</p>
+                                <p className="min-w-0 flex-1 overflow-safe-wrap line-clamp-2 font-bold text-stone-900 dark:text-zinc-100 text-base leading-snug" title={sub.name}>{sub.name}</p>
                                 <Badge tone={isSubAttributeActive(sub) ? 'green' : 'red'}>
                                   {isSubAttributeActive(sub) ? t('common.active', 'Active') : t('common.inactive', 'Inactive')}
                                 </Badge>
@@ -923,15 +895,15 @@ export function AddonsPage() {
                                </p>
                              </div>
                             <div className="flex shrink-0 gap-1 transition-opacity">
-                              <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10" title={t('common.edit')}>
+                              <button onClick={() => openSubAttributeModal(attr.id, sub)} className="p-1.5 rounded-lg text-stone-500 dark:text-zinc-400 hover:text-mintcom-green hover:bg-mintcom-green/10" title={t('common.edit')}>
                                 <Edit2 size={14} />
                               </button>
                               {isSubAttributeActive(sub) ? (
-                                <button onClick={() => handleDeleteSubAttribute(sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10" title={t('common.archive')}>
+                                <button onClick={() => handleDeleteSubAttribute(sub)} className="p-1.5 rounded-lg text-stone-500 dark:text-zinc-400 hover:text-mintcom-red hover:bg-mintcom-red/10" title={t('common.archive')}>
                                   <Trash2 size={14} />
                                 </button>
                               ) : (
-                                <button onClick={() => handleReactivateSubAttribute(sub)} className="p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10" title={t('common.reactivate', { defaultValue: 'Reactivate' })}>
+                                <button onClick={() => handleReactivateSubAttribute(sub)} className="p-1.5 rounded-lg text-stone-500 dark:text-zinc-400 hover:text-mintcom-green hover:bg-mintcom-green/10" title={t('common.reactivate', { defaultValue: 'Reactivate' })}>
                                   <RotateCcw size={14} />
                                 </button>
                               )}
@@ -963,7 +935,7 @@ export function AddonsPage() {
         />
         <ModalBody className="space-y-6">
                   <div>
-                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
+                    <label className="block text-xs font-normal text-stone-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.groupNameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
                     <input
@@ -975,7 +947,7 @@ export function AddonsPage() {
                         setAttributeForm({ ...attributeForm, name: e.target.value });
                         if (errors.groupName) setErrors({ ...errors, groupName: '' });
                       }}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.groupName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all`}
+                      className={`w-full px-5 py-4 bg-stone-50 dark:bg-black/20 border ${errors.groupName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl text-stone-900 dark:text-zinc-100 font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all`}
                       placeholder={formatInputPlaceholder(t('attributes.form.groupNamePlaceholder'), t('common.locale'))}
                     />
                     {errors.groupName && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.groupName}</p>}
@@ -987,15 +959,15 @@ export function AddonsPage() {
                       onClick={() => setAttributeForm({ ...attributeForm, inputType: 'SINGLE_SELECT' })}
                       className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'SINGLE_SELECT'
                         ? 'bg-mintcom-green/10 border-mintcom-green'
-                        : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
+                        : 'bg-white dark:bg-zinc-900/60 border-stone-100 dark:border-zinc-800 hover:border-mintcom-green/30'
                         }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'SINGLE_SELECT' ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'SINGLE_SELECT' ? 'bg-mintcom-green text-black' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'}`}>
                         <MousePointerClick size={20} strokeWidth={2.5} />
                       </div>
                       <div>
-                        <p className={`text-sm font-medium ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.single')}</p>
-                        <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.singleDesc')}</p>
+                        <p className={`text-sm font-medium ${attributeForm.inputType === 'SINGLE_SELECT' ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-100'}`}>{t('attributes.form.single')}</p>
+                        <p className="text-xs font-medium text-stone-400 mt-1">{t('attributes.form.singleDesc')}</p>
                       </div>
                       {attributeForm.inputType === 'SINGLE_SELECT' && (
                         <div className="absolute top-4 right-4 text-mintcom-green">
@@ -1009,15 +981,15 @@ export function AddonsPage() {
                       onClick={() => setAttributeForm({ ...attributeForm, inputType: 'MULTI_SELECT' })}
                       className={`p-4 rounded-2xl border-2 transition-all flex flex-col gap-3 text-left relative overflow-hidden group ${attributeForm.inputType === 'MULTI_SELECT'
                         ? 'bg-mintcom-green/10 border-mintcom-green'
-                        : 'bg-white dark:bg-[#1E293B] border-gray-100 dark:border-white/5 hover:border-mintcom-green/30'
+                        : 'bg-white dark:bg-zinc-900/60 border-stone-100 dark:border-zinc-800 hover:border-mintcom-green/30'
                         }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'MULTI_SELECT' ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'}`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${attributeForm.inputType === 'MULTI_SELECT' ? 'bg-mintcom-green text-black' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'}`}>
                         <CheckSquare size={20} strokeWidth={2.5} />
                       </div>
                       <div>
-                        <p className={`text-sm font-medium ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>{t('attributes.form.multiple')}</p>
-                        <p className="text-xs font-medium text-gray-400 mt-1">{t('attributes.form.multipleDesc')}</p>
+                        <p className={`text-sm font-medium ${attributeForm.inputType === 'MULTI_SELECT' ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-100'}`}>{t('attributes.form.multiple')}</p>
+                        <p className="text-xs font-medium text-stone-400 mt-1">{t('attributes.form.multipleDesc')}</p>
                       </div>
                       {attributeForm.inputType === 'MULTI_SELECT' && (
                         <div className="absolute top-4 right-4 text-mintcom-green">
@@ -1027,10 +999,10 @@ export function AddonsPage() {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5">
+                  <div className="flex items-center justify-between p-5 bg-stone-50 dark:bg-zinc-800 rounded-2xl border border-stone-200 dark:border-zinc-800">
                     <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white leading-none mb-1">{t('attributes.form.requiredLabel')}</p>
-                      <p className="text-xs text-gray-500 font-medium">{t('attributes.form.requiredDesc')}</p>
+                      <p className="text-sm font-medium text-stone-900 dark:text-zinc-100 leading-none mb-1">{t('attributes.form.requiredLabel')}</p>
+                      <p className="text-xs text-stone-500 font-medium">{t('attributes.form.requiredDesc')}</p>
                     </div>
                     <Toggle
                       size="lg"
@@ -1086,7 +1058,7 @@ export function AddonsPage() {
         />
         <ModalBody className="space-y-6">
                   <div>
-                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
+                    <label className="block text-xs font-normal text-stone-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.optionNameLabel')} <span className="text-mintcom-red">*</span>
                     </label>
                     <input
@@ -1098,18 +1070,18 @@ export function AddonsPage() {
                         setSubAttributeForm({ ...subAttributeForm, name: e.target.value });
                         if (errors.optionName) setErrors({ ...errors, optionName: '' });
                       }}
-                      className={`w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border ${errors.optionName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/10'} rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all`}
+                      className={`w-full px-5 py-4 bg-stone-50 dark:bg-black/20 border ${errors.optionName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl text-stone-900 dark:text-zinc-100 font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all`}
                       placeholder={formatInputPlaceholder(t('attributes.form.optionNamePlaceholder'), t('common.locale'))}
                     />
                     {errors.optionName && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.optionName}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-xs font-normal text-gray-400 tracking-normal mb-3 px-1 lowercase">
+                    <label className="block text-xs font-normal text-stone-400 tracking-normal mb-3 px-1 lowercase">
                       {t('attributes.form.priceLabel')}
                     </label>
                     <div className="relative">
-                      <div className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-xs font-bold uppercase tracking-wider text-gray-400">
+                      <div className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-xs font-bold uppercase tracking-wider text-stone-400">
                         {currencySymbol}
                       </div>
                       <input
@@ -1123,7 +1095,7 @@ export function AddonsPage() {
                             setSubAttributeForm({ ...subAttributeForm, price: formatted });
                           }
                         }}
-                        className="w-full pl-16 pr-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl text-gray-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all"
+                        className="w-full pl-16 pr-5 py-4 bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-2xl text-stone-900 dark:text-zinc-100 font-bold focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all"
                         placeholder={formatInputPlaceholder('0.00', t('common.locale'))}
                       />
                     </div>
@@ -1132,9 +1104,9 @@ export function AddonsPage() {
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between p-5 bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/10">
+                  <div className="flex items-center justify-between p-5 bg-stone-50 dark:bg-black/20 rounded-2xl border border-stone-200 dark:border-zinc-800">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">{t('attributes.form.availableLabel')}</span>
+                      <span className="text-sm font-bold text-stone-900 dark:text-zinc-100 tracking-tight">{t('attributes.form.availableLabel')}</span>
                       <QuickInfo text={t('attributes.form.availableTip')} />
                     </div>
                     <Toggle

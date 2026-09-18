@@ -197,14 +197,14 @@ export function MigrationPage() {
   return (
     <div className="space-y-6 pb-10 font-sans">
       <div>
-        <h1 className="text-2xl font-bold text-text-primary dark:text-white">Switch from another POS</h1>
+        <h1 className="text-2xl font-bold text-text-primary dark:text-zinc-100">Switch from another POS</h1>
         <p className="mt-1 text-sm text-text-secondary">
           Drop your export below — we detect Foodics, Loyverse or Square automatically and import in seconds.
         </p>
       </div>
 
       {/* ── 1. Single dropzone + source reassurance + quick actions ── */}
-      <div className="rounded-2xl border border-cream-300 dark:border-white/10 bg-white dark:bg-dark-light p-6 shadow-sm">
+      <div className="rounded-2xl border border-cream-300 dark:border-zinc-800 bg-white dark:bg-dark-light p-6 shadow-sm">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           {SOURCES.map((s) => (
             <button
@@ -212,8 +212,8 @@ export function MigrationPage() {
               onClick={() => setSourceHint(s.id)}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
                 (sourceHint ?? dry?.detectedSource) === s.id
-                  ? 'border-mintcom-green bg-mintcom-green/10 text-text-primary dark:text-white'
-                  : 'border-cream-300 dark:border-white/10 text-text-secondary hover:border-mintcom-green/60'
+                  ? 'border-mintcom-green bg-mintcom-green/10 text-text-primary dark:text-zinc-100'
+                  : 'border-cream-300 dark:border-zinc-800 text-text-secondary hover:border-mintcom-green/60'
               }`}
             >
               <Store size={13} /> {s.name}
@@ -237,7 +237,7 @@ export function MigrationPage() {
           }}
           onClick={() => inputRef.current?.click()}
           className={`flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
-            dragging ? 'border-mintcom-green bg-mintcom-green/10' : 'border-cream-400 dark:border-white/15 hover:border-mintcom-green/60'
+            dragging ? 'border-mintcom-green bg-mintcom-green/10' : 'border-cream-400 dark:border-zinc-800 hover:border-mintcom-green/60'
           }`}
         >
           {phase === 'parsing' ? (
@@ -246,7 +246,7 @@ export function MigrationPage() {
             <UploadCloud size={32} className="text-mintcom-green" />
           )}
           <div>
-            <p className="text-sm font-semibold text-text-primary dark:text-white">
+            <p className="text-sm font-semibold text-text-primary dark:text-zinc-100">
               {phase === 'parsing' ? 'Reading your file…' : 'Drag your export file here, or click to browse'}
             </p>
             <p className="text-xs text-text-tertiary">.csv or .xlsx — up to 2,000 rows per import</p>
@@ -266,13 +266,13 @@ export function MigrationPage() {
         <div className="mt-3 flex flex-wrap gap-2">
           <button
             onClick={downloadTemplate}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-cream-300 dark:border-white/10 px-4 py-2 text-xs font-semibold text-text-primary dark:text-white hover:bg-cream-100 dark:hover:bg-white/5"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-cream-300 dark:border-zinc-800 px-4 py-2 text-xs font-semibold text-text-primary dark:text-zinc-100 hover:bg-cream-100 dark:hover:bg-zinc-800"
           >
             <Download size={13} /> Download template
           </button>
           <button
             onClick={useSampleFile}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-mintcom-green/40 bg-mintcom-green/10 px-4 py-2 text-xs font-semibold text-text-primary dark:text-white hover:bg-mintcom-green/20"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-mintcom-green/40 bg-mintcom-green/10 px-4 py-2 text-xs font-semibold text-text-primary dark:text-zinc-100 hover:bg-mintcom-green/20"
           >
             <FlaskConical size={13} /> Try with sample file
           </button>
@@ -287,7 +287,7 @@ export function MigrationPage() {
 
       {/* ── 2. Preview + inline fixes ── */}
       {(phase === 'preview' || phase === 'importing' || phase === 'done') && dry && (
-        <div className="rounded-2xl border border-cream-300 dark:border-white/10 bg-white dark:bg-dark-light p-6 shadow-sm">
+        <div className="rounded-2xl border border-cream-300 dark:border-zinc-800 bg-white dark:bg-dark-light p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-2 text-sm text-text-secondary">
             <FileSpreadsheet size={16} /> {fileName}
             <span className="rounded-full bg-mintcom-green/15 px-2 py-0.5 text-[11px] font-semibold text-mintcom-green">
@@ -312,16 +312,16 @@ export function MigrationPage() {
             {editRows.slice(0, 10).map((r) => {
               const open = expanded === r.key;
               return (
-                <div key={r.key} className="rounded-lg border border-cream-200 bg-cream-50 px-4 py-2.5 text-sm dark:border-white/5 dark:bg-white/[0.02]">
+                <div key={r.key} className="rounded-lg border border-cream-200 bg-cream-50 px-4 py-2.5 text-sm dark:border-zinc-800 dark:bg-zinc-800/40">
                   <div className="flex items-center justify-between gap-3">
-                    <span className="min-w-0 flex-1 truncate text-text-primary dark:text-white">
+                    <span className="min-w-0 flex-1 truncate text-text-primary dark:text-zinc-100">
                       <strong>{r.name}</strong>
                       <span className="text-text-tertiary"> · {r.category} · {r.price}</span>
                     </span>
                     <span className="flex shrink-0 gap-1.5">
                       <button
                         onClick={() => setExpanded(open ? null : r.key)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-cream-300 px-3 py-1 text-xs font-semibold hover:bg-cream-200 dark:border-white/10 dark:hover:bg-white/10"
+                        className="inline-flex items-center gap-1 rounded-lg border border-cream-300 px-3 py-1 text-xs font-semibold hover:bg-cream-200 dark:border-zinc-800 dark:hover:bg-zinc-800"
                       >
                         <Pencil size={12} /> {open ? 'Close' : 'Fix'}
                       </button>
@@ -337,16 +337,16 @@ export function MigrationPage() {
                     <div className="grid grid-cols-1 gap-2 pt-3 sm:grid-cols-3">
                       <label className="text-xs">Name
                         <input value={r.name} onChange={(e) => updateRow(r.key, { name: e.target.value })}
-                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5" />
+                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-800" />
                       </label>
                       <label className="text-xs">Price
                         <input value={r.price} onChange={(e) => updateRow(r.key, { price: e.target.value })}
                           inputMode="decimal" placeholder="0.00"
-                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5" />
+                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-800" />
                       </label>
                       <label className="text-xs">Category
                         <input value={r.category} onChange={(e) => updateRow(r.key, { category: e.target.value })}
-                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-white/10 dark:bg-white/5" />
+                          className="mt-1 w-full rounded-lg border border-cream-300 bg-white px-3 py-2 text-sm dark:border-zinc-800 dark:bg-zinc-800" />
                       </label>
                     </div>
                   )}
@@ -379,11 +379,11 @@ export function MigrationPage() {
               <XCircle size={18} /> We can't bring automatically
             </div>
             <div className="space-y-1.5 text-sm">
-              <div className="flex justify-between gap-3 rounded-lg border border-cream-200 px-4 py-2.5 dark:border-white/5">
+              <div className="flex justify-between gap-3 rounded-lg border border-cream-200 px-4 py-2.5 dark:border-zinc-800">
                 <span>Employee passwords</span>
                 <span className="text-right text-xs text-text-secondary">Temp PINs are created; staff reset on first login</span>
               </div>
-              <div className="flex justify-between gap-3 rounded-lg border border-cream-200 px-4 py-2.5 dark:border-white/5">
+              <div className="flex justify-between gap-3 rounded-lg border border-cream-200 px-4 py-2.5 dark:border-zinc-800">
                 <span>Old invoice numbers</span>
                 <span className="text-right text-xs text-text-secondary">ZATCA requires a new sequence</span>
               </div>
@@ -397,7 +397,7 @@ export function MigrationPage() {
                 <span>Importing… {progress.done}/{progress.total}</span>
                 <span>{pct}%</span>
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-cream-200 dark:bg-white/10">
+              <div className="h-2 overflow-hidden rounded-full bg-cream-200 dark:bg-zinc-800">
                 <div className="h-full bg-mintcom-green transition-all" style={{ width: `${pct}%` }} />
               </div>
             </div>
@@ -429,7 +429,7 @@ export function MigrationPage() {
                 </button>
                 <button
                   onClick={reset}
-                  className="rounded-xl border border-cream-300 px-5 py-2.5 text-sm font-semibold dark:border-white/10"
+                  className="rounded-xl border border-cream-300 px-5 py-2.5 text-sm font-semibold dark:border-zinc-800"
                 >
                   Import another file
                 </button>
@@ -442,7 +442,7 @@ export function MigrationPage() {
             <div className="mt-6 flex justify-between">
               <button
                 onClick={reset}
-                className="rounded-xl border border-cream-300 dark:border-white/10 px-6 py-3 text-sm font-semibold hover:bg-cream-100 dark:hover:bg-white/5"
+                className="rounded-xl border border-cream-300 dark:border-zinc-800 px-6 py-3 text-sm font-semibold hover:bg-cream-100 dark:hover:bg-zinc-800"
               >
                 Start over
               </button>

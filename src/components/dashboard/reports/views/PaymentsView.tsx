@@ -14,7 +14,7 @@ import { formatPaymentBrandName } from '../../../../utils/paymentCard';
 
 const COLORS = ['#7dc6a2', '#3b82f6', '#f59e0b', '#D55263', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
-const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, className?: string, size?: string, color?: string }) => {
+const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-stone-900 dark:text-zinc-100" }: { amount: number, className?: string, size?: string, color?: string }) => {
   const { currencySymbol } = useCurrency();
   return (
     <StatValue 
@@ -80,27 +80,27 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       {/* Summary Cards for Payments */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.totalCollected')}</p>
             <CurrencyAmount amount={salesData.totalRevenue || 0} />
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.totalCollectedDesc')}</p>
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.payments.totalCollectedDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.topMethod')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight text-ellipsis overflow-hidden whitespace-nowrap">
+            <p className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight text-ellipsis overflow-hidden whitespace-nowrap">
               {getMethodName([...paymentMethodBreakdown].sort((a: any, b: any) => b.value - a.value)[0]?.name)}
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.topMethodDesc')}</p>
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.payments.topMethodDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.payments.txnCount')}</p>
             <div className="flex items-baseline gap-1">
@@ -109,26 +109,26 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                 className="text-2xl"
                 isInteger={true}
               />
-              <span className="text-sm text-gray-400 font-black"> {t('dashboard.stats.orders')}</span>
+              <span className="text-sm text-stone-400 font-black"> {t('dashboard.stats.orders')}</span>
             </div>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.payments.txnCountDesc')}</p>
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.payments.txnCountDesc')}</p>
           </div>
           <div className="absolute right-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
         </div>
       </div>
 
       {/* Distribution + Details — one combined card */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden">
-        <div className="p-5 sm:p-6 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden">
+        <div className="p-5 sm:p-6 border-b border-stone-100 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shrink-0">
               <BiIcon icon="bi-cash-stack" size={20} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">
                 {t('orders.reports.payments.distribution')}
               </h3>
-              <p className="text-xs text-gray-500 mt-0.5">{t('orders.reports.payments.detailsDesc')}</p>
+              <p className="text-xs text-stone-500 mt-0.5">{t('orders.reports.payments.detailsDesc')}</p>
             </div>
           </div>
           <button
@@ -139,7 +139,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                 selectedDateRange: selectedDateRange
               }
             })}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all label-strong font-sans border border-gray-200 dark:border-white/10 shrink-0"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-900 dark:text-zinc-100 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all label-strong font-sans border border-stone-200 dark:border-zinc-800 shrink-0"
           >
             <span>{t('orders.reports.payments.viewAllOrders')}</span>
             <ChevronRight size={14} className={`text-mintcom-green transition-transform ${t('common.locale') === 'ar' ? 'rotate-180' : ''}`} />
@@ -148,7 +148,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
 
         <div className="grid grid-cols-1 lg:grid-cols-5 lg:items-stretch">
           {/* Compact pie chart */}
-          <div className="lg:col-span-2 p-5 sm:p-6 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-e border-gray-100 dark:border-white/5">
+          <div className="lg:col-span-2 p-5 sm:p-6 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-e border-stone-100 dark:border-zinc-800">
             <div className="h-[200px] w-full max-w-[240px] relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
@@ -237,20 +237,20 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
           <div className="lg:col-span-3 flex flex-col min-h-0 max-h-[360px]">
             <div className="flex-1 overflow-auto custom-scrollbar">
               <table className="w-full relative">
-                <thead className="bg-gray-50 dark:bg-white/[0.02] sticky top-0 z-10">
+                <thead className="bg-stone-50 dark:bg-zinc-800/40 sticky top-0 z-10">
                   <tr>
-                    <th className="px-5 py-3.5 text-start label-strong font-sans whitespace-nowrap bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">
+                    <th className="px-5 py-3.5 text-start label-strong font-sans whitespace-nowrap bg-stone-50 dark:bg-zinc-900/60 border-b border-stone-100 dark:border-zinc-800">
                       {t('orders.reports.payments.method')}
                     </th>
-                    <th className="px-5 py-3.5 text-end label-strong font-sans whitespace-nowrap bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">
+                    <th className="px-5 py-3.5 text-end label-strong font-sans whitespace-nowrap bg-stone-50 dark:bg-zinc-900/60 border-b border-stone-100 dark:border-zinc-800">
                       {t('orders.reports.payments.revenue')}
                     </th>
-                    <th className="px-5 py-3.5 text-end label-strong font-sans whitespace-nowrap bg-gray-50 dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">
+                    <th className="px-5 py-3.5 text-end label-strong font-sans whitespace-nowrap bg-stone-50 dark:bg-zinc-900/60 border-b border-stone-100 dark:border-zinc-800">
                       {t('orders.reports.payments.share')}
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                   {paymentMethodBreakdown.length > 0 ? (
                     paymentMethodBreakdown.map((item: any, i: number) => {
                       const total = paymentTotal || 1;
@@ -268,7 +268,7 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: i * 0.05 }}
-                            className={`group transition-colors ${hasDetails ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-white/[0.02]' : ''} ${isExpanded ? 'bg-gray-50 dark:bg-white/[0.02]' : ''}`}
+                            className={`group transition-colors ${hasDetails ? 'cursor-pointer hover:bg-stone-50 dark:hover:bg-zinc-800/40' : ''} ${isExpanded ? 'bg-stone-50 dark:bg-zinc-800/40' : ''}`}
                             onClick={() => {
                               if (hasDetails) {
                                 setExpandedPaymentMethod(isExpanded ? null : item.name);
@@ -282,50 +282,50 @@ export const PaymentsView = React.memo(function PaymentsView({ salesData, effect
                                   style={{ backgroundColor: COLORS[i % COLORS.length] }}
                                 />
                                 <div className="flex items-center gap-2">
-                                  <span className="font-bold text-sm text-gray-900 dark:text-white">{getMethodName(item.name)}</span>
+                                  <span className="font-bold text-sm text-stone-900 dark:text-zinc-100">{getMethodName(item.name)}</span>
                                   {hasDetails && (
-                                    <ChevronRight size={16} className={`text-gray-400 transition-transform ${isExpanded ? (t('common.locale') === 'ar' ? '-rotate-90' : 'rotate-90') : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
+                                    <ChevronRight size={16} className={`text-stone-400 transition-transform ${isExpanded ? (t('common.locale') === 'ar' ? '-rotate-90' : 'rotate-90') : (t('common.locale') === 'ar' ? 'rotate-180' : '')}`} />
                                   )}
                                 </div>
                               </div>
                             </td>
-                            <td className="px-5 py-3.5 text-end font-black text-gray-900 dark:text-white">
+                            <td className="px-5 py-3.5 text-end font-black text-stone-900 dark:text-zinc-100">
                               <FormatCurrency value={item.value} />
                             </td>
                             <td className="px-5 py-3.5 text-end">
                               <div className="flex items-center justify-end gap-2">
-                                <div className="w-16 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                <div className="w-16 h-1.5 bg-stone-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                                   <div className="h-full rounded-full" style={{ width: `${(percentage * 100)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
                                 </div>
-                                <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-gray-500" />
+                                <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-stone-500" />
                               </div>
                             </td>
                           </motion.tr>
 
                           {isExpanded && isCard && salesData.cardTypeBreakdown?.map((card: any, ci: number) => (
-                            <tr key={`card-${ci}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
+                            <tr key={`card-${ci}`} className="bg-stone-50/50 dark:bg-zinc-800/40">
                               <td className="px-5 py-2.5 ps-16">
-                                <span className="text-xs font-bold text-gray-500">{formatPaymentBrandName(card.name)}</span>
+                                <span className="text-xs font-bold text-stone-500">{formatPaymentBrandName(card.name)}</span>
                               </td>
-                              <td className="px-5 py-2.5 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
+                              <td className="px-5 py-2.5 text-end text-xs font-bold text-stone-700 dark:text-zinc-300">
                                 <FormatCurrency value={card.value} />
                               </td>
-                              <td className="px-5 py-2.5 text-end text-xs font-medium text-gray-400">
-                                <StatValue value={card.value / item.value} isPercentage={true} className="text-xs font-medium text-gray-400" />
+                              <td className="px-5 py-2.5 text-end text-xs font-medium text-stone-400">
+                                <StatValue value={card.value / item.value} isPercentage={true} className="text-xs font-medium text-stone-400" />
                               </td>
                             </tr>
                           ))}
 
                           {isExpanded && isOther && salesData.otherPaymentBreakdown?.map((op: any, oi: number) => (
-                            <tr key={`other-${oi}`} className="bg-gray-50/50 dark:bg-white/[0.01]">
+                            <tr key={`other-${oi}`} className="bg-stone-50/50 dark:bg-zinc-800/40">
                               <td className="px-5 py-2.5 ps-16">
-                                <span className="text-xs font-bold text-gray-500">{formatPaymentBrandName(op.name)}</span>
+                                <span className="text-xs font-bold text-stone-500">{formatPaymentBrandName(op.name)}</span>
                               </td>
-                              <td className="px-5 py-2.5 text-end text-xs font-bold text-gray-700 dark:text-gray-300">
+                              <td className="px-5 py-2.5 text-end text-xs font-bold text-stone-700 dark:text-zinc-300">
                                 <FormatCurrency value={op.value} />
                               </td>
-                              <td className="px-5 py-2.5 text-end text-xs font-medium text-gray-400">
-                                <StatValue value={op.value / item.value} isPercentage={true} className="text-xs font-medium text-gray-400" />
+                              <td className="px-5 py-2.5 text-end text-xs font-medium text-stone-400">
+                                <StatValue value={op.value / item.value} isPercentage={true} className="text-xs font-medium text-stone-400" />
                               </td>
                             </tr>
                           ))}

@@ -27,7 +27,7 @@ import api, { extractErrorMessage } from '../../config/api';
 import { fetchAllPages } from '../../utils/fetchAllPages';
 import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { Pagination, SearchInput, SelectInput, PageHeader, Badge } from '../../components/ui';
+import { Pagination, ListFilterBar, SelectInput, PageHeader, Badge } from '../../components/ui';
 import { ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
 import { biIcon } from '../../components/ui/BiIcon';
@@ -634,14 +634,14 @@ export function StockManagementPage() {
 
       {/* Main Tabs (Stock vs Addons) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center p-1 bg-gray-100 dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5 w-fit">
+        <div className="flex items-center p-1 bg-stone-100 dark:bg-zinc-800 rounded-2xl border border-stone-200 dark:border-zinc-800 w-fit">
           <button
             type="button"
             onClick={() => setActiveTab('stock')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               activeTab === 'stock'
-                ? 'bg-white dark:bg-[#1E293B] text-mintcom-green shadow-sm border border-gray-200/60 dark:border-white/10'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                ? 'bg-white dark:bg-zinc-900/60 text-mintcom-green shadow-sm border border-stone-200/60 dark:border-zinc-800'
+                : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
             }`}
           >
             <Box className="w-4 h-4" />
@@ -650,7 +650,7 @@ export function StockManagementPage() {
               className={`ml-1 px-2 py-0.5 text-xs font-bold rounded-full transition-colors ${
                 activeTab === 'stock'
                   ? 'bg-mintcom-green/10 text-mintcom-green'
-                  : 'bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-300'
+                  : 'bg-stone-200 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300'
               }`}
             >
               {stockStats.total}
@@ -662,8 +662,8 @@ export function StockManagementPage() {
             onClick={() => setActiveTab('availability')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
               activeTab === 'availability'
-                ? 'bg-white dark:bg-[#1E293B] text-mintcom-green shadow-sm border border-gray-200/60 dark:border-white/10'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                ? 'bg-white dark:bg-zinc-900/60 text-mintcom-green shadow-sm border border-stone-200/60 dark:border-zinc-800'
+                : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
             }`}
           >
             <PlusSquare className="w-4 h-4" />
@@ -672,7 +672,7 @@ export function StockManagementPage() {
               className={`ml-1 px-2 py-0.5 text-xs font-bold rounded-full transition-colors ${
                 activeTab === 'availability'
                   ? 'bg-mintcom-green/10 text-mintcom-green'
-                  : 'bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-300'
+                  : 'bg-stone-200 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300'
               }`}
             >
               {addonStats.total}
@@ -690,10 +690,10 @@ export function StockManagementPage() {
               setStockStatusFilter('ALL');
               setStockPage(1);
             }}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               stockStatusFilter === 'ALL'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -705,7 +705,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.trackedItems', { defaultValue: 'Tracked Items' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {stockStats.total}
                 </h3>
               </div>
@@ -715,7 +715,7 @@ export function StockManagementPage() {
             {stockStatusFilter === 'ALL' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -727,10 +727,10 @@ export function StockManagementPage() {
               setStockStatusFilter('IN_STOCK');
               setStockPage(1);
             }}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               stockStatusFilter === 'IN_STOCK'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -742,7 +742,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.inStock', { defaultValue: 'In Stock' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {stockStats.inStock}
                 </h3>
               </div>
@@ -752,7 +752,7 @@ export function StockManagementPage() {
             {stockStatusFilter === 'IN_STOCK' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -764,10 +764,10 @@ export function StockManagementPage() {
               setStockStatusFilter('LOW_STOCK');
               setStockPage(1);
             }}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               stockStatusFilter === 'LOW_STOCK'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -779,7 +779,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.lowStock', { defaultValue: 'Low Stock' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {stockStats.lowStock}
                 </h3>
               </div>
@@ -789,7 +789,7 @@ export function StockManagementPage() {
             {stockStatusFilter === 'LOW_STOCK' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -801,10 +801,10 @@ export function StockManagementPage() {
               setStockStatusFilter('OUT_OF_STOCK');
               setStockPage(1);
             }}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               stockStatusFilter === 'OUT_OF_STOCK'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -816,7 +816,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.outOfStock', { defaultValue: 'Out of Stock' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {stockStats.outOfStock}
                 </h3>
               </div>
@@ -826,7 +826,7 @@ export function StockManagementPage() {
             {stockStatusFilter === 'OUT_OF_STOCK' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -837,10 +837,10 @@ export function StockManagementPage() {
           <button
             type="button"
             onClick={() => setAddonStatusFilter('ALL')}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               addonStatusFilter === 'ALL'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -852,7 +852,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.addonGroups', { defaultValue: 'Add-on Groups' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {addonStats.groupsCount}
                 </h3>
               </div>
@@ -862,7 +862,7 @@ export function StockManagementPage() {
             {addonStatusFilter === 'ALL' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -871,10 +871,10 @@ export function StockManagementPage() {
           <button
             type="button"
             onClick={() => setAddonStatusFilter('ALL')}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               addonStatusFilter === 'ALL'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -886,7 +886,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.totalOptions', { defaultValue: 'Total Modifier Options' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {addonStats.total}
                 </h3>
               </div>
@@ -896,7 +896,7 @@ export function StockManagementPage() {
             {addonStatusFilter === 'ALL' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -905,10 +905,10 @@ export function StockManagementPage() {
           <button
             type="button"
             onClick={() => setAddonStatusFilter('AVAILABLE')}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               addonStatusFilter === 'AVAILABLE'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -920,7 +920,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.availableOptions', { defaultValue: 'Available' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {addonStats.available}
                 </h3>
               </div>
@@ -930,7 +930,7 @@ export function StockManagementPage() {
             {addonStatusFilter === 'AVAILABLE' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -939,10 +939,10 @@ export function StockManagementPage() {
           <button
             type="button"
             onClick={() => setAddonStatusFilter('UNAVAILABLE')}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border text-left transition-all duration-300 overflow-hidden cursor-pointer ${
               addonStatusFilter === 'UNAVAILABLE'
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
             }`}
           >
             <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none bg-mintcom-green/10 group-hover:opacity-10" />
@@ -954,7 +954,7 @@ export function StockManagementPage() {
                 <p className="dashboard-stat-title mb-1 truncate">
                   {t('stockManagement.unavailableOptions', { defaultValue: 'Unavailable' })}
                 </p>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <h3 className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {addonStats.unavailable}
                 </h3>
               </div>
@@ -964,7 +964,7 @@ export function StockManagementPage() {
             {addonStatusFilter === 'UNAVAILABLE' ? (
               <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-mintcom-green animate-pulse" />
             ) : (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -973,115 +973,89 @@ export function StockManagementPage() {
       )}
 
       {/* FILTER CONTROLS */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-          {/* Search Input */}
-          <div className="relative flex-1 min-w-0">
-            <SearchInput
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setStockPage(1);
-              }}
-              onClear={() => {
-                setSearchQuery('');
-                setStockPage(1);
-              }}
-              placeholder={
-                activeTab === 'stock'
-                  ? t('stockManagement.searchPlaceholder', { defaultValue: 'Search by item name or category...' })
-                  : t('stockManagement.searchAddonsPlaceholder', { defaultValue: 'Search modifier groups or options...' })
-              }
-              className="w-full"
+      <ListFilterBar
+        searchValue={searchQuery}
+        onSearchChange={(e) => { setSearchQuery(e.target.value); setStockPage(1); }}
+        onSearchClear={() => { setSearchQuery(''); setStockPage(1); }}
+        searchPlaceholder={
+          activeTab === 'stock'
+            ? t('stockManagement.searchPlaceholder', { defaultValue: 'Search by item name or category...' })
+            : t('stockManagement.searchAddonsPlaceholder', { defaultValue: 'Search modifier groups or options...' })
+        }
+      >
+        {/* Category Dropdown (for Stock tab) */}
+        {activeTab === 'stock' && (
+          <div className="w-full sm:w-64">
+            <SelectInput
+              value={selectedCategoryId === 'ALL' ? null : selectedCategoryId}
+              onChange={(val) => { setSelectedCategoryId(val || 'ALL'); setStockPage(1); }}
+              options={categories.map((c) => ({ label: c.name, value: c.id }))}
+              allOptionLabel={t('stockManagement.allCategories', { defaultValue: 'All Categories' })}
+              placeholder={t('stockManagement.allCategories', { defaultValue: 'All Categories' })}
+              showAllOption={true}
+              searchable={true}
             />
           </div>
-
-          {/* Category Dropdown (for Stock tab) */}
-          {activeTab === 'stock' && (
-            <div className="w-full lg:w-64">
-              <SelectInput
-                value={selectedCategoryId === 'ALL' ? null : selectedCategoryId}
-                onChange={(val) => {
-                  setSelectedCategoryId(val || 'ALL');
-                  setStockPage(1);
-                }}
-                options={categories.map((c) => ({ label: c.name, value: c.id }))}
-                allOptionLabel={t('stockManagement.allCategories', { defaultValue: 'All Categories' })}
-                placeholder={t('stockManagement.allCategories', { defaultValue: 'All Categories' })}
-                showAllOption={true}
-                searchable={true}
-              />
-            </div>
-          )}
-
-          {/* Modifier Group Dropdown (for Addons tab) */}
-          {activeTab === 'availability' && (
-            <div className="w-full lg:w-64">
-              <SelectInput
-                value={selectedAddonGroupId === 'ALL' ? null : selectedAddonGroupId}
-                onChange={(val) => {
-                  setSelectedAddonGroupId(val || 'ALL');
-                }}
-                options={nonEmptyAttributes.map((a) => ({ label: a.name, value: a.id }))}
-                allOptionLabel={t('stockManagement.allModifierGroups', { defaultValue: 'All Modifier Groups' })}
-                placeholder={t('stockManagement.allModifierGroups', { defaultValue: 'All Modifier Groups' })}
-                showAllOption={true}
-                searchable={true}
-              />
-            </div>
-          )}
-
-          {/* Status Dropdown */}
-          {activeTab === 'stock' ? (
-            <div className="w-full lg:w-60">
-              <SelectInput
-                value={stockStatusFilter === 'ALL' ? null : stockStatusFilter}
-                onChange={(val) => {
-                  setStockStatusFilter((val as StockStatusFilter) || 'ALL');
-                  setStockPage(1);
-                }}
-                options={[
-                  { label: `${t('stockManagement.inStock', { defaultValue: 'In Stock' })} (${stockStats.inStock})`, value: 'IN_STOCK' },
-                  { label: `${t('stockManagement.lowStock', { defaultValue: 'Low Stock' })} (${stockStats.lowStock})`, value: 'LOW_STOCK' },
-                  { label: `${t('stockManagement.outOfStock', { defaultValue: 'Out of Stock' })} (${stockStats.outOfStock})`, value: 'OUT_OF_STOCK' },
-                ]}
-                allOptionLabel={`${t('stockManagement.allStockStatuses', { defaultValue: 'All Stock Statuses' })} (${stockStats.total})`}
-                placeholder={t('stockManagement.allStockStatuses', { defaultValue: 'All Stock Statuses' })}
-                showAllOption={true}
-                searchable={false}
-              />
-            </div>
-          ) : (
-            <div className="w-full lg:w-60">
-              <SelectInput
-                value={addonStatusFilter === 'ALL' ? null : addonStatusFilter}
-                onChange={(val) => {
-                  setAddonStatusFilter((val as AddonStatusFilter) || 'ALL');
-                }}
-                options={[
-                  { label: `${t('stockManagement.available', { defaultValue: 'Available' })} (${addonStats.available})`, value: 'AVAILABLE' },
-                  { label: `${t('stockManagement.unavailable', { defaultValue: 'Unavailable' })} (${addonStats.unavailable})`, value: 'UNAVAILABLE' },
-                ]}
-                allOptionLabel={`${t('stockManagement.allAddonStatuses', { defaultValue: 'All Add-on Statuses' })} (${addonStats.total})`}
-                placeholder={t('stockManagement.allAddonStatuses', { defaultValue: 'All Add-on Statuses' })}
-                showAllOption={true}
-                searchable={false}
-              />
-            </div>
-          )}
-        </div>
-      </div>
+        )}
+        {/* Modifier Group Dropdown (for Addons tab) */}
+        {activeTab === 'availability' && (
+          <div className="w-full sm:w-64">
+            <SelectInput
+              value={selectedAddonGroupId === 'ALL' ? null : selectedAddonGroupId}
+              onChange={(val) => { setSelectedAddonGroupId(val || 'ALL'); }}
+              options={nonEmptyAttributes.map((a) => ({ label: a.name, value: a.id }))}
+              allOptionLabel={t('stockManagement.allModifierGroups', { defaultValue: 'All Modifier Groups' })}
+              placeholder={t('stockManagement.allModifierGroups', { defaultValue: 'All Modifier Groups' })}
+              showAllOption={true}
+              searchable={true}
+            />
+          </div>
+        )}
+        {/* Status Dropdown */}
+        {activeTab === 'stock' ? (
+          <div className="w-full sm:w-60">
+            <SelectInput
+              value={stockStatusFilter === 'ALL' ? null : stockStatusFilter}
+              onChange={(val) => { setStockStatusFilter((val as StockStatusFilter) || 'ALL'); setStockPage(1); }}
+              options={[
+                { label: `${t('stockManagement.inStock', { defaultValue: 'In Stock' })} (${stockStats.inStock})`, value: 'IN_STOCK' },
+                { label: `${t('stockManagement.lowStock', { defaultValue: 'Low Stock' })} (${stockStats.lowStock})`, value: 'LOW_STOCK' },
+                { label: `${t('stockManagement.outOfStock', { defaultValue: 'Out of Stock' })} (${stockStats.outOfStock})`, value: 'OUT_OF_STOCK' },
+              ]}
+              allOptionLabel={`${t('stockManagement.allStockStatuses', { defaultValue: 'All Stock Statuses' })} (${stockStats.total})`}
+              placeholder={t('stockManagement.allStockStatuses', { defaultValue: 'All Stock Statuses' })}
+              showAllOption={true}
+              searchable={false}
+            />
+          </div>
+        ) : (
+          <div className="w-full sm:w-60">
+            <SelectInput
+              value={addonStatusFilter === 'ALL' ? null : addonStatusFilter}
+              onChange={(val) => { setAddonStatusFilter((val as AddonStatusFilter) || 'ALL'); }}
+              options={[
+                { label: `${t('stockManagement.available', { defaultValue: 'Available' })} (${addonStats.available})`, value: 'AVAILABLE' },
+                { label: `${t('stockManagement.unavailable', { defaultValue: 'Unavailable' })} (${addonStats.unavailable})`, value: 'UNAVAILABLE' },
+              ]}
+              allOptionLabel={`${t('stockManagement.allAddonStatuses', { defaultValue: 'All Add-on Statuses' })} (${addonStats.total})`}
+              placeholder={t('stockManagement.allAddonStatuses', { defaultValue: 'All Add-on Statuses' })}
+              showAllOption={true}
+              searchable={false}
+            />
+          </div>
+        )}
+      </ListFilterBar>
 
       {/* TAB 1: STOCK LEVELS & COUNTS TABLE */}
       {activeTab === 'stock' && (
         <div className="space-y-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-stone-200/80 dark:border-zinc-800 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-                <thead className="bg-slate-50 dark:bg-slate-800/60 text-xs uppercase font-semibold text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-slate-800">
+              <table className="w-full text-left text-sm text-stone-600 dark:text-zinc-300">
+                <thead className="bg-stone-50 dark:bg-zinc-800/60 text-xs uppercase font-semibold text-stone-500 dark:text-zinc-400 border-b border-stone-200 dark:border-zinc-800">
                   <tr>
                     <th
-                      className="px-6 py-4 cursor-pointer hover:text-slate-900 dark:hover:text-white"
+                      className="px-6 py-4 cursor-pointer hover:text-stone-900 dark:hover:text-zinc-100"
                       onClick={() => {
                         if (sortKey === 'name') setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
                         else {
@@ -1098,7 +1072,7 @@ export function StockManagementPage() {
                     <th className="px-6 py-4 text-center">{t('stockManagement.status', { defaultValue: 'Status' })}</th>
                     <th className="px-6 py-4 text-center">{t('stockManagement.thresholds', { defaultValue: 'Thresholds' })}</th>
                     <th
-                      className="px-6 py-4 text-center cursor-pointer hover:text-slate-900 dark:hover:text-white"
+                      className="px-6 py-4 text-center cursor-pointer hover:text-stone-900 dark:hover:text-zinc-100"
                       onClick={() => {
                         if (sortKey === 'stock') setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
                         else {
@@ -1117,19 +1091,19 @@ export function StockManagementPage() {
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <tbody className="divide-y divide-stone-100 dark:divide-zinc-800/60">
                   {isLoading ? (
                     <tr>
-                      <td colSpan={6} className="text-center py-12 text-slate-400">
+                      <td colSpan={6} className="text-center py-12 text-stone-400">
                         <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-500" />
                         <p>{t('stockManagement.loadingItems', { defaultValue: 'Loading stock inventory...' })}</p>
                       </td>
                     </tr>
                   ) : paginatedStockItems.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="text-center py-12 text-slate-400">
+                      <td colSpan={6} className="text-center py-12 text-stone-400">
                         <Box className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                        <p className="font-medium text-slate-600 dark:text-slate-300">
+                        <p className="font-medium text-stone-600 dark:text-zinc-300">
                           {t('stockManagement.noItemsFound', { defaultValue: 'No items match your filter criteria' })}
                         </p>
                       </td>
@@ -1145,7 +1119,7 @@ export function StockManagementPage() {
                       return (
                         <tr
                           key={item.id}
-                          className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors ${
+                          className={`hover:bg-stone-50/70 dark:hover:bg-zinc-800/40 transition-colors ${
                             isModified ? 'bg-amber-50/40 dark:bg-amber-950/20' : ''
                           }`}
                         >
@@ -1164,7 +1138,7 @@ export function StockManagementPage() {
                                 }
                               }}
                             >
-                              <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden border border-slate-200 dark:border-slate-700 shrink-0 group-hover:border-mintcom-green/60 group-hover:ring-2 group-hover:ring-mintcom-green/20 transition-all">
+                              <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-stone-200 dark:border-zinc-700 shrink-0 group-hover:border-mintcom-green/60 group-hover:ring-2 group-hover:ring-mintcom-green/20 transition-all">
                                 {item.image ? (
                                   <ThumbnailImage
                                     src={item.image}
@@ -1172,12 +1146,12 @@ export function StockManagementPage() {
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                                   />
                                 ) : (
-                                  <Box className="w-5 h-5 text-slate-400 group-hover:text-mintcom-green transition-colors" />
+                                  <Box className="w-5 h-5 text-stone-400 group-hover:text-mintcom-green transition-colors" />
                                 )}
                               </div>
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <span className="font-semibold text-slate-900 dark:text-white group-hover:text-mintcom-green transition-colors">
+                                  <span className="font-semibold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors">
                                     {item.name}
                                   </span>
                                   {isModified && (
@@ -1185,11 +1159,11 @@ export function StockManagementPage() {
                                   )}
                                 </div>
                                 <div className="flex items-center gap-2 mt-0.5">
-                                  <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">
+                                  <span className="text-xs px-2 py-0.5 rounded-md bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-400 font-medium">
                                     {categoryMap.get(item.categoryId || '') || t('stockManagement.uncategorized', { defaultValue: 'Uncategorized' })}
                                   </span>
                                   {item.price > 0 && (
-                                    <span className="text-xs text-slate-400">{formatAmount(item.price)}</span>
+                                    <span className="text-xs text-stone-400">{formatAmount(item.price)}</span>
                                   )}
                                 </div>
                               </div>
@@ -1242,7 +1216,7 @@ export function StockManagementPage() {
                               <button
                                 type="button"
                                 onClick={() => handleAdjustStock(item.id, -1)}
-                                className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-colors disabled:opacity-30"
+                                className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 hover:bg-stone-200 dark:hover:bg-zinc-700 flex items-center justify-center transition-colors disabled:opacity-30"
                                 disabled={currentVal <= 0}
                               >
                                 <Minus className="w-3.5 h-3.5" />
@@ -1252,17 +1226,17 @@ export function StockManagementPage() {
                                 type="text"
                                 value={draftStockStr}
                                 onChange={(e) => handleStockInputChange(item.id, e.target.value)}
-                                className={`w-20 text-center font-bold text-sm py-1.5 rounded-lg border bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${
+                                className={`w-20 text-center font-bold text-sm py-1.5 rounded-lg border bg-white dark:bg-zinc-800 text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 ${
                                   isModified
                                     ? 'border-amber-400 dark:border-amber-500 text-amber-600 dark:text-amber-400 font-extrabold'
-                                    : 'border-slate-200 dark:border-slate-700'
+                                    : 'border-stone-200 dark:border-zinc-700'
                                 }`}
                               />
 
                               <button
                                 type="button"
                                 onClick={() => handleAdjustStock(item.id, 1)}
-                                className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-colors"
+                                className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 hover:bg-stone-200 dark:hover:bg-zinc-700 flex items-center justify-center transition-colors"
                               >
                                 <Plus className="w-3.5 h-3.5" />
                               </button>
@@ -1280,7 +1254,7 @@ export function StockManagementPage() {
                                   key={amount}
                                   type="button"
                                   onClick={() => handleAdjustStock(item.id, amount)}
-                                  className="px-2 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-colors"
+                                  className="px-2 py-1 text-xs font-semibold rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 transition-colors"
                                 >
                                   +{amount}
                                 </button>
@@ -1295,7 +1269,7 @@ export function StockManagementPage() {
                                 <button
                                   type="button"
                                   onClick={() => handleResetItem(item)}
-                                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                  className="p-1.5 rounded-lg text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                                   title={t('stockManagement.reset', { defaultValue: 'Reset to original' })}
                                 >
                                   <RotateCcw className="w-4 h-4" />
@@ -1309,7 +1283,7 @@ export function StockManagementPage() {
                                 className={`px-3 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-all ${
                                   isModified
                                     ? 'bg-mintcom-green hover:bg-[#6cb591] text-black shadow-sm'
-                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-400 opacity-60 cursor-not-allowed'
+                                    : 'bg-stone-100 dark:bg-zinc-800 text-stone-400 opacity-60 cursor-not-allowed'
                                 }`}
                               >
                                 {savingItemId === item.id ? (
@@ -1346,14 +1320,14 @@ export function StockManagementPage() {
       {activeTab === 'availability' && (
         <div className="space-y-4">
           {isLoading ? (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-12 text-center text-slate-400">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-stone-200/80 dark:border-zinc-800 shadow-sm p-12 text-center text-stone-400">
               <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-500" />
               <p>{t('stockManagement.loadingAddons', { defaultValue: 'Loading modifier options...' })}</p>
             </div>
           ) : filteredGroupedAttributes.length === 0 ? (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm p-12 text-center text-slate-400">
+            <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-stone-200/80 dark:border-zinc-800 shadow-sm p-12 text-center text-stone-400">
               <PlusSquare className="w-10 h-10 mx-auto mb-2 opacity-40" />
-              <p className="font-medium text-slate-600 dark:text-slate-300">
+              <p className="font-medium text-stone-600 dark:text-zinc-300">
                 {t('stockManagement.noAddonGroupsFound', { defaultValue: 'No modifier groups or options match your filter criteria' })}
               </p>
             </div>
@@ -1368,21 +1342,21 @@ export function StockManagementPage() {
                 return (
                   <div
                     key={group.id}
-                    className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-700"
+                    className="bg-white dark:bg-zinc-900 rounded-2xl border border-stone-200/80 dark:border-zinc-800 shadow-sm overflow-hidden transition-all duration-200 hover:border-stone-300 dark:hover:border-zinc-700"
                   >
                     {/* GROUP HEADER */}
-                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-800/40 border-b border-slate-200/80 dark:border-slate-800">
+                    <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-stone-50/70 dark:bg-zinc-800/40 border-b border-stone-200/80 dark:border-zinc-800">
                       <div className="flex items-center gap-3.5 min-w-0">
                         <div className="p-2.5 rounded-xl bg-mintcom-green/10 text-mintcom-green border border-mintcom-green/20 shrink-0">
                           <Layers className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2.5 flex-wrap">
-                            <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight truncate">
+                            <h3 className="text-base font-bold text-stone-900 dark:text-zinc-100 tracking-tight truncate">
                               {group.name}
                             </h3>
                             {group.inputType && (
-                              <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-200/70 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                              <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-stone-200/70 dark:bg-zinc-700 text-stone-600 dark:text-zinc-300">
                                 {group.inputType === 'SINGLE_SELECT'
                                   ? t('attributes.list.singleChoice', { defaultValue: 'Single Choice' })
                                   : t('attributes.list.multipleChoice', { defaultValue: 'Multiple Choice' })}
@@ -1397,10 +1371,10 @@ export function StockManagementPage() {
 
                           {/* Availability Progress Indicator */}
                           <div className="flex items-center gap-2.5 mt-1.5 flex-wrap">
-                            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                            <span className="text-xs text-stone-500 dark:text-zinc-400 font-medium">
                               {group.availableCount} / {group.totalCount} {t('stockManagement.available', { defaultValue: 'Available' })}
                             </span>
-                            <div className="w-20 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                            <div className="w-20 h-1.5 rounded-full bg-stone-200 dark:bg-zinc-700 overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all duration-300 ${
                                   group.availableCount === group.totalCount
@@ -1419,8 +1393,8 @@ export function StockManagementPage() {
                       {/* GROUP HEADER ACTIONS */}
                       <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
                         {/* Group Master Switch */}
-                        <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-2xs">
-                          <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 select-none">
+                        <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-800/90 border border-stone-200/80 dark:border-zinc-700 shadow-2xs">
+                          <span className="text-xs font-semibold text-stone-600 dark:text-zinc-300 select-none">
                             {isGroupAllAvailable
                               ? t('common.active', { defaultValue: 'Active' })
                               : isGroupAllUnavailable
@@ -1435,7 +1409,7 @@ export function StockManagementPage() {
                               isGroupAllAvailable
                                 ? 'bg-mintcom-green'
                                 : isGroupAllUnavailable
-                                ? 'bg-slate-300 dark:bg-slate-700'
+                                ? 'bg-stone-300 dark:bg-zinc-700'
                                 : 'bg-amber-400 dark:bg-amber-500'
                             }`}
                             title={isGroupAllAvailable ? 'Turn off all options in this group' : 'Turn on all options in this group'}
@@ -1458,7 +1432,7 @@ export function StockManagementPage() {
                         <button
                           type="button"
                           onClick={() => toggleGroupCollapse(group.id)}
-                          className="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+                          className="p-2 rounded-xl text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-200/60 dark:hover:bg-zinc-800 transition-colors"
                           title={isCollapsed ? 'Expand options' : 'Collapse options'}
                         >
                           <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`} />
@@ -1469,8 +1443,8 @@ export function StockManagementPage() {
                     {/* GROUP OPTIONS TABLE / LIST */}
                     {!isCollapsed && (
                       <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-                          <thead className="bg-slate-50/50 dark:bg-slate-800/20 text-xs uppercase font-semibold text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                        <table className="w-full text-left text-sm text-stone-600 dark:text-zinc-300">
+                          <thead className="bg-stone-50/50 dark:bg-zinc-800/20 text-xs uppercase font-semibold text-stone-400 border-b border-stone-100 dark:border-zinc-800">
                             <tr>
                               <th className="px-6 py-3 font-semibold">{t('stockManagement.addonOption', { defaultValue: 'Modifier / Option' })}</th>
                               <th className="px-6 py-3 text-center font-semibold">{t('stockManagement.extraPrice', { defaultValue: 'Extra Price' })}</th>
@@ -1480,13 +1454,13 @@ export function StockManagementPage() {
                             </tr>
                           </thead>
 
-                          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                          <tbody className="divide-y divide-stone-100 dark:divide-zinc-800/60">
                             {group.filteredSubs.map((opt) => {
                               const isSavingThis = savingSubAttrId === opt.id;
                               return (
                                 <tr
                                   key={opt.id}
-                                  className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors ${
+                                  className={`hover:bg-stone-50/70 dark:hover:bg-zinc-800/40 transition-colors ${
                                     !opt.isAvailable ? 'bg-rose-50/10 dark:bg-rose-950/5' : ''
                                   }`}
                                 >
@@ -1495,12 +1469,12 @@ export function StockManagementPage() {
                                     <div className="flex items-center gap-3">
                                       <span
                                         className={`w-2 h-2 rounded-full shrink-0 ${
-                                          opt.isAvailable ? 'bg-mintcom-green shadow-[0_0_8px_rgba(27,97,64,0.35)]' : 'bg-slate-300 dark:bg-slate-600'
+                                          opt.isAvailable ? 'bg-mintcom-green shadow-[0_0_8px_rgba(27,97,64,0.35)]' : 'bg-stone-300 dark:bg-zinc-600'
                                         }`}
                                       />
                                       <span
-                                        className={`font-semibold text-slate-900 dark:text-white ${
-                                          !opt.isAvailable ? 'text-slate-400 dark:text-slate-500' : ''
+                                        className={`font-semibold text-stone-900 dark:text-zinc-100 ${
+                                          !opt.isAvailable ? 'text-stone-400 dark:text-zinc-500' : ''
                                         }`}
                                       >
                                         {opt.name}
@@ -1511,7 +1485,7 @@ export function StockManagementPage() {
                                   {/* Extra Price */}
                                   <td className="px-6 py-3.5 text-center">
                                     {opt.price > 0 ? (
-                                      <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700">
+                                      <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-zinc-200 border border-stone-200/60 dark:border-zinc-700">
                                         +{formatAmount(opt.price)}
                                       </span>
                                     ) : (
@@ -1551,7 +1525,7 @@ export function StockManagementPage() {
                                           : `${opt.availableStock ?? 0}`}
                                       </span>
                                     ) : (
-                                      <span className="text-xs font-medium text-slate-400">—</span>
+                                      <span className="text-xs font-medium text-stone-400">—</span>
                                     )}
                                   </td>
 
@@ -1562,7 +1536,7 @@ export function StockManagementPage() {
                                       onClick={() => handleToggleSubAttributeAvailability(opt, group.id)}
                                       disabled={isSavingThis}
                                       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none disabled:opacity-50 ${
-                                        opt.isAvailable ? 'bg-mintcom-green' : 'bg-slate-300 dark:bg-slate-700'
+                                        opt.isAvailable ? 'bg-mintcom-green' : 'bg-stone-300 dark:bg-zinc-700'
                                       }`}
                                       title={opt.isAvailable ? 'Click to make unavailable' : 'Click to make available'}
                                     >
@@ -1601,7 +1575,7 @@ export function StockManagementPage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-2xl bg-slate-900 dark:bg-slate-800 text-white p-4 rounded-2xl shadow-2xl border border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3"
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-[90%] max-w-2xl bg-stone-900 dark:bg-zinc-800 text-white p-4 rounded-2xl shadow-md border border-stone-700 flex flex-col sm:flex-row items-center justify-between gap-3"
           >
             <div className="flex items-center gap-3">
               <span className="flex h-3 w-3 relative">
@@ -1615,7 +1589,7 @@ export function StockManagementPage() {
                     count: modifiedItemIds.length,
                   })}
                 </p>
-                <p className="text-xs text-slate-300">
+                <p className="text-xs text-stone-300">
                   {t('stockManagement.saveToApply', { defaultValue: 'Save changes to sync across POS and online stores' })}
                 </p>
               </div>
@@ -1626,7 +1600,7 @@ export function StockManagementPage() {
                 type="button"
                 onClick={() => setConfirmDiscardOpen(true)}
                 disabled={isSavingAll}
-                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-600 transition-colors"
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white border border-stone-600 transition-colors"
               >
                 {t('stockManagement.discard', { defaultValue: 'Discard' })}
               </button>

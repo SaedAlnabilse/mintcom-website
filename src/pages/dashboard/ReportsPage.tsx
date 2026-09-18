@@ -1010,11 +1010,11 @@ export function ReportsPage() {
                   }
                 }}
                 className={`relative shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-lg transition-colors duration-150 text-xs sm:text-sm font-semibold whitespace-nowrap border ${isSelected
-                  ? 'bg-mintcom-green/12 text-gray-900 dark:text-white border-mintcom-green/30'
-                  : 'bg-white dark:bg-[#1E293B] text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 border-gray-200 dark:border-white/[0.08] hover:border-gray-300 dark:hover:border-white/20'
+                  ? 'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 border-mintcom-green/30'
+                  : 'bg-white dark:bg-zinc-900/60 text-stone-600 dark:text-zinc-300 hover:text-stone-900 dark:hover:text-zinc-100 hover:bg-stone-50 dark:hover:bg-zinc-800 border-stone-200 dark:border-zinc-800 hover:border-stone-300 dark:hover:border-zinc-800'
                   }`}
               >
-                <type.icon size={15} className={`shrink-0 ${isSelected ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-400 dark:text-gray-400'}`} />
+                <type.icon size={15} className={`shrink-0 ${isSelected ? 'text-emerald-700 dark:text-mintcom-green' : 'text-stone-400 dark:text-zinc-400'}`} />
                 <span className="relative z-10">{type.label}</span>
               </button>
             );
@@ -1037,7 +1037,7 @@ export function ReportsPage() {
                   initial={{ opacity: 0, y: 5, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                  className="px-3 py-1.5 bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-bold text-center rounded-lg shadow-2xl whitespace-nowrap relative"
+                  className="px-3 py-1.5 bg-stone-900 dark:bg-white text-white dark:text-black text-xs font-bold text-center rounded-lg shadow-md whitespace-nowrap relative"
                 >
                   {[
                     { id: 'sales', label: t('dashboard.menu.salesSummary') },
@@ -1052,7 +1052,7 @@ export function ReportsPage() {
                     { id: 'taxes', label: t('reports.taxes', { defaultValue: 'Taxes Report' }) },
                   ].find(r => r.id === hoveredReportId)?.label}
                   {/* Arrow */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-900 dark:border-t-white"></div>
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-stone-900 dark:border-t-white"></div>
                 </motion.div>
               </div>
             )}
@@ -1109,7 +1109,7 @@ export function ReportsPage() {
                         showIcon={true}
                         isActive={isTimeFiltered}
                       />
-                      <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                      <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-stone-300 dark:text-zinc-700"}`}>-</span>
                       <CustomTimePicker
                         value={endTime}
                         onChange={(val) => { setEndTime(val); setSelectedShiftId(null); }}

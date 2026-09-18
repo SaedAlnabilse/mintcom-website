@@ -95,7 +95,7 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
   const hasRevenueData = chartData.length > 0 && chartData.some((d: any) => Number(d.revenue) > 0);
 
   return (
-    <div id="tour-revenue-chart" className="lg:col-span-2 p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm transition-all duration-300 group relative overflow-hidden">
+    <div id="tour-revenue-chart" className="lg:col-span-2 p-4 sm:p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm transition-all duration-300 group relative overflow-hidden">
       <div className="absolute top-0 end-0 w-64 h-64 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-6">
@@ -104,13 +104,13 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
               <TrendingUp size={20} />
             </div>
             <div className="pt-0.5">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{viewMode === 'current_shift' ? t('dashboard.revenueChart.currentTitle') : viewMode === 'previous_shift' ? t('dashboard.revenueChart.previousTitle') : t('dashboard.revenueChart.last24hTitle')}</h3>
+              <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{viewMode === 'current_shift' ? t('dashboard.revenueChart.currentTitle') : viewMode === 'previous_shift' ? t('dashboard.revenueChart.previousTitle') : t('dashboard.revenueChart.last24hTitle')}</h3>
               <p className="card-subtitle">{t('dashboard.revenueChart.subtitle')}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-stone-50 dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800">
             <Activity size={12} className="text-mintcom-green" />
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.revenueChart.realtime')}</span>
+            <span className="text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-wide">{t('dashboard.revenueChart.realtime')}</span>
           </div>
         </div>
 
@@ -334,12 +334,12 @@ export const RevenueChart = React.memo(function RevenueChart({ dailyBreakdown, v
                 </div>
             </div>
           ) : (
-            <div className="h-full w-full flex items-center justify-center bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/[0.03]">
+            <div className="h-full w-full flex items-center justify-center bg-stone-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-stone-200 dark:border-zinc-800">
               <div className="flex flex-col items-center gap-2 text-center">
-                <Zap size={32} className="text-gray-300 dark:text-gray-600 mb-1" />
+                <Zap size={32} className="text-stone-300 dark:text-zinc-600 mb-1" />
                 <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.revenueChart.noData')}</p>
-                  <p className="text-xs text-gray-400 mt-1">{t('dashboard.revenueChart.noDataDesc')}</p>
+                  <p className="text-sm font-medium text-stone-500 dark:text-zinc-400 tracking-wide">{t('dashboard.revenueChart.noData')}</p>
+                  <p className="text-xs text-stone-400 mt-1">{t('dashboard.revenueChart.noDataDesc')}</p>
                 </div>
               </div>
             </div>

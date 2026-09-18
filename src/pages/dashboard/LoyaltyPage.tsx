@@ -404,15 +404,15 @@ export function LoyaltyPage() {
             />
 
             {loyaltyConfig && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 shadow-sm">
-                    <div className="flex items-center justify-between border-b border-gray-100 dark:border-white/5 pb-8">
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-8 space-y-10 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-stone-100 dark:border-zinc-800 pb-8">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
                                 <Award className="w-6 h-6" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('rewards.configuration')}</h3>
-                                <p className="text-sm font-medium text-gray-500">{t('rewards.configurationSubtitle')}</p>
+                                <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100">{t('rewards.configuration')}</h3>
+                                <p className="text-sm font-medium text-stone-500">{t('rewards.configurationSubtitle')}</p>
                             </div>
                         </div>
                         {/* Toggle removed */}
@@ -422,24 +422,24 @@ export function LoyaltyPage() {
                         <div className="space-y-5 pt-4">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-6 bg-mintcom-green rounded-full" />
-                                <h4 className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('rewards.earningRules')}</h4>
+                                <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 px-1">{t('rewards.earningRules')}</h4>
                             </div>
-                            <div className="bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-200 dark:border-white/5 p-8 shadow-sm">
+                            <div className="bg-stone-50 dark:bg-black/20 rounded-2xl border border-stone-200 dark:border-zinc-800 p-8 shadow-sm">
                                 <div className="flex flex-col lg:flex-row items-center gap-8">
                                     {/* Spend Input Section */}
                                     <div className="flex-1 w-full lg:w-auto space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('rewards.forEvery')}</span>
+                                            <span className="text-sm font-bold text-stone-900 dark:text-zinc-100 px-1">{t('rewards.forEvery')}</span>
                                         </div>
-                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-mintcom-green/10 focus-within:border-mintcom-green transition-all group/field">
-                                            <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
+                                        <div className="flex items-stretch bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-mintcom-green/10 focus-within:border-mintcom-green transition-all group/field">
+                                            <div className="px-6 flex items-center justify-center bg-stone-50 dark:bg-zinc-800 border-r border-stone-200 dark:border-zinc-800 min-w-[80px]">
                                                 <span className="text-sm font-black text-mintcom-green">{currency}</span>
                                             </div>
                                             <input maxLength={255}
                                                 type="text"
                                                 value={currencyPerPointDisplay}
                                                 onChange={handleCurrencyPerPointChange}
-                                                className="flex-1 w-full bg-transparent font-normal text-3xl text-gray-900 dark:text-white focus:outline-none transition-all px-6 py-4"
+                                                className="flex-1 w-full bg-transparent font-normal text-3xl text-stone-900 dark:text-zinc-100 focus:outline-none transition-all px-6 py-4"
                                                 placeholder={formatInputPlaceholder("0.00", t('common.locale'))}
                                             />
                                         </div>
@@ -447,16 +447,16 @@ export function LoyaltyPage() {
 
                                     {/* Connector */}
                                     <div className="flex flex-col items-center justify-center py-4 lg:py-0 self-end lg:pb-5">
-                                        <div className="text-sm font-bold text-gray-400">{t('rewards.equals')}</div>
+                                        <div className="text-sm font-bold text-stone-400">{t('rewards.equals')}</div>
                                     </div>
 
                                     {/* Points Input Section */}
                                     <div className="flex-1 w-full lg:w-auto space-y-4">
                                         <div className="flex items-center gap-3">
-                                            <span className="text-sm font-bold text-gray-900 dark:text-white px-1 opacity-0 lg:block hidden">Spacer</span>
+                                            <span className="text-sm font-bold text-stone-900 dark:text-zinc-100 px-1 opacity-0 lg:block hidden">Spacer</span>
                                         </div>
-                                        <div className="flex items-stretch bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-mintcom-green/10 focus-within:border-mintcom-green transition-all group/field">
-                                            <div className="px-6 flex items-center justify-center bg-gray-50 dark:bg-white/5 border-r border-gray-200 dark:border-white/[0.08] min-w-[80px]">
+                                        <div className="flex items-stretch bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm focus-within:ring-4 focus-within:ring-mintcom-green/10 focus-within:border-mintcom-green transition-all group/field">
+                                            <div className="px-6 flex items-center justify-center bg-stone-50 dark:bg-zinc-800 border-r border-stone-200 dark:border-zinc-800 min-w-[80px]">
                                                 <span className="text-sm font-black text-mintcom-green">{t('rewards.points')}</span>
                                             </div>
                                             <input maxLength={255}
@@ -470,10 +470,10 @@ export function LoyaltyPage() {
                                     </div>
                                 </div>
 
-                                <div className="mt-8 pt-8 border-t border-gray-200 dark:border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                                    <div className="flex items-center gap-4 bg-white dark:bg-[#1E293B] px-6 py-4 rounded-2xl border border-gray-100 dark:border-white/[0.03] shadow-sm">
+                                <div className="mt-8 pt-8 border-t border-stone-200 dark:border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div className="flex items-center gap-4 bg-white dark:bg-zinc-900/60 px-6 py-4 rounded-2xl border border-stone-100 dark:border-zinc-800 shadow-sm">
                                         <div className="w-2 h-2 rounded-full bg-mintcom-green animate-pulse" />
-                                        <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                        <p className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                                             {t('rewards.activeRule', { points: pointsPerCurrencyDisplay, amount: currencyPerPointDisplay, currency: currency })}
                                         </p>
                                     </div>
@@ -486,7 +486,7 @@ export function LoyaltyPage() {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-6 bg-mintcom-green rounded-full" />
-                                    <h4 className="text-sm font-bold text-gray-900 dark:text-white px-1">{t('dashboard.menu.loyalty')}</h4>
+                                    <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 px-1">{t('dashboard.menu.loyalty')}</h4>
                                 </div>
                                 <button type="button" onClick={() => { setEditingReward(null); setShowRewardModal(true); }} className="flex items-center gap-2 px-4 py-2 bg-mintcom-green/10 text-mintcom-green rounded-xl font-sans hover:bg-mintcom-green/20 transition-all border border-mintcom-green/20">
                                     <Plus size={14} /> <span className="label-strong inline-block">{t('rewards.addPattern')}</span>
@@ -507,7 +507,7 @@ export function LoyaltyPage() {
                                                 initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 key={reward.id}
-                                                className="group relative flex items-center justify-between p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 transition-all duration-300 hover:shadow-lg overflow-hidden"
+                                                className="group relative flex items-center justify-between p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 transition-all duration-300 hover:shadow-lg overflow-hidden"
                                             >
                                                 <div className="absolute inset-0 bg-gradient-to-br from-mintcom-green/0 via-transparent to-mintcom-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -516,7 +516,7 @@ export function LoyaltyPage() {
                                                         {reward.type === 'DISCOUNT' ? <Percent size={22} /> : <Gift size={22} />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-mintcom-green transition-colors">
+                                                        <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm group-hover:text-mintcom-green transition-colors">
                                                             {reward.type === 'DISCOUNT'
                                                                 ? t('rewards.items.discount', {
                                                                     percentage: (reward.discountPercentage || 0).toLocaleString(t('common.locale'), {
@@ -529,10 +529,10 @@ export function LoyaltyPage() {
                                                                     : t('rewards.form.freeItem')}
                                                         </p>
                                                         <div className="flex items-center gap-1.5 mt-0.5">
-                                                            <span className="text-xs text-gray-400 font-black tracking-widest">{reward.pointsRequired.toLocaleString(t('common.locale'))} {t('rewards.pointsUnit')}</span>
+                                                            <span className="text-xs text-stone-400 font-black tracking-widest">{reward.pointsRequired.toLocaleString(t('common.locale'))} {t('rewards.pointsUnit')}</span>
                                                             {reward.type !== 'DISCOUNT' && (
                                                                 <>
-                                                                    <span className="text-xs text-gray-300 dark:text-gray-600">•</span>
+                                                                    <span className="text-xs text-stone-300 dark:text-zinc-600">•</span>
                                                                     <span className="text-xs text-mintcom-green font-black tracking-widest">
                                                                         {reward.freeCategoryName ? t('rewards.freeFrom', { category: reward.freeCategoryName }) : t('rewards.freeProduct')}
                                                                     </span>
@@ -542,10 +542,10 @@ export function LoyaltyPage() {
                                                     </div>
                                                 </div>
                                                 <div className="relative z-10 flex gap-1 transition-all translate-x-0">
-                                                    <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                                                    <button type="button" onClick={() => handleEditReward(reward)} className="p-2 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-green border border-stone-200 dark:border-zinc-800 transition-colors shadow-sm">
                                                         <Edit2 size={16} />
                                                     </button>
-                                                    <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-red-500 border border-gray-200 dark:border-white/5 transition-colors shadow-sm">
+                                                    <button type="button" onClick={() => handleDeleteReward(reward.id)} className="p-2 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-red-500 border border-stone-200 dark:border-zinc-800 transition-colors shadow-sm">
                                                         <Trash2 size={16} />
                                                     </button>
                                                 </div>

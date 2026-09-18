@@ -12,7 +12,7 @@ import { AnalyticsEmptyState } from '../AnalyticsEmptyState';
 import { StatValue } from '../../../../components/ui/StatValue';
 import { clampNowToRangeEnd, formatDurationMs, getShiftDurationMs } from '../../../../utils/shiftDuration';
 
-const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-gray-900 dark:text-white", containerClassName = "" }: { amount: number, className?: string, size?: string, color?: string, containerClassName?: string }) => {
+const CurrencyAmount = ({ amount, className = "", size = "text-2xl", color = "text-stone-900 dark:text-zinc-100", containerClassName = "" }: { amount: number, className?: string, size?: string, color?: string, containerClassName?: string }) => {
   const { currencySymbol } = useCurrency();
   return (
     <StatValue 
@@ -49,7 +49,7 @@ interface ShiftsViewProps {
  * caption ends up larger than the number it explains.
  */
 const Caption = ({ children }: { children: React.ReactNode }) => (
-  <div className="mt-0.5 text-[11px] font-semibold leading-tight text-gray-400 dark:text-gray-500 whitespace-nowrap">
+  <div className="mt-0.5 text-[11px] font-semibold leading-tight text-stone-400 dark:text-zinc-500 whitespace-nowrap">
     {children}
   </div>
 );
@@ -143,7 +143,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
               <BiIcon icon="bi-clock-history" size={20} />
@@ -155,21 +155,21 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
             className="text-2xl"
             isInteger={true}
           />
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.activeShifts', { count: activeShiftsCount })}</p>
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.shifts.activeShifts', { count: activeShiftsCount })}</p>
         </div>
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
               <BiIcon icon="bi-hourglass-split" size={20} />
             </div>
             <p className="dashboard-stat-title">{t('orders.reports.staff.totalHours')}</p>
           </div>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+          <p className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
             {formatDurationMs(totals.ms, i18n.language)}
           </p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.timeOnTill', { defaultValue: 'Time on the till' })}</p>
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.shifts.timeOnTill', { defaultValue: 'Time on the till' })}</p>
         </div>
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
               <BiIcon icon="bi-cash-coin" size={20} />
@@ -177,11 +177,11 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
             <p className="dashboard-stat-title">{t('orders.stats.totalSales')}</p>
           </div>
           <CurrencyAmount amount={totals.sales} />
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
             {t('orders.reports.shifts.ordersCount', { count: totals.orders, defaultValue: '{{count}} orders' })}
           </p>
         </div>
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 flex flex-col transition-all duration-300">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
               <BiIcon icon="bi-speedometer2" size={20} />
@@ -189,20 +189,20 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
             <p className="dashboard-stat-title">{t('orders.reports.shifts.salesPerHour', { defaultValue: 'Sales per Hour' })}</p>
           </div>
           {totals.salesPerHour === null ? (
-            <p className="text-2xl font-bold text-gray-400 tracking-tight">-</p>
+            <p className="text-2xl font-bold text-stone-400 tracking-tight">-</p>
           ) : (
             <CurrencyAmount amount={totals.salesPerHour} />
           )}
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.shifts.acrossAllShifts', { defaultValue: 'Across all shifts in range' })}</p>
+          <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.shifts.acrossAllShifts', { defaultValue: 'Across all shifts in range' })}</p>
         </div>
       </div>
 
       {/* Shifts Table */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm flex flex-col">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-white/[0.02]">
-              <tr className="border-b border-gray-200 dark:border-white/5">
+            <thead className="bg-stone-50 dark:bg-zinc-800/40">
+              <tr className="border-b border-stone-200 dark:border-zinc-800">
                 <th className="px-5 py-5 text-start label-strong font-sans whitespace-nowrap">{t('orders.reports.shifts.staff')}</th>
                 <th className="px-5 py-5 text-start label-strong font-sans whitespace-nowrap">{t('orders.reports.shifts.time')}</th>
                 <th className="px-5 py-5 text-start label-strong font-sans whitespace-nowrap">{t('orders.reports.shifts.duration', { defaultValue: 'Duration' })}</th>
@@ -212,7 +212,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
                 <th className="px-5 py-5 text-end label-strong font-sans whitespace-nowrap">{t('orders.reports.shifts.status')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+            <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
               {paginatedShifts.length > 0 ? (
                 paginatedShifts.map((shift: any, idx: number) => (
                   <motion.tr
@@ -220,28 +220,28 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                   >
                     <td className="px-5 py-5 text-start">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-xs shrink-0">
                           {shift.user?.username?.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-bold text-gray-900 dark:text-white text-sm">{shift.user?.username || t('common.unknown')}</span>
+                        <span className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{shift.user?.username || t('common.unknown')}</span>
                       </div>
                     </td>
                     <td className="px-5 py-5 text-start">
                       <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-900 dark:text-white">
+                        <span className="text-xs font-bold text-stone-900 dark:text-zinc-100">
                           {format(new Date(shift.startTime), 'MMM d, HH:mm', { locale: getDateLocale(t('common.locale')) })}
                         </span>
-                        <span className="text-xs font-bold text-gray-900 dark:text-white">
+                        <span className="text-xs font-bold text-stone-900 dark:text-zinc-100">
                           {t('common.to')} {shift.endTime ? format(new Date(shift.endTime), 'HH:mm', { locale: getDateLocale(t('common.locale')) }) : t('orders.reports.shifts.present')}
                         </span>
                       </div>
                     </td>
                     <td className="px-5 py-5 text-start">
-                      <span className="text-xs font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                      <span className="text-xs font-bold text-stone-900 dark:text-zinc-100 whitespace-nowrap">
                         {formatDurationMs(
                           getShiftDurationMs(shift.startTime, shift.endTime, openShiftCutoff),
                           i18n.language,
@@ -268,11 +268,11 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
                         </Caption>
                       )}
                     </td>
-                    <td className="px-5 py-5 text-end font-medium text-gray-500">
+                    <td className="px-5 py-5 text-end font-medium text-stone-500">
                       {(() => {
                         const ms = getShiftDurationMs(shift.startTime, shift.endTime, openShiftCutoff) ?? 0;
                         if (ms < MIN_MS_FOR_RATE) {
-                          return <span className="text-gray-400 font-normal">-</span>;
+                          return <span className="text-stone-400 font-normal">-</span>;
                         }
                         return (
                           <FormatCurrency
@@ -291,7 +291,7 @@ export const ShiftsView = React.memo(function ShiftsView({ shifts, rangeEnd }: S
                           {t('orders.reports.shifts.autoClosed', { defaultValue: 'Auto-closed' })}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 border border-stone-200 dark:border-zinc-800">
                           {t('orders.reports.shifts.manualClose', { defaultValue: 'Cashed out' })}
                         </span>
                       )}

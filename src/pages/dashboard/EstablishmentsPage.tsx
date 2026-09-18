@@ -68,7 +68,7 @@ export function EstablishmentsPage() {
       case 'canceled':
         return 'text-red-500 bg-red-500/10 border-red-500/20';
       default:
-        return 'text-gray-500 bg-gray-500/10 border-gray-100 dark:border-white/5';
+        return 'text-stone-500 bg-stone-500/10 border-stone-100 dark:border-zinc-800';
     }
   };
 
@@ -142,16 +142,16 @@ export function EstablishmentsPage() {
       </div>
 
       {/* Locations Display */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
         <div className="p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {paginatedEstablishments.map((est) => (
               <motion.div
                 layout
                 key={est.id}
-                className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl p-8 border-2 transition-all duration-300 overflow-hidden shadow-sm ${currentEstablishment?.id === est.id
+                className={`group relative bg-white dark:bg-zinc-900/60 rounded-2xl p-8 border-2 transition-all duration-300 overflow-hidden shadow-sm ${currentEstablishment?.id === est.id
                   ? 'border-mintcom-green ring-4 ring-mintcom-green/5'
-                  : 'border-gray-100 dark:border-white/5 hover:shadow-xl'
+                  : 'border-stone-100 dark:border-zinc-800 hover:shadow-xl'
                   }`}
               >
                 {/* Background Effects */}
@@ -161,12 +161,12 @@ export function EstablishmentsPage() {
                 {/* Card Header */}
                 <div className="relative z-10 flex items-start justify-between mb-8">
                   <div className="flex items-center gap-4">
-                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${currentEstablishment?.id === est.id ? 'bg-mintcom-green text-black border-mintcom-green shadow-lg shadow-mintcom-green/20' : 'bg-gray-50 dark:bg-white/[0.03] text-gray-400 border-gray-100 dark:border-white/10'
+                    <div className={`w-14 h-14 rounded-xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 ${currentEstablishment?.id === est.id ? 'bg-mintcom-green text-black border-mintcom-green shadow-lg shadow-mintcom-green/20' : 'bg-stone-50 dark:bg-zinc-800/40 text-stone-400 border-stone-100 dark:border-zinc-800'
                       }`}>
                       <Store size={24} />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight leading-tight group-hover:text-mintcom-green transition-colors truncate" title={est.name}>{est.name}</h3>
+                      <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 tracking-tight leading-tight group-hover:text-mintcom-green transition-colors truncate" title={est.name}>{est.name}</h3>
                       <span className={`inline-flex items-center px-2 py-0.5 text-xs font-black tracking-[0.2em] rounded-md mt-2 border transition-colors ${getStatusColor(est.subscriptionStatus)}`}>
                         {t(`owner.billing.${est.subscriptionStatus.toLowerCase()}`, { defaultValue: est.subscriptionStatus })}
                       </span>
@@ -176,7 +176,7 @@ export function EstablishmentsPage() {
                   <div className="relative">
                     <button
                       onClick={() => setOpenMenuId(openMenuId === est.id ? null : est.id)}
-                      className="p-2.5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-xl transition-all text-gray-400 border border-transparent hover:border-gray-200 dark:hover:border-white/10 shadow-sm"
+                      className="p-2.5 hover:bg-stone-100 dark:hover:bg-zinc-800 rounded-xl transition-all text-stone-400 border border-transparent hover:border-stone-200 dark:hover:border-zinc-800 shadow-sm"
                     >
                       <MoreVertical size={18} />
                     </button>
@@ -186,13 +186,13 @@ export function EstablishmentsPage() {
                           initial={{ opacity: 0, scale: 0.95, y: 10 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                          className={`absolute ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} mt-3 w-56 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/[0.1] rounded-2xl z-50 overflow-hidden py-2 shadow-2xl`}
+                          className={`absolute ${t('common.locale') === 'ar' ? 'left-0' : 'right-0'} mt-3 w-56 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-2xl z-50 overflow-hidden py-2 shadow-md`}
                         >
-                          <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-mintcom-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
+                          <button onClick={() => { handleSelectEstablishment(est); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-stone-700 dark:text-zinc-300 hover:bg-mintcom-green hover:text-black transition-all flex items-center gap-3 tracking-widest">
                             <CheckCircle size={14} /> {t('establishments.switch')}
                           </button>
-                          <button onClick={() => { navigate(`/dashboard/${locationSlug}/settings`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-mintcom-green/10 transition-all tracking-widest">{t('dashboard.menu.settings')}</button>
-                          <button onClick={() => { navigate(`/dashboard/${locationSlug}/staff`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-gray-700 dark:text-gray-300 hover:bg-mintcom-green/10 transition-all tracking-widest">{t('dashboard.menu.team')}</button>
+                          <button onClick={() => { navigate(`/dashboard/${locationSlug}/settings`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-stone-700 dark:text-zinc-300 hover:bg-mintcom-green/10 transition-all tracking-widest">{t('dashboard.menu.settings')}</button>
+                          <button onClick={() => { navigate(`/dashboard/${locationSlug}/staff`); setOpenMenuId(null); }} className="w-full text-left px-5 py-3 text-xs font-black text-stone-700 dark:text-zinc-300 hover:bg-mintcom-green/10 transition-all tracking-widest">{t('dashboard.menu.team')}</button>
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -201,14 +201,14 @@ export function EstablishmentsPage() {
 
                 {/* Details List */}
                 <div className="relative z-10 space-y-3 mb-8 px-1">
-                  <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 label-strong font-sans">
-                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
+                  <div className="flex items-center gap-3 text-stone-500 dark:text-zinc-400 label-strong font-sans">
+                    <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center border border-stone-100 dark:border-zinc-800">
                       <DollarSign size={14} className="text-mintcom-green" />
                     </div>
                     <span>{t('establishments.details.currency')}: {est.currency?.toUpperCase()}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 label-strong font-sans">
-                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center border border-gray-100 dark:border-white/10">
+                  <div className="flex items-center gap-3 text-stone-500 dark:text-zinc-400 label-strong font-sans">
+                    <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center border border-stone-100 dark:border-zinc-800">
                       <ShieldCheck size={14} className="text-blue-500" />
                     </div>
                     <span className="truncate">{formatBusinessTypeLabel(est.type)}</span>
@@ -225,7 +225,7 @@ export function EstablishmentsPage() {
                   ) : (
                     <button
                       onClick={() => handleSelectEstablishment(est)}
-                      className="w-full py-4 px-6 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-xs tracking-[0.2em] shadow-md"
+                      className="w-full py-4 px-6 bg-stone-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:scale-[1.02] transition-all active:scale-95 text-xs tracking-[0.2em] shadow-md"
                     >
                       {t('establishments.switch')}
                     </button>
@@ -251,13 +251,13 @@ export function EstablishmentsPage() {
             {!searchQuery.trim() && (
               <motion.button
                 onClick={() => navigate('/onboarding')}
-                className="bg-white dark:bg-[#1E293B] border-2 border-dashed border-gray-200 dark:border-white/10 rounded-2xl p-10 flex flex-col items-center justify-center gap-8 hover:border-mintcom-green dark:hover:border-mintcom-green hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all min-h-[250px] lg:min-h-[350px] group shadow-sm"
+                className="bg-white dark:bg-zinc-900/60 border-2 border-dashed border-stone-200 dark:border-zinc-800 rounded-2xl p-10 flex flex-col items-center justify-center gap-8 hover:border-mintcom-green dark:hover:border-mintcom-green hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-all min-h-[250px] lg:min-h-[350px] group shadow-sm"
               >
-                <div className="w-24 h-24 bg-gray-50 dark:bg-white/[0.03] rounded-full flex items-center justify-center border border-gray-200 dark:border-white/5 group-hover:scale-110 transition-transform duration-500 shadow-sm">
-                  <Plus size={40} className="text-gray-300 group-hover:text-mintcom-green transition-colors" />
+                <div className="w-24 h-24 bg-stone-50 dark:bg-zinc-800/40 rounded-full flex items-center justify-center border border-stone-200 dark:border-zinc-800 group-hover:scale-110 transition-transform duration-500 shadow-sm">
+                  <Plus size={40} className="text-stone-300 group-hover:text-mintcom-green transition-colors" />
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('establishments.addLocation')}</h3>
+                  <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2">{t('establishments.addLocation')}</h3>
                   <p className="label-strong font-sans max-w-[200px]">{t('establishments.details.create')}</p>
                 </div>
               </motion.button>
@@ -281,16 +281,16 @@ export function EstablishmentsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-white dark:bg-[#050505] flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[200] bg-white dark:bg-zinc-950 flex flex-col items-center justify-center"
           >
             <div className="w-20 h-20 bg-mintcom-green/10 rounded-2xl flex items-center justify-center mb-8 relative">
               <Loader2 size={40} className="text-mintcom-green animate-spin" />
               <div className="absolute inset-0 bg-mintcom-green/20 rounded-2xl animate-ping" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('establishments.opening')}</h2>
+            <h2 className="text-2xl font-bold text-stone-900 dark:text-zinc-100">{t('establishments.opening')}</h2>
             <p className="text-mintcom-green font-bold tracking-normal text-sm mt-4">{selectedName}</p>
 
-            <div className="mt-12 w-48 h-1 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+            <div className="mt-12 w-48 h-1 bg-stone-100 dark:bg-zinc-800 rounded-full overflow-hidden">
               <motion.div
                 initial={{ x: '-100%' }}
                 animate={{ x: '0%' }}

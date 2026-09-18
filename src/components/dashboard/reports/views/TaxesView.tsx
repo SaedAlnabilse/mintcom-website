@@ -178,7 +178,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
   return (
     <div className="space-y-6" dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.totalTax')}</p>
             <StatValue 
@@ -186,12 +186,12 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               currency={currencySymbol} 
               className="text-2xl"
             />
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.totalTaxDesc')}</p>
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.taxes.totalTaxDesc')}</p>
           </div>
           <div className="absolute end-0 top-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.taxableSales')}</p>
             <StatValue 
@@ -199,27 +199,27 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               currency={currencySymbol} 
               className="text-2xl"
             />
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.taxableSalesDesc')}</p>
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.taxes.taxableSalesDesc')}</p>
           </div>
           <div className="absolute end-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.avgRate')}</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+            <p className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
               <StatValue value={taxableSales > 0 ? averageTaxRate : 0} isPercentage={true} className="text-2xl" />
             </p>
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{t('orders.reports.taxes.avgRateDesc')}</p>
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('orders.reports.taxes.avgRateDesc')}</p>
           </div>
           <div className="absolute end-0 top-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl -me-10 -mt-10 pointer-events-none" />
         </div>
 
-        <div className="p-4 sm:p-5 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] relative overflow-hidden flex flex-col transition-all duration-300">
+        <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 relative overflow-hidden flex flex-col transition-all duration-300">
           <div className="relative z-10">
             <p className="dashboard-stat-title mb-1">{t('orders.reports.taxes.changedTaxOrders', { defaultValue: 'Changed-Tax Orders' })}</p>
             <StatValue value={changedOrders} isInteger={true} className="text-2xl" />
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
               {changedRefunds > 0
                 ? t('orders.reports.taxes.changedTaxRefundsDesc', {
                     defaultValue: '{{count}} Refunds Also Affected Changed-Tax Rows',
@@ -235,23 +235,23 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:items-start gap-6">
-        <div className="lg:col-span-2 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-gray-100 dark:border-white/5">
+        <div className="lg:col-span-2 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-stone-100 dark:border-zinc-800">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
                 <BiIcon icon="bi-receipt" size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">
                   {t('orders.reports.taxes.details')}
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">{t('orders.reports.taxes.detailsDesc', { defaultValue: 'Net tax grouped by applied rate and POS tax changes' })}</p>
+                <p className="text-xs text-stone-500 mt-1">{t('orders.reports.taxes.detailsDesc', { defaultValue: 'Net tax grouped by applied rate and POS tax changes' })}</p>
               </div>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-white/[0.02]">
+              <thead className="bg-stone-50 dark:bg-zinc-800/40">
                 <tr>
                   <th className="px-6 py-4 text-start label-strong font-sans whitespace-nowrap">{t('orders.reports.taxes.type')}</th>
                   <th className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap">{t('orders.reports.taxes.rate')}</th>
@@ -260,7 +260,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                   <th className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap">{t('orders.reports.taxes.share')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+              <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                 {hasTaxBreakdown ? (
                   taxBreakdown.map((tax, i: number) => {
                     const contribution = totalTax > 0 ? (tax.collected / totalTax) * 100 : 0;
@@ -269,12 +269,12 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                       ? 'bg-rose-500/10 text-rose-500 dark:bg-rose-500/20 dark:text-rose-400'
                       : tax.isServiceCharge
                         ? tax.isExemptRow
-                          ? 'bg-gray-500/10 text-gray-500 dark:bg-gray-500/20 dark:text-gray-400'
+                          ? 'bg-stone-500/10 text-stone-500 dark:bg-zinc-500/20 dark:text-zinc-400'
                           : 'bg-teal-500/10 text-teal-600 dark:bg-teal-500/20 dark:text-teal-400'
                         : tax.taxType === 'changed'
                           ? 'bg-indigo-500/10 text-indigo-500 dark:bg-indigo-500/20 dark:text-indigo-400'
                           : tax.taxType === 'previous'
-                            ? 'bg-gray-500/10 text-gray-500 dark:bg-gray-500/20 dark:text-gray-400'
+                            ? 'bg-stone-500/10 text-stone-500 dark:bg-zinc-500/20 dark:text-zinc-400'
                             : 'bg-orange-500/10 text-orange-500 dark:bg-orange-500/20 dark:text-orange-400';
                     const markerIcon = tax.isDeleted || tax.taxType === 'deleted'
                       ? <Trash2 size={16} />
@@ -291,7 +291,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: i * 0.05 }}
-                        className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                        className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                       >
                         <td className="px-6 py-4 text-start">
                           <div className="flex items-center gap-3">
@@ -300,23 +300,23 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                             </div>
                             <div className="flex flex-col min-w-0">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-sm text-gray-900 dark:text-white">{tax.name}</span>
+                                <span className="font-bold text-sm text-stone-900 dark:text-zinc-100">{tax.name}</span>
                                 {(tax.isDeleted || tax.taxType === 'deleted') && (
                                   <span className="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800/30">
                                     {t('common.deleted', 'Deleted')}
                                   </span>
                                 )}
                               </div>
-                              <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 font-medium flex-wrap mt-0.5">
+                              <div className="flex items-center gap-1.5 text-xs text-stone-400 dark:text-zinc-500 font-medium flex-wrap mt-0.5">
                                 <span>{tax.description}</span>
-                                <span className="text-gray-300 dark:text-gray-600">·</span>
+                                <span className="text-stone-300 dark:text-zinc-600">·</span>
                                 <span className="inline-flex items-center gap-1 whitespace-nowrap">
-                                  <StatValue value={tax.transactions} isInteger={true} className="text-xs text-gray-500 dark:text-gray-400 font-bold inline-flex" />
+                                  <StatValue value={tax.transactions} isInteger={true} className="text-xs text-stone-500 dark:text-zinc-400 font-bold inline-flex" />
                                   {t('orders.reports.taxes.txns')}
                                 </span>
                                 {tax.refundCount > 0 && (
                                   <>
-                                    <span className="text-gray-300 dark:text-gray-600">·</span>
+                                    <span className="text-stone-300 dark:text-zinc-600">·</span>
                                     <span className="inline-flex items-center gap-1 whitespace-nowrap text-amber-600 dark:text-amber-400">
                                       <StatValue value={tax.refundCount} isInteger={true} className="text-xs font-bold inline-flex" />
                                       {t('orders.reports.taxes.refunds', { defaultValue: 'refunds' })}
@@ -331,10 +331,10 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                           {tax.ratePercent > 0 ? (
                             <StatValue value={tax.ratePercent / 100} isPercentage={true} className="text-sm" containerClassName="justify-end w-full" />
                           ) : (
-                            <span className="text-sm font-bold text-gray-400">-</span>
+                            <span className="text-sm font-bold text-stone-400">-</span>
                           )}
                         </td>
-                        <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
+                        <td className="px-6 py-4 text-end font-bold text-stone-900 dark:text-zinc-100">
                           {formatCurrency(tax.taxableAmount)}
                         </td>
                         <td className="px-6 py-4 text-end font-black text-orange-500">
@@ -342,14 +342,14 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                         </td>
                         <td className="px-6 py-4 text-end">
                           <div className="inline-flex items-center gap-2 w-[120px] justify-end">
-                            <div className="flex-1 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                            <div className="flex-1 h-1.5 bg-stone-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                               <div className="h-full bg-orange-500 rounded-full" style={{ width: `${contributionWidth}%` }} />
                             </div>
                             <StatValue
                               value={contribution}
                               isPercentage={true}
                               isAlreadyPercent={true}
-                              className="text-xs font-bold text-gray-500 min-w-[40px] text-end"
+                              className="text-xs font-bold text-stone-500 min-w-[40px] text-end"
                             />
                           </div>
                         </td>
@@ -361,7 +361,7 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                   <motion.tr 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                   >
                     <td className="px-6 py-4 text-start">
                       <div className="flex items-center gap-3">
@@ -369,20 +369,20 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                           <Percent size={16} />
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-sm text-gray-900 dark:text-white">{t('orders.reports.taxes.standardTax')}</span>
-                          <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 font-medium mt-0.5">
+                          <span className="font-bold text-sm text-stone-900 dark:text-zinc-100">{t('orders.reports.taxes.standardTax')}</span>
+                          <div className="flex items-center gap-1.5 text-xs text-stone-400 dark:text-zinc-500 font-medium mt-0.5">
                             <span className="inline-flex items-center gap-1 whitespace-nowrap">
-                              <StatValue value={salesData.totalOrders ?? 0} isInteger={true} className="text-xs text-gray-500 dark:text-gray-400 font-bold inline-flex" />
+                              <StatValue value={salesData.totalOrders ?? 0} isInteger={true} className="text-xs text-stone-500 dark:text-zinc-400 font-bold inline-flex" />
                               {t('orders.reports.taxes.txns')}
                             </span>
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-end font-bold text-gray-500">
+                    <td className="px-6 py-4 text-end font-bold text-stone-500">
                       <StatValue value={taxableSales > 0 ? averageTaxRate : 0} isPercentage={true} className="text-sm" containerClassName="justify-end w-full" />
                     </td>
-                    <td className="px-6 py-4 text-end font-bold text-gray-900 dark:text-white">
+                    <td className="px-6 py-4 text-end font-bold text-stone-900 dark:text-zinc-100">
                       {formatCurrency(taxableSales)}
                     </td>
                     <td className="px-6 py-4 text-end font-bold text-orange-500">
@@ -390,14 +390,14 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
                     </td>
                     <td className="px-6 py-4 text-end">
                       <div className="inline-flex items-center gap-2 w-[120px] justify-end">
-                        <div className="flex-1 h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                        <div className="flex-1 h-1.5 bg-stone-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                           <div className="h-full bg-orange-500 rounded-full" style={{ width: `100%` }} />
                         </div>
                         <StatValue
                           value={100}
                           isPercentage={true}
                           isAlreadyPercent={true}
-                          className="text-xs font-bold text-gray-500 min-w-[40px] text-end"
+                          className="text-xs font-bold text-stone-500 min-w-[40px] text-end"
                         />
                       </div>
                     </td>
@@ -420,17 +420,17 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
         </div>
 
         {/* Tax Audit Summary Card with Full In-Card Explanation */}
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm p-5 sm:p-6 flex flex-col gap-4">
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm p-5 sm:p-6 flex flex-col gap-4">
           <div>
             <div className="flex items-center justify-between gap-2">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+              <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">
                 {t('orders.reports.taxes.auditSummary', { defaultValue: 'Tax Audit Summary' })}
               </h3>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-mintcom-green/10 text-mintcom-green border border-mintcom-green/20">
                 {t('orders.reports.taxes.auditTag', { defaultValue: 'Compliance' })}
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-stone-500 mt-1">
               {t('orders.reports.taxes.auditSummaryDesc', {
                 defaultValue: 'Quick checks for tax-free sales and compliance',
               })}
@@ -438,9 +438,9 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
           </div>
 
           {/* Primary Metric Tile */}
-          <div className="rounded-2xl border border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] p-5">
+          <div className="rounded-2xl border border-stone-100 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800/40 p-5">
             <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-gray-200/60 dark:bg-white/5 flex items-center justify-center text-gray-500 dark:text-white/40">
+              <div className="w-10 h-10 rounded-xl bg-stone-200/60 dark:bg-zinc-800 flex items-center justify-center text-stone-500 dark:text-zinc-500">
                 <BiIcon icon="bi-receipt" size={18} />
               </div>
               {toNumber(salesData.taxExemptSales) === 0 ? (
@@ -461,10 +461,10 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
               currency={currencySymbol}
               className="text-2xl font-bold"
             />
-            <p className="text-xs font-bold text-gray-700 dark:text-gray-200 mt-1">
+            <p className="text-xs font-bold text-stone-700 dark:text-zinc-200 mt-1">
               {t('orders.reports.taxes.taxFreeSales', { defaultValue: 'Tax-Free Sales' })}
             </p>
-            <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
+            <p className="text-xs text-stone-500 mt-1.5 leading-relaxed">
               {t('orders.reports.taxes.taxFreeSalesDesc', {
                 defaultValue: 'Completed sales where no tax was collected after refunds are netted out.',
               })}
@@ -473,12 +473,12 @@ export const TaxesView = React.memo(function TaxesView({ salesData }: TaxesViewP
 
           {/* Explanation / Audit Guide Box */}
           <div className="rounded-2xl border border-mintcom-green/20 bg-mintcom-green/[0.03] dark:bg-mintcom-green/[0.05] p-4 space-y-2.5">
-            <div className="flex items-center gap-2 text-xs font-bold text-gray-900 dark:text-white">
+            <div className="flex items-center gap-2 text-xs font-bold text-stone-900 dark:text-zinc-100">
               <Info size={14} className="text-mintcom-green shrink-0" />
               <span>{t('orders.reports.taxes.auditGuideTitle', { defaultValue: 'How to use this audit check' })}</span>
             </div>
 
-            <div className="text-xs text-gray-600 dark:text-gray-300 space-y-2 leading-relaxed">
+            <div className="text-xs text-stone-600 dark:text-zinc-300 space-y-2 leading-relaxed">
               <div className="flex items-start gap-2">
                 <span className="text-mintcom-green font-bold shrink-0">•</span>
                 <p>{t('orders.reports.taxes.auditGuideWhat', { defaultValue: 'Tracks zero-tax items, tax-exempt customers (e.g. charities, diplomats), and manual 0% POS tax edits.' })}</p>

@@ -245,7 +245,7 @@ export function AdminUsersPage() {
             </div>
 
             {/* Admin List */}
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                 {isLoading ? (
                     <div className="py-32 flex flex-col items-center">
                         <div className="w-16 h-16 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
@@ -253,13 +253,13 @@ export function AdminUsersPage() {
                     </div>
                 ) : filteredAdmins.length === 0 ? (
                     <div className="py-32 text-center flex flex-col items-center">
-                        <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5">
-                            <UserPlus className="w-12 h-12 text-gray-400" />
+                        <div className="w-24 h-24 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 border border-stone-200 dark:border-zinc-800">
+                            <UserPlus className="w-12 h-12 text-stone-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                        <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2">
                             {searchQuery.trim() ? t('common.noResults') : t('adminUsers.noAdmins')}
                         </h3>
-                        <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto">
+                        <p className="text-sm font-bold text-stone-500 max-w-xs mx-auto">
                             {searchQuery.trim()
                                 ? t('common.noMatchingResults', {
                                     entity: 'admins',
@@ -272,11 +272,11 @@ export function AdminUsersPage() {
                 ) : (
                     <>
                         {/* Mobile Card View */}
-                        <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                        <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
                             {paginatedAdmins.map((admin) => (
                                 <div
                                     key={admin.id}
-                                    className="p-4 bg-white dark:bg-[#1E293B]"
+                                    className="p-4 bg-white dark:bg-zinc-900/60"
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-3">
@@ -284,8 +284,8 @@ export function AdminUsersPage() {
                                                 {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white text-sm">{admin.firstName} {admin.lastName}</h3>
-                                                <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+                                                <h3 className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{admin.firstName} {admin.lastName}</h3>
+                                                <p className="text-xs text-stone-500 flex items-center gap-1 mt-0.5">
                                                     <Mail size={10} /> {admin.email}
                                                 </p>
                                             </div>
@@ -293,7 +293,7 @@ export function AdminUsersPage() {
                                         <div className="flex gap-2">
                                             <button
                                                 onClick={() => openEditModal(admin)}
-                                                className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
+                                                className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400"
                                                 title={t('common.edit')}
                                             >
                                                 <Edit2 size={16} />
@@ -314,13 +314,13 @@ export function AdminUsersPage() {
                                             admin.establishments.map((est) => (
                                                 <span
                                                     key={est.id}
-                                                    className="px-2 py-1 bg-white dark:bg-white/10 text-gray-700 dark:text-gray-300 text-[10px] font-bold tracking-wide rounded-md border border-gray-200 dark:border-white/10"
+                                                    className="px-2 py-1 bg-white dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 text-[10px] font-bold tracking-wide rounded-md border border-stone-200 dark:border-zinc-800"
                                                 >
                                                     {est.name}
                                                 </span>
                                             ))
                                         ) : (
-                                            <span className="text-xs text-gray-400 italic">{t('adminUsers.noLocations')}</span>
+                                            <span className="text-xs text-stone-400 italic">{t('adminUsers.noLocations')}</span>
                                         )}
                                     </div>
                                 </div>
@@ -332,7 +332,7 @@ export function AdminUsersPage() {
                             {paginatedAdmins.map((admin) => (
                                 <div
                                     key={admin.id}
-                                    className="group relative p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden"
+                                    className="group relative p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 hover:shadow-xl transition-all duration-300 overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-mintcom-green/0 via-transparent to-mintcom-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -342,12 +342,12 @@ export function AdminUsersPage() {
                                                 {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
                                             </div>
                                             <div className={t('common.locale') === 'ar' ? 'mr-4' : 'ml-4'}>
-                                                <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight group-hover:text-mintcom-green transition-colors">
+                                                <p className="font-bold text-stone-900 dark:text-zinc-100 text-lg tracking-tight group-hover:text-mintcom-green transition-colors">
                                                     {admin.firstName} {admin.lastName}
                                                 </p>
                                                 <div className="flex flex-col gap-1 mt-1">
-                                                    <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-                                                        <Mail size={12} className="text-gray-400" />
+                                                    <span className="flex items-center gap-1.5 text-xs text-stone-500 font-medium">
+                                                        <Mail size={12} className="text-stone-400" />
                                                         {admin.email}
                                                     </span>
                                                 </div>
@@ -356,14 +356,14 @@ export function AdminUsersPage() {
                                         <div className="flex flex-col gap-2 transition-all translate-x-0">
                                             <button
                                                 onClick={() => openEditModal(admin)}
-                                                className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
+                                                className="p-2.5 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-all border border-stone-200 dark:border-zinc-800 shadow-sm"
                                                 title={t('common.edit')}
                                             >
                                                 <Edit2 size={16} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(admin)}
-                                                className="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 transition-all border border-gray-200 dark:border-white/10 shadow-sm"
+                                                className="p-2.5 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-red hover:bg-mintcom-red/10 transition-all border border-stone-200 dark:border-zinc-800 shadow-sm"
                                                 title={t('common.delete')}
                                             >
                                                 <Trash2 size={16} />
@@ -371,7 +371,7 @@ export function AdminUsersPage() {
                                         </div>
                                     </div>
 
-                                    <div className="relative z-10 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
+                                    <div className="relative z-10 mt-6 pt-4 border-t border-stone-100 dark:border-zinc-800">
                                         <p className="label-strong font-sans mb-2">{t('adminUsers.accessLocations')}</p>
                                         <div className="flex flex-wrap gap-2">
                                             {admin.establishments.map((est) => (
@@ -383,7 +383,7 @@ export function AdminUsersPage() {
                                                 </span>
                                             ))}
                                             {admin.establishments.length === 0 && (
-                                                <span className="text-xs text-gray-400 italic">{t('adminUsers.noLocations')}</span>
+                                                <span className="text-xs text-stone-400 italic">{t('adminUsers.noLocations')}</span>
                                             )}
                                         </div>
                                     </div>
@@ -420,7 +420,7 @@ export function AdminUsersPage() {
                                 type="text"
                                 value={formData.firstName}
                                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                className="w-full bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-xl py-3 px-4 font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                 required
                             />
                         </div>
@@ -432,7 +432,7 @@ export function AdminUsersPage() {
                                 type="text"
                                 value={formData.lastName}
                                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                className="w-full bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-xl py-3 px-4 font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                 required
                             />
                         </div>
@@ -446,7 +446,7 @@ export function AdminUsersPage() {
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50"
+                            className="w-full bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-xl py-3 px-4 font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50"
                             placeholder={formatInputPlaceholder(t('adminUsers.form.emailPlaceholder'), t('common.locale'))}
                             required
                             disabled={!!editingAdmin}
@@ -463,19 +463,19 @@ export function AdminUsersPage() {
                                     type={showPassword ? 'text' : 'password'}
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl py-3 px-4 pr-12 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                    className="w-full bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-xl py-3 px-4 pr-12 font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                     required
                                     minLength={8}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                                 >
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                            <p className="text-xs font-bold text-gray-400 mt-1 px-1 tracking-tight">
+                            <p className="text-xs font-bold text-stone-400 mt-1 px-1 tracking-tight">
                                 {t('adminUsers.form.passwordHint')}
                             </p>
                         </div>
@@ -491,7 +491,7 @@ export function AdminUsersPage() {
                                     key={est.id}
                                     className={`flex items-center gap-3 p-4 rounded-xl border transition-all cursor-pointer ${formData.establishmentIds.includes(est.id)
                                         ? 'border-mintcom-green bg-mintcom-green/5'
-                                        : 'border-gray-200 dark:border-white/5 bg-white dark:bg-[#1E293B] hover:border-gray-300 dark:hover:border-white/10'
+                                        : 'border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:border-stone-300 dark:hover:border-zinc-800'
                                         }`}
                                 >
                                     <input
@@ -500,10 +500,10 @@ export function AdminUsersPage() {
                                         onChange={() => toggleEstablishment(est.id)}
                                         className="sr-only"
                                     />
-                                    <div className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-all ${formData.establishmentIds.includes(est.id) ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-300 dark:border-white/10'}`}>
+                                    <div className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-all ${formData.establishmentIds.includes(est.id) ? 'bg-mintcom-green border-mintcom-green' : 'border-stone-300 dark:border-zinc-800'}`}>
                                         {formData.establishmentIds.includes(est.id) && <Check size={14} className="text-black" strokeWidth={3} />}
                                     </div>
-                                    <span className={`font-bold text-sm ${formData.establishmentIds.includes(est.id) ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>{est.name}</span>
+                                    <span className={`font-bold text-sm ${formData.establishmentIds.includes(est.id) ? 'text-stone-900 dark:text-zinc-100' : 'text-stone-500'}`}>{est.name}</span>
                                 </label>
                             ))}
                         </div>

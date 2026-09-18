@@ -24,7 +24,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomSelect } from '../../components/CustomSelect';
 import { QuickInfo } from '../../components/QuickInfo';
-import { EmptyState, SearchInput, Pagination, SelectInput, PageHeader, Badge, Card } from '../../components/ui';
+import { EmptyState, ListFilterBar, Pagination, SelectInput, PageHeader, Badge } from '../../components/ui';
 import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton } from '../../components/ui';
 import { biIcon } from '../../components/ui/BiIcon';
 import { StatValue } from '../../components/ui/StatValue';
@@ -869,14 +869,14 @@ export function RecipesPage() {
       />
 
       {/* 3-PILLAR UNIFIED TABS WITH COUNT BADGES (matching POS) */}
-      <div className="flex p-1.5 bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl w-fit">
+      <div className="flex p-1.5 bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-2xl w-fit">
         <button
           type="button"
           onClick={() => { setActiveTab('materials'); setPage(1); }}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
             activeTab === 'materials'
-              ? 'bg-white dark:bg-[#1E293B] text-mintcom-green shadow-sm border border-gray-200/60 dark:border-white/10'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              ? 'bg-white dark:bg-zinc-900/60 text-mintcom-green shadow-sm border border-stone-200/60 dark:border-zinc-800'
+              : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
           }`}
         >
           <Package className="w-4 h-4" />
@@ -885,7 +885,7 @@ export function RecipesPage() {
             className={`ml-1 px-2 py-0.5 text-xs font-bold rounded-full transition-colors ${
               activeTab === 'materials'
                 ? 'bg-mintcom-green/10 text-mintcom-green'
-                : 'bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-300'
+                : 'bg-stone-200 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300'
             }`}
           >
             {rawMaterials.length}
@@ -897,8 +897,8 @@ export function RecipesPage() {
           onClick={() => { setActiveTab('sub'); setPage(1); }}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
             activeTab === 'sub'
-              ? 'bg-white dark:bg-[#1E293B] text-mintcom-green shadow-sm border border-gray-200/60 dark:border-white/10'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              ? 'bg-white dark:bg-zinc-900/60 text-mintcom-green shadow-sm border border-stone-200/60 dark:border-zinc-800'
+              : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
           }`}
         >
           <Layers className="w-4 h-4" />
@@ -907,7 +907,7 @@ export function RecipesPage() {
             className={`ml-1 px-2 py-0.5 text-xs font-bold rounded-full transition-colors ${
               activeTab === 'sub'
                 ? 'bg-mintcom-green/10 text-mintcom-green'
-                : 'bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-300'
+                : 'bg-stone-200 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300'
             }`}
           >
             {subRecipes.length}
@@ -919,8 +919,8 @@ export function RecipesPage() {
           onClick={() => { setActiveTab('final'); setPage(1); }}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
             activeTab === 'final'
-              ? 'bg-white dark:bg-[#1E293B] text-mintcom-green shadow-sm border border-gray-200/60 dark:border-white/10'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              ? 'bg-white dark:bg-zinc-900/60 text-mintcom-green shadow-sm border border-stone-200/60 dark:border-zinc-800'
+              : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
           }`}
         >
           <BookOpen className="w-4 h-4" />
@@ -929,7 +929,7 @@ export function RecipesPage() {
             className={`ml-1 px-2 py-0.5 text-xs font-bold rounded-full transition-colors ${
               activeTab === 'final'
                 ? 'bg-mintcom-green/10 text-mintcom-green'
-                : 'bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-300'
+                : 'bg-stone-200 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300'
             }`}
           >
             {finalRecipes.length}
@@ -1047,11 +1047,11 @@ export function RecipesPage() {
           <div
             key={i}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink
               ${stat.onClick ? 'cursor-pointer' : 'cursor-default'}
               ${stat.active
                 ? 'border-mintcom-green ring-1 ring-mintcom-green/30 bg-mintcom-green/[0.02]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'}`}
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg} ${stat.active ? 'opacity-20' : 'group-hover:opacity-10'}`} />
             <div className="relative z-10 flex items-center gap-3 sm:gap-4">
@@ -1061,7 +1061,7 @@ export function RecipesPage() {
               <div className="min-w-0 flex-1">
                 <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
                 {typeof stat.value === 'string' && !stat.isCurrency ? (
-                  <h3 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight truncate">
+                  <h3 className="text-xl sm:text-2xl font-black text-stone-900 dark:text-zinc-100 tracking-tight truncate">
                     {stat.value}
                   </h3>
                 ) : (
@@ -1073,7 +1073,7 @@ export function RecipesPage() {
                   />
                 )}
                 {stat.sub && (
-                  <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 truncate">{stat.sub}</p>
+                  <p className="sentence-case-text text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1 truncate">{stat.sub}</p>
                 )}
               </div>
             </div>
@@ -1087,68 +1087,61 @@ export function RecipesPage() {
       </div>
 
       {/* FILTER & SEARCH BAR */}
-      <Card padding="sm">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-          <div className="flex-1 w-full">
-            <SearchInput
-              value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-              onClear={() => { setSearchQuery(''); setPage(1); }}
-              placeholder={
-                activeTab === 'materials'
-                  ? formatInputPlaceholder(t('manufacturing.searchMaterials', { defaultValue: 'Search ingredients...' }), t('common.locale'))
-                  : activeTab === 'sub'
-                  ? formatInputPlaceholder(t('manufacturing.searchPrep', { defaultValue: 'Search prep items...' }), t('common.locale'))
-                  : formatInputPlaceholder(t('manufacturing.searchRecipes', { defaultValue: 'Search product recipes...' }), t('common.locale'))
-              }
-              className="w-full"
+      <ListFilterBar
+        searchValue={searchQuery}
+        onSearchChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+        onSearchClear={() => { setSearchQuery(''); setPage(1); }}
+        searchPlaceholder={
+          activeTab === 'materials'
+            ? formatInputPlaceholder(t('manufacturing.searchMaterials', { defaultValue: 'Search ingredients...' }), t('common.locale'))
+            : activeTab === 'sub'
+            ? formatInputPlaceholder(t('manufacturing.searchPrep', { defaultValue: 'Search prep items...' }), t('common.locale'))
+            : formatInputPlaceholder(t('manufacturing.searchRecipes', { defaultValue: 'Search product recipes...' }), t('common.locale'))
+        }
+      >
+        <div className="w-full sm:w-64 shrink-0">
+          {activeTab === 'materials' ? (
+            <SelectInput
+              value={rawFilter === 'ALL' ? null : rawFilter}
+              onChange={(val) => { setRawFilter((val as RawFilterType) || 'ALL'); setPage(1); }}
+              options={[
+                { label: `${t('manufacturing.lowStock', { defaultValue: 'Low Stock' })} (${rawCounts.low})`, value: 'LOW' },
+                { label: `${t('manufacturing.outOfStock', { defaultValue: 'Out of Stock' })} (${rawCounts.out})`, value: 'OUT' },
+                ...(rawCounts.inactive > 0 ? [{ label: `${t('common.inactive', { defaultValue: 'Inactive' })} (${rawCounts.inactive})`, value: 'INACTIVE' }] : []),
+              ]}
+              allOptionLabel={`${t('manufacturing.allMaterials', { defaultValue: 'All Materials' })} (${rawCounts.active})`}
+              placeholder={`${t('manufacturing.allMaterials', { defaultValue: 'All Materials' })} (${rawCounts.active})`}
+              searchable={false}
             />
-          </div>
-
-          <div className="w-full sm:w-64 shrink-0">
-            {activeTab === 'materials' ? (
-              <SelectInput
-                value={rawFilter === 'ALL' ? null : rawFilter}
-                onChange={(val) => { setRawFilter((val as RawFilterType) || 'ALL'); setPage(1); }}
-                options={[
-                  { label: `${t('manufacturing.lowStock', { defaultValue: 'Low Stock' })} (${rawCounts.low})`, value: 'LOW' },
-                  { label: `${t('manufacturing.outOfStock', { defaultValue: 'Out of Stock' })} (${rawCounts.out})`, value: 'OUT' },
-                  ...(rawCounts.inactive > 0 ? [{ label: `${t('common.inactive', { defaultValue: 'Inactive' })} (${rawCounts.inactive})`, value: 'INACTIVE' }] : []),
-                ]}
-                allOptionLabel={`${t('manufacturing.allMaterials', { defaultValue: 'All Materials' })} (${rawCounts.active})`}
-                placeholder={`${t('manufacturing.allMaterials', { defaultValue: 'All Materials' })} (${rawCounts.active})`}
-                searchable={false}
-              />
-            ) : activeTab === 'sub' ? (
-              <SelectInput
-                value={subFilter === 'ALL' ? null : subFilter}
-                onChange={(val) => { setSubFilter((val as SubFilterType) || 'ALL'); setPage(1); }}
-                options={[
-                  { label: `${t('manufacturing.readyToProduce', { defaultValue: 'Ready to Prep' })} (${intermediateCounts.ready})`, value: 'READY' },
-                  { label: `${t('manufacturing.ingredientShortage', { defaultValue: 'Ingredient Shortage' })} (${intermediateCounts.shortage})`, value: 'SHORTAGE' },
-                  ...(intermediateCounts.inactive > 0 ? [{ label: `${t('common.inactive', { defaultValue: 'Inactive' })} (${intermediateCounts.inactive})`, value: 'INACTIVE' }] : []),
-                ]}
-                allOptionLabel={`${t('manufacturing.allPrepared', { defaultValue: 'All Prepared' })} (${intermediateCounts.active})`}
-                placeholder={`${t('manufacturing.allPrepared', { defaultValue: 'All Prepared' })} (${intermediateCounts.active})`}
-                searchable={false}
-              />
-            ) : (
-              <SelectInput
-                value={finalFilter === 'ALL' ? null : finalFilter}
-                onChange={(val) => { setFinalFilter((val as FinalFilterType) || 'ALL'); setPage(1); }}
-                options={[
-                  { label: `${t('manufacturing.productRecipes', { defaultValue: 'Product Recipes' })} (${recipeCounts.products})`, value: 'PRODUCTS' },
-                  { label: `${t('manufacturing.addonRecipes', { defaultValue: 'Add-on Recipes' })} (${recipeCounts.addons})`, value: 'ADDONS' },
-                  ...(recipeCounts.inactive > 0 ? [{ label: `${t('common.inactive', { defaultValue: 'Inactive' })} (${recipeCounts.inactive})`, value: 'INACTIVE' }] : []),
-                ]}
-                allOptionLabel={`${t('manufacturing.allRecipes', { defaultValue: 'All Recipes' })} (${recipeCounts.active})`}
-                placeholder={`${t('manufacturing.allRecipes', { defaultValue: 'All Recipes' })} (${recipeCounts.active})`}
-                searchable={false}
-              />
-            )}
-          </div>
+          ) : activeTab === 'sub' ? (
+            <SelectInput
+              value={subFilter === 'ALL' ? null : subFilter}
+              onChange={(val) => { setSubFilter((val as SubFilterType) || 'ALL'); setPage(1); }}
+              options={[
+                { label: `${t('manufacturing.readyToProduce', { defaultValue: 'Ready to Prep' })} (${intermediateCounts.ready})`, value: 'READY' },
+                { label: `${t('manufacturing.ingredientShortage', { defaultValue: 'Ingredient Shortage' })} (${intermediateCounts.shortage})`, value: 'SHORTAGE' },
+                ...(intermediateCounts.inactive > 0 ? [{ label: `${t('common.inactive', { defaultValue: 'Inactive' })} (${intermediateCounts.inactive})`, value: 'INACTIVE' }] : []),
+              ]}
+              allOptionLabel={`${t('manufacturing.allPrepared', { defaultValue: 'All Prepared' })} (${intermediateCounts.active})`}
+              placeholder={`${t('manufacturing.allPrepared', { defaultValue: 'All Prepared' })} (${intermediateCounts.active})`}
+              searchable={false}
+            />
+          ) : (
+            <SelectInput
+              value={finalFilter === 'ALL' ? null : finalFilter}
+              onChange={(val) => { setFinalFilter((val as FinalFilterType) || 'ALL'); setPage(1); }}
+              options={[
+                { label: `${t('manufacturing.productRecipes', { defaultValue: 'Product Recipes' })} (${recipeCounts.products})`, value: 'PRODUCTS' },
+                { label: `${t('manufacturing.addonRecipes', { defaultValue: 'Add-on Recipes' })} (${recipeCounts.addons})`, value: 'ADDONS' },
+                ...(recipeCounts.inactive > 0 ? [{ label: `${t('common.inactive', { defaultValue: 'Inactive' })} (${recipeCounts.inactive})`, value: 'INACTIVE' }] : []),
+              ]}
+              allOptionLabel={`${t('manufacturing.allRecipes', { defaultValue: 'All Recipes' })} (${recipeCounts.active})`}
+              placeholder={`${t('manufacturing.allRecipes', { defaultValue: 'All Recipes' })} (${recipeCounts.active})`}
+              searchable={false}
+            />
+          )}
         </div>
-      </Card>
+      </ListFilterBar>
 
       <AnimatePresence mode="wait">
         {isLoading ? (
@@ -1177,21 +1170,21 @@ export function RecipesPage() {
         ) : (
           <div className="space-y-8">
             {activeTab === 'materials' ? (
-              <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+              <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+                <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
                   {paginatedItems.map((item) => {
                     const m = item as RawMaterial;
                     const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
                     const active = isEntityActive(m);
                     return (
-                      <div key={m.id} className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                      <div key={m.id} className="p-4 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors">
                         <div className="flex items-start justify-between gap-3 mb-3">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border flex-shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'}`}>
                               {m.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="min-w-0">
-                              <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{m.name}</p>
+                              <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm truncate">{m.name}</p>
                               <Badge tone={active ? 'green' : 'red'} className="mt-1">
                                 {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
                               </Badge>
@@ -1200,18 +1193,18 @@ export function RecipesPage() {
                           <div className="flex gap-1 flex-shrink-0">
                             {active ? (
                               <>
-                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors"><Edit2 size={14} /></button>
-                                <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
+                                <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 hover:text-mintcom-green transition-colors"><Edit2 size={14} /></button>
+                                <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
                               </>
                             ) : (
-                              <button onClick={() => handleReactivateMaterial(m.id)} className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
+                              <button onClick={() => handleReactivateMaterial(m.id)} className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 hover:text-mintcom-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
                             )}
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-3 text-sm">
-                          <div className="bg-gray-50 dark:bg-white/5 rounded-lg p-2">
-                            <p className="text-xs font-bold text-gray-400 mb-0.5">{t('inventory.quantity', {defaultValue: 'Quantity'})}</p>
-                            <p className="font-bold text-gray-900 dark:text-white">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-gray-500">{m.unit}</span></p>
+                          <div className="bg-stone-50 dark:bg-zinc-800 rounded-lg p-2">
+                            <p className="text-xs font-bold text-stone-400 mb-0.5">{t('inventory.quantity', {defaultValue: 'Quantity'})}</p>
+                            <p className="font-bold text-stone-900 dark:text-zinc-100">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs text-stone-500">{m.unit}</span></p>
                           </div>
                         </div>
                       </div>
@@ -1220,32 +1213,32 @@ export function RecipesPage() {
                 </div>
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                      <tr className="border-b border-gray-200 dark:border-white/5">
+                    <thead className="bg-stone-50 dark:bg-zinc-800/40">
+                      <tr className="border-b border-stone-200 dark:border-zinc-800">
                         <th className="px-6 py-4 text-start label-strong font-sans whitespace-nowrap">{t('inventory.form.name', {defaultValue: 'NAME'})}</th>
                         <th className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap">{t('inventory.quantity', {defaultValue: 'QUANTITY'})}</th>
                         <th className="px-6 py-4 text-center label-strong font-sans whitespace-nowrap">{t('common.status_title', {defaultValue: 'STATUS'})}</th>
                         <th className="px-6 py-4 text-end label-strong font-sans whitespace-nowrap">{t('orders.table.actions', {defaultValue: 'ACTIONS'})}</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                    <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                       {paginatedItems.map((item) => {
                         const m = item as RawMaterial;
                         const isLow = m.lowStockThreshold && m.quantity <= m.lowStockThreshold;
                         const active = isEntityActive(m);
                         return (
-                          <tr key={m.id} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+                          <tr key={m.id} className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors">
                             <td className="px-6 py-4 text-start">
                               <div className="flex items-center gap-3">
                                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs border shrink-0 ${isLow ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20'}`}>
                                   {m.name.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="font-bold text-gray-900 dark:text-white text-sm">{m.name}</span>
+                                <span className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{m.name}</span>
                               </div>
                             </td>
                             <td className="px-6 py-4 text-end">
-                              <span className="font-bold text-gray-900 dark:text-white">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                              <span className="ml-1 text-xs font-medium text-gray-500">{m.unit}</span>
+                              <span className="font-bold text-stone-900 dark:text-zinc-100">{(Number(m.quantity || 0)).toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                              <span className="ml-1 text-xs font-medium text-stone-500">{m.unit}</span>
                             </td>
                             <td className="px-6 py-4 text-center">
                               <Badge tone={active ? 'green' : 'red'}>
@@ -1256,11 +1249,11 @@ export function RecipesPage() {
                               <div className="flex items-center justify-end gap-2 transition-opacity">
                                 {active ? (
                                   <>
-                                    <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors"><Edit2 size={14} /></button>
-                                    <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
+                                    <button onClick={() => { setEditingMaterial(m); setMaterialForm({ name: m.name, unit: m.unit, quantity: m.quantity, costPerUnit: m.costPerUnit, lowStockThreshold: m.lowStockThreshold || 0 }); setShowMaterialModal(true); }} className="p-1.5 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 hover:text-mintcom-green transition-colors"><Edit2 size={14} /></button>
+                                    <button onClick={() => handleDeleteMaterial(m.id, m.name)} className="p-1.5 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 hover:text-red-500 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={14} /></button>
                                   </>
                                 ) : (
-                                  <button onClick={() => handleReactivateMaterial(m.id)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-mintcom-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
+                                  <button onClick={() => handleReactivateMaterial(m.id)} className="p-1.5 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 hover:text-mintcom-green transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={14} /></button>
                                 )}
                               </div>
                             </td>
@@ -1288,7 +1281,7 @@ export function RecipesPage() {
                     <motion.div
                       layout
                       key={recipe.id}
-                      className={`group relative bg-white dark:bg-[#1E293B] p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:shadow-xl transition-all duration-300 overflow-hidden ${active ? '' : 'opacity-75'}`}
+                      className={`group relative bg-white dark:bg-zinc-900/60 p-6 rounded-2xl border border-stone-200 dark:border-zinc-800 hover:shadow-xl transition-all duration-300 overflow-hidden ${active ? '' : 'opacity-75'}`}
                     >
                       <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                       <div className="absolute left-0 top-0 h-full w-1 bg-mintcom-green opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -1300,7 +1293,7 @@ export function RecipesPage() {
                               {activeTab === 'final' ? <Pizza size={20} /> : <Package size={20} />}
                             </div>
                             <div>
-                              <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate max-w-[150px] group-hover:text-mintcom-green transition-colors">
+                              <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 truncate max-w-[150px] group-hover:text-mintcom-green transition-colors">
                                 {activeTab === 'final' ? getFinalRecipeTargetName(recipe as FinalRecipe) : (recipe as SubRecipe).name}
                               </h3>
                               <p className="label-strong font-sans">{((recipe as any).ingredients || []).length} {t('manufacturing.ingredients')}</p>
@@ -1309,7 +1302,7 @@ export function RecipesPage() {
                                   {active ? t('common.active', { defaultValue: 'Active' }) : t('common.inactive', { defaultValue: 'Inactive' })}
                                 </Badge>
                                 {activeTab === 'final' && (recipe as FinalRecipe).version && (
-                                  <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gray-100 dark:bg-white/5 text-gray-500">
+                                  <span className="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-black bg-stone-100 dark:bg-zinc-800 text-stone-500">
                                     v{(recipe as FinalRecipe).version}
                                   </span>
                                 )}
@@ -1319,15 +1312,15 @@ export function RecipesPage() {
                           <div className="flex gap-1 transition-all">
                             {active ? (
                               <>
-                                <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
-                                <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={16} /></button>
+                                <button onClick={() => activeTab === 'final' ? openEditFinalRecipe(recipe as FinalRecipe) : openEditSubRecipe(recipe as SubRecipe)} className="p-2 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-colors" title={t('common.edit')}><Edit2 size={16} /></button>
+                                <button onClick={() => handleDeleteRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-red hover:bg-mintcom-red/10 transition-colors" title={t('common.archive', { defaultValue: 'Archive' })}><Trash2 size={16} /></button>
                               </>
                             ) : (
-                              <button onClick={() => handleReactivateRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={16} /></button>
+                              <button onClick={() => handleReactivateRecipe(recipe.id, activeTab)} className="p-2 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 transition-colors" title={t('common.reactivate', { defaultValue: 'Reactivate' })}><RefreshCcw size={16} /></button>
                             )}
                           </div>
                         </div>
-                        <div className="space-y-3 mb-6 bg-gray-50 dark:bg-white/[0.02] p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                        <div className="space-y-3 mb-6 bg-stone-50 dark:bg-zinc-800/40 p-4 rounded-xl border border-stone-100 dark:border-zinc-800">
                           {(Array.isArray((recipe as any).ingredients) ? (recipe as any).ingredients : []).slice(0, 3).map((ing: Record<string, any>, i: number) => {
                             const baseUnit = ing.rawMaterial?.unit || ing.subRecipe?.yieldUnit || 'Units';
                             let currentUnit = ing.selectedUnit || baseUnit;
@@ -1339,8 +1332,8 @@ export function RecipesPage() {
                             const displayQty = convertToDisplay(ing.quantity, baseUnit, currentUnit);
                             return (
                               <div key={i} className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
-                                <span className="text-xs font-bold text-gray-900 dark:text-white">
+                                <span className="text-xs font-bold text-stone-500 dark:text-zinc-400 truncate max-w-[120px]">{ing.rawMaterial?.name || ing.subRecipe?.name}</span>
+                                <span className="text-xs font-bold text-stone-900 dark:text-zinc-100">
                                   {displayQty.toLocaleString(t('common.locale'), { maximumFractionDigits: 4 })} <span className="text-xs opacity-50">{currentUnit}</span>
                                 </span>
                               </div>
@@ -1350,7 +1343,7 @@ export function RecipesPage() {
                         </div>
 
                         {activeTab === 'sub' && (
-                          <button disabled={!active} onClick={() => openManufactureModal(recipe as SubRecipe)} className={`w-full py-2.5 font-semibold rounded-lg text-sm transition-colors flex items-center justify-center gap-2 ${active ? 'bg-mintcom-green text-black hover:bg-mintcom-green/90 active:bg-mintcom-green/80' : 'bg-gray-100 dark:bg-white/5 text-gray-400 cursor-not-allowed'}`}>
+                          <button disabled={!active} onClick={() => openManufactureModal(recipe as SubRecipe)} className={`w-full py-2.5 font-semibold rounded-lg text-sm transition-colors flex items-center justify-center gap-2 ${active ? 'bg-mintcom-green text-black hover:bg-mintcom-green/90 active:bg-mintcom-green/80' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400 cursor-not-allowed'}`}>
                             {t('manufacturing.produceBatch')}
                           </button>
                         )}
@@ -1381,20 +1374,20 @@ export function RecipesPage() {
         <form id="material-form" onSubmit={handleMaterialSubmit}>
           <ModalBody className="space-y-6">
             <div>
-              <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-mintcom-red mx-1">*</span></label>
-              <input maxLength={255} type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
+              <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 mb-3 px-1 flex items-center gap-2">{t('inventory.form.name', {defaultValue: 'Name'})} <span className="text-mintcom-red mx-1">*</span></label>
+              <input maxLength={255} type="text" value={materialForm.name} onChange={(e) => { setMaterialForm({ ...materialForm, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }} className={`w-full px-5 py-3.5 bg-white dark:bg-zinc-800/40 backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl text-stone-900 dark:text-zinc-100 font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`} placeholder={t('inventory.form.namePlaceholder', {defaultValue: 'E.g. Flour'})} />
               {errors.name && <p className="mt-2 text-xs font-bold text-mintcom-red px-1">{errors.name}</p>}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 mb-3 px-1 flex items-center gap-2">
                   {t('inventory.form.unit', {defaultValue: 'Unit'})}
                   <QuickInfo text={t('inventory.tips.unit', {defaultValue: 'The primary unit used to measure this ingredient (e.g., Kg, Liters).'})} />
                 </label>
                 <CustomSelect value={materialForm.unit} onChange={(val) => setMaterialForm({ ...materialForm, unit: val as string })} options={units.map(u => ({ value: u, label: u }))} />
               </div>
               <div>
-                <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+                <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 mb-3 px-1 flex items-center gap-2">
                   {t('inventory.form.totalQuantity', {defaultValue: 'Total Quantity'})}
                   <QuickInfo text={t('inventory.tips.quantity', {defaultValue: 'Current stock available for this ingredient.'})} />
                 </label>
@@ -1410,7 +1403,7 @@ export function RecipesPage() {
                       const numericValue = parseInt(val || '0', 10) / 100;
                       setMaterialForm({ ...materialForm, quantity: numericValue });
                     }}
-                    className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all"
+                    className="w-full px-5 py-3.5 bg-white dark:bg-zinc-800/40 backdrop-blur-sm shadow-sm border border-stone-200 dark:border-zinc-800 rounded-2xl text-stone-900 dark:text-zinc-100 font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all"
                   />
                   <p className="mt-2 text-[10px] font-bold text-mintcom-green tracking-widest px-1">{t('attributes.form.atmStyle', { defaultValue: 'Digits shift right to left (ATM style)' })}</p>
                 </div>
@@ -1460,7 +1453,7 @@ export function RecipesPage() {
         />
         <ModalBody className="space-y-6 px-4 sm:px-6">
           <div>
-            <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+            <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 mb-3 px-1 flex items-center gap-2">
               {t('manufacturing.formula.name')} <span className="text-mintcom-red mx-1">*</span>
             </label>
             <input maxLength={255}
@@ -1470,14 +1463,14 @@ export function RecipesPage() {
                 setSubRecipeForm({ ...subRecipeForm, name: e.target.value });
                 if (errors.name) setErrors({ ...errors, name: '' });
               }}
-              className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-gray-200 dark:border-white/[0.08]'} rounded-2xl text-gray-900 dark:text-white font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`}
+              className={`w-full px-5 py-3.5 bg-white dark:bg-zinc-800/40 backdrop-blur-sm shadow-sm border ${errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl text-stone-900 dark:text-zinc-100 font-medium focus:outline-none focus:ring-[3px] focus:ring-mintcom-green/10 focus:border-mintcom-green transition-all`}
               placeholder={formatInputPlaceholder(t('manufacturing.formula.namePlaceholder'), t('common.locale'))}
             />
             {errors.name && <p className="mt-1 text-xs font-bold text-mintcom-red">{errors.name}</p>}
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col">
-              <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+              <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 mb-3 px-1 flex items-center gap-2">
                 {t('manufacturing.formula.yield')}
                 <QuickInfo text={t('manufacturing.tips.yield', {defaultValue: 'How much of the Prep this recipe makes (e.g., 5 Liters of sauce).'})} />
               </label>
@@ -1500,11 +1493,11 @@ export function RecipesPage() {
                     setSubRecipeForm({ ...subRecipeForm, yield: 0 });
                   }
                 }}
-                className="w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-2xl text-sm text-gray-900 dark:text-white font-bold focus:ring-2 focus:ring-mintcom-green/20 transition-all outline-none shadow-sm hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]"
+                className="w-full px-5 py-3.5 bg-white dark:bg-zinc-800/40 backdrop-blur-sm border border-stone-200 dark:border-zinc-800 rounded-2xl text-sm text-stone-900 dark:text-zinc-100 font-bold focus:ring-2 focus:ring-mintcom-green/20 transition-all outline-none shadow-sm hover:border-mintcom-green/50 hover:bg-stone-50/50 dark:hover:bg-zinc-800"
               />
             </div>
             <div className="flex flex-col">
-              <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+              <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 mb-3 px-1 flex items-center gap-2">
                 {formatInputLabel(t('manufacturing.formula.unit'), t('common.locale'))}
               </label>
               <CustomSelect
@@ -1517,8 +1510,8 @@ export function RecipesPage() {
           </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
-              <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
-              <span className="label-strong font-sans bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
+              <label className="text-sm font-normal text-stone-600 dark:text-zinc-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
+              <span className="label-strong font-sans bg-stone-50 dark:bg-zinc-800 px-3 py-1 rounded-lg border border-stone-200 dark:border-zinc-800">{subRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
             </div>
 
             <div className="space-y-3 min-h-[40px]">
@@ -1535,7 +1528,7 @@ export function RecipesPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       key={index}
-                      className="flex gap-2 items-center p-2.5 sm:p-3 bg-gray-50 dark:bg-white/[0.04] rounded-2xl border border-gray-200 dark:border-white/10 min-w-0"
+                      className="flex gap-2 items-center p-2.5 sm:p-3 bg-stone-50 dark:bg-zinc-800 rounded-2xl border border-stone-200 dark:border-zinc-800 min-w-0"
                     >
                       <CustomSelect
                         size="compact"
@@ -1554,7 +1547,7 @@ export function RecipesPage() {
                         className="flex-1 min-w-0"
                       />
 
-                      <div className="flex h-11 items-center bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden w-28 sm:w-32 shrink-0 focus-within:border-mintcom-green focus-within:ring-[3px] focus-within:ring-mintcom-green/10 transition-all">
+                      <div className="flex h-11 items-center bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden w-28 sm:w-32 shrink-0 focus-within:border-mintcom-green focus-within:ring-[3px] focus-within:ring-mintcom-green/10 transition-all">
                         <input
                           maxLength={255}
                           type="number"
@@ -1572,10 +1565,10 @@ export function RecipesPage() {
                             setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                           }}
                           placeholder={formatInputPlaceholder("Qty", t('common.locale'))}
-                          className="w-full h-full min-w-0 px-3 py-0 bg-transparent text-sm font-bold text-gray-900 dark:text-white outline-none"
+                          className="w-full h-full min-w-0 px-3 py-0 bg-transparent text-sm font-bold text-stone-900 dark:text-zinc-100 outline-none"
                         />
                         {availableUnits.length > 1 ? (
-                          <div className="relative border-l border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 h-full flex items-center shrink-0">
+                          <div className="relative border-l border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 h-full flex items-center shrink-0">
                             <select
                               value={currentUnit}
                               onChange={(e) => {
@@ -1584,15 +1577,15 @@ export function RecipesPage() {
                                 updated[index].selectedUnit = newUnit;
                                 setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                               }}
-                              className="h-full appearance-none bg-transparent pl-2.5 pr-5 py-0 text-xs font-bold text-gray-700 dark:text-gray-300 outline-none cursor-pointer"
+                              className="h-full appearance-none bg-transparent pl-2.5 pr-5 py-0 text-xs font-bold text-stone-700 dark:text-zinc-300 outline-none cursor-pointer"
                             >
                               {availableUnits.map(u => (
-                                <option key={u} value={u} className="bg-white dark:bg-[#1E293B]">{u}</option>
+                                <option key={u} value={u} className="bg-white dark:bg-zinc-900/60">{u}</option>
                               ))}
                             </select>
                           </div>
                         ) : (
-                          <span className="h-full px-3 bg-gray-50 dark:bg-white/5 border-l border-gray-200 dark:border-white/10 text-xs font-bold text-gray-400 flex items-center shrink-0">
+                          <span className="h-full px-3 bg-stone-50 dark:bg-zinc-800 border-l border-stone-200 dark:border-zinc-800 text-xs font-bold text-stone-400 flex items-center shrink-0">
                             {baseUnit}
                           </span>
                         )}
@@ -1604,7 +1597,7 @@ export function RecipesPage() {
                           const updated = subRecipeForm.ingredients.filter((_, i) => i !== index);
                           setSubRecipeForm({ ...subRecipeForm, ingredients: updated });
                         }}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 border border-transparent hover:border-mintcom-red/20 transition-all shrink-0"
+                        className="h-11 w-11 flex items-center justify-center rounded-xl text-stone-400 hover:text-mintcom-red hover:bg-mintcom-red/10 border border-transparent hover:border-mintcom-red/20 transition-all shrink-0"
                       >
                         <Trash2 size={18} />
                       </button>
@@ -1622,7 +1615,7 @@ export function RecipesPage() {
                   ingredients: [...subRecipeForm.ingredients, { rawMaterialId: '', quantity: 0 }],
                 });
               }}
-              className="w-full py-3 border border-dashed border-gray-200 dark:border-white/10 rounded-2xl text-xs font-bold text-gray-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 border border-dashed border-stone-200 dark:border-zinc-800 rounded-2xl text-xs font-bold text-stone-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
             >
               <Plus size={14} />
               <span>{t('manufacturing.formula.addIngredient')}</span>
@@ -1646,7 +1639,7 @@ export function RecipesPage() {
         />
         <ModalBody className="space-y-6 px-4 sm:px-6">
           <div>
-            <label className="block text-sm font-normal text-gray-600 dark:text-gray-300 mb-3 px-1 flex items-center gap-2">
+            <label className="block text-sm font-normal text-stone-600 dark:text-zinc-300 mb-3 px-1 flex items-center gap-2">
               {t('manufacturing.recipe.product')} <span className="text-mintcom-red mx-1">*</span>
             </label>
             <CustomSelect
@@ -1665,8 +1658,8 @@ export function RecipesPage() {
 
           <div className="space-y-4">
             <div className="flex items-center justify-between px-1">
-              <label className="text-sm font-normal text-gray-600 dark:text-gray-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
-              <span className="label-strong font-sans bg-gray-50 dark:bg-white/5 px-3 py-1 rounded-lg border border-gray-200 dark:border-white/10">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
+              <label className="text-sm font-normal text-stone-600 dark:text-zinc-300 flex items-center gap-2">{t('manufacturing.ingredients', {defaultValue: 'Ingredients'})}</label>
+              <span className="label-strong font-sans bg-stone-50 dark:bg-zinc-800 px-3 py-1 rounded-lg border border-stone-200 dark:border-zinc-800">{finalRecipeForm.ingredients.length.toLocaleString(t('common.locale'))} {t('manufacturing.items', { defaultValue: 'items' })}</span>
             </div>
 
             <div className="space-y-3 min-h-[40px]">
@@ -1684,9 +1677,9 @@ export function RecipesPage() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       key={index}
-                      className="flex gap-2 items-center p-2.5 sm:p-3 bg-gray-50 dark:bg-white/[0.04] rounded-2xl border border-gray-200 dark:border-white/10 min-w-0"
+                      className="flex gap-2 items-center p-2.5 sm:p-3 bg-stone-50 dark:bg-zinc-800 rounded-2xl border border-stone-200 dark:border-zinc-800 min-w-0"
                     >
-                      <div className="flex h-11 items-center bg-white dark:bg-[#1E293B] rounded-xl p-1 border border-gray-200 dark:border-white/10 shadow-sm shrink-0">
+                      <div className="flex h-11 items-center bg-white dark:bg-zinc-900/60 rounded-xl p-1 border border-stone-200 dark:border-zinc-800 shadow-sm shrink-0">
                         <button
                           type="button"
                           onClick={() => {
@@ -1694,7 +1687,7 @@ export function RecipesPage() {
                             updated[index] = { type: 'raw', rawMaterialId: '', quantity: 0 };
                             setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                           }}
-                          className={`h-full px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center ${ing.type === 'raw' ? 'bg-mintcom-green text-black font-black shadow-sm' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'}`}
+                          className={`h-full px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center ${ing.type === 'raw' ? 'bg-mintcom-green text-black font-black shadow-sm' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200'}`}
                         >
                           RAW
                         </button>
@@ -1705,7 +1698,7 @@ export function RecipesPage() {
                             updated[index] = { type: 'sub', subRecipeId: '', quantity: 0 };
                             setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                           }}
-                          className={`h-full px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center ${ing.type === 'sub' ? 'bg-mintcom-green text-black font-black shadow-sm' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-200'}`}
+                          className={`h-full px-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center ${ing.type === 'sub' ? 'bg-mintcom-green text-black font-black shadow-sm' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200'}`}
                         >
                           PREP
                         </button>
@@ -1737,7 +1730,7 @@ export function RecipesPage() {
                         className="flex-1 min-w-0"
                       />
 
-                      <div className="flex h-11 items-center bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden w-28 sm:w-32 shrink-0 focus-within:border-mintcom-green focus-within:ring-[3px] focus-within:ring-mintcom-green/10 transition-all">
+                      <div className="flex h-11 items-center bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden w-28 sm:w-32 shrink-0 focus-within:border-mintcom-green focus-within:ring-[3px] focus-within:ring-mintcom-green/10 transition-all">
                         <input
                           maxLength={255}
                           type="number"
@@ -1755,10 +1748,10 @@ export function RecipesPage() {
                             setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                           }}
                           placeholder={formatInputPlaceholder("Qty", t('common.locale'))}
-                          className="w-full h-full min-w-0 px-3 py-0 bg-transparent text-sm font-bold text-gray-900 dark:text-white outline-none"
+                          className="w-full h-full min-w-0 px-3 py-0 bg-transparent text-sm font-bold text-stone-900 dark:text-zinc-100 outline-none"
                         />
                         {availableUnits.length > 1 ? (
-                          <div className="relative border-l border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 h-full flex items-center shrink-0">
+                          <div className="relative border-l border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 h-full flex items-center shrink-0">
                             <select
                               value={currentUnit}
                               onChange={(e) => {
@@ -1767,15 +1760,15 @@ export function RecipesPage() {
                                 updated[index].selectedUnit = newUnit;
                                 setFinalRecipeForm({ ...finalRecipeForm, ingredients: updated });
                               }}
-                              className="h-full appearance-none bg-transparent pl-2.5 pr-5 py-0 text-xs font-bold text-gray-700 dark:text-gray-300 outline-none cursor-pointer"
+                              className="h-full appearance-none bg-transparent pl-2.5 pr-5 py-0 text-xs font-bold text-stone-700 dark:text-zinc-300 outline-none cursor-pointer"
                             >
                               {availableUnits.map(u => (
-                                <option key={u} value={u} className="bg-white dark:bg-[#1E293B]">{u}</option>
+                                <option key={u} value={u} className="bg-white dark:bg-zinc-900/60">{u}</option>
                               ))}
                             </select>
                           </div>
                         ) : (
-                          <span className="h-full px-3 bg-gray-50 dark:bg-white/5 border-l border-gray-200 dark:border-white/10 text-xs font-bold text-gray-400 flex items-center shrink-0">
+                          <span className="h-full px-3 bg-stone-50 dark:bg-zinc-800 border-l border-stone-200 dark:border-zinc-800 text-xs font-bold text-stone-400 flex items-center shrink-0">
                             {baseUnit}
                           </span>
                         )}
@@ -1789,7 +1782,7 @@ export function RecipesPage() {
                             ingredients: finalRecipeForm.ingredients.filter((_, i) => i !== index),
                           });
                         }}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 border border-transparent hover:border-mintcom-red/20 transition-all shrink-0"
+                        className="h-11 w-11 flex items-center justify-center rounded-xl text-stone-400 hover:text-mintcom-red hover:bg-mintcom-red/10 border border-transparent hover:border-mintcom-red/20 transition-all shrink-0"
                       >
                         <Trash2 size={18} />
                       </button>
@@ -1807,7 +1800,7 @@ export function RecipesPage() {
                   ingredients: [...finalRecipeForm.ingredients, { type: 'raw', rawMaterialId: '', quantity: 0 }],
                 });
               }}
-              className="w-full py-3 border border-dashed border-gray-200 dark:border-white/10 rounded-2xl text-xs font-bold text-gray-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 border border-dashed border-stone-200 dark:border-zinc-800 rounded-2xl text-xs font-bold text-stone-500 hover:text-mintcom-green hover:border-mintcom-green/50 transition-all flex items-center justify-center gap-2"
             >
               <Plus size={14} />
               <span>{t('manufacturing.recipe.addIngredient')}</span>
@@ -1832,21 +1825,21 @@ export function RecipesPage() {
               onClose={() => setShowManufactureModal(false)}
             />
             <ModalBody className="pt-6 sm:pt-8">
-              <p className="text-sm font-medium text-gray-500 mb-6">{t('manufacturing.produceSubtitle', { name: manufactureRecipe.name })}</p>
+              <p className="text-sm font-medium text-stone-500 mb-6">{t('manufacturing.produceSubtitle', { name: manufactureRecipe.name })}</p>
 
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('manufacturing.numberOfBatches')}</label>
+                  <label className="block text-xs font-bold text-stone-400 uppercase tracking-wider mb-2">{t('manufacturing.numberOfBatches')}</label>
                   <div className="flex items-center gap-3">
-                    <button type="button" onClick={() => setNumBatches(Math.max(1, numBatches - 1))} className="p-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg">-</button>
-                    <input maxLength={255} type="number" min="1" value={numBatches} onChange={(e) => setNumBatches(Math.max(1, parseInt(e.target.value) || 1))} className="flex-1 text-center font-black text-xl py-2 bg-transparent text-gray-900 dark:text-white outline-none border-b-2 border-mintcom-green" />
-                    <button type="button" onClick={() => setNumBatches(numBatches + 1)} className="p-3 bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 transition-colors font-bold text-lg">+</button>
+                    <button type="button" onClick={() => setNumBatches(Math.max(1, numBatches - 1))} className="p-3 bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 rounded-xl hover:bg-stone-200 transition-colors font-bold text-lg">-</button>
+                    <input maxLength={255} type="number" min="1" value={numBatches} onChange={(e) => setNumBatches(Math.max(1, parseInt(e.target.value) || 1))} className="flex-1 text-center font-black text-xl py-2 bg-transparent text-stone-900 dark:text-zinc-100 outline-none border-b-2 border-mintcom-green" />
+                    <button type="button" onClick={() => setNumBatches(numBatches + 1)} className="p-3 bg-stone-100 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 rounded-xl hover:bg-stone-200 transition-colors font-bold text-lg">+</button>
                   </div>
                 </div>
 
-                <div className="p-4 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5">
+                <div className="p-4 bg-stone-50 dark:bg-zinc-800/40 rounded-xl border border-stone-100 dark:border-zinc-800">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500 font-bold">{t('manufacturing.totalYield')}:</span>
+                    <span className="text-stone-500 font-bold">{t('manufacturing.totalYield')}:</span>
                     <span className="text-mintcom-green font-black">{numBatches * manufactureRecipe.yield} {manufactureRecipe.yieldUnit}</span>
                   </div>
                 </div>

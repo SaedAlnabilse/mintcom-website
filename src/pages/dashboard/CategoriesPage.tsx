@@ -592,7 +592,7 @@ export function CategoriesPage() {
                   <ExportMenu onExport={handleExport} formats={['xlsx', 'pdf', 'csv']} className="!px-3 sm:!px-4 !py-2.5 sm:!py-3" />
                   <button
                       onClick={() => setShowCsvImport(true)}
-                      className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
+                      className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-zinc-800 text-stone-900 dark:text-zinc-100 border border-stone-200 dark:border-zinc-800 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-all shadow-sm group"
                   >
                       <Upload size={18} className="group-hover:text-mintcom-green transition-colors" />
                       <span className="font-bold text-xs sm:text-sm hidden sm:inline">{t('products.importCsv')}</span>
@@ -620,7 +620,7 @@ export function CategoriesPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="flex-shrink-0 w-[160px] sm:w-auto snap-start group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
+            className="flex-shrink-0 w-[160px] sm:w-auto snap-start group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 transition-all duration-300 overflow-hidden"
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10 flex items-center gap-4">
@@ -633,12 +633,12 @@ export function CategoriesPage() {
                   {typeof stat.value === 'number' ? (
                     <StatValue value={stat.value} isInteger={true} className="text-2xl" />
                   ) : (
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight truncate">
+                    <p className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight truncate">
                       {stat.value}
                     </p>
                   )}
                   {stat.sub && (
-                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-2 truncate">{stat.sub}</p>
+                    <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-2 truncate">{stat.sub}</p>
                   )}
                 </div>
               </div>
@@ -672,16 +672,16 @@ export function CategoriesPage() {
             />
           </div>
 
-          <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/5 shrink-0">
+          <div className="flex bg-stone-100 dark:bg-zinc-800 p-1 rounded-xl border border-stone-200 dark:border-zinc-800 shrink-0">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-900/60 shadow-sm text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
           >
             <Grid size={18} />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-zinc-900/60 shadow-sm text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
           >
             <List size={18} />
           </button>
@@ -692,7 +692,7 @@ export function CategoriesPage() {
       {isLoading ? (
         <div className="py-24 flex flex-col items-center">
           <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
-          <p className="text-xs font-black text-gray-400">{t('categories.messages.loading')}</p>
+          <p className="text-xs font-black text-stone-400">{t('categories.messages.loading')}</p>
         </div>
       ) : filteredCategories.length === 0 ? (
         <EmptyState
@@ -714,13 +714,13 @@ export function CategoriesPage() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: idx * 0.05 }}
                       onClick={() => setViewingCategory(category)}
-                      className="group relative bg-white dark:bg-[#1E293B] p-4 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/5 hover:border-mintcom-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
+                      className="group relative bg-white dark:bg-zinc-900/60 p-4 sm:p-6 rounded-2xl border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/50 hover:shadow-xl transition-all cursor-pointer overflow-hidden duration-300"
                     >
                       <div className="absolute top-0 left-0 w-1 h-full bg-mintcom-green opacity-0 group-hover:opacity-100 transition-all duration-300" />
                       <div className="absolute -right-6 -top-6 w-24 h-24 bg-mintcom-green/5 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
                       <div className="flex justify-between items-start mb-6 relative z-10">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-white/5 text-gray-500 group-hover:bg-mintcom-green group-hover:text-black transition-all duration-300 shadow-sm">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-stone-50 dark:bg-zinc-800 text-stone-500 group-hover:bg-mintcom-green group-hover:text-black transition-all duration-300 shadow-sm">
                           <IconComponent size={24} />
                         </div>
                         <div className="flex gap-1">
@@ -728,13 +728,13 @@ export function CategoriesPage() {
                             <>
                               <button
                                 onClick={(e) => openEditModal(e, category)}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-green transition-colors"
+                                className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 hover:text-mintcom-green transition-colors"
                               >
                                 <Edit2 size={16} />
                               </button>
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-mintcom-red transition-colors"
+                                className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 hover:text-mintcom-red transition-colors"
                                 title={t('common.archive')}
                               >
                                 <Trash2 size={16} />
@@ -744,7 +744,7 @@ export function CategoriesPage() {
                         </div>
                       </div>
 
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors leading-tight truncate relative z-10">
+                      <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors leading-tight truncate relative z-10">
                         {category.name}
                       </h3>
 
@@ -754,12 +754,12 @@ export function CategoriesPage() {
                         </Badge>
                       </div>
 
-                      <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between relative z-10">
+                      <div className="mt-6 pt-4 border-t border-stone-100 dark:border-zinc-800 flex items-center justify-between relative z-10">
                         <div className="flex items-center gap-2">
-                          <Package size={14} className="text-gray-400 group-hover:text-mintcom-green transition-colors" />
-                          <span className="dashboard-card-meta group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
+                          <Package size={14} className="text-stone-400 group-hover:text-mintcom-green transition-colors" />
+                          <span className="dashboard-card-meta group-hover:text-stone-700 dark:group-hover:text-zinc-300 transition-colors">{t('categories.itemsCount', { count: category._count?.items || 0 })}</span>
                         </div>
-                        <ChevronRight size={16} className="text-gray-300 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all" />
+                        <ChevronRight size={16} className="text-stone-300 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all" />
                       </div>
                     </motion.div>
                   );
@@ -775,10 +775,10 @@ export function CategoriesPage() {
               />
             </>
           ) : (
-            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                  <thead className="bg-stone-50 dark:bg-zinc-800/40 border-b border-stone-100 dark:border-zinc-800">
                     <tr>
                       <th className="px-6 py-4 text-center dashboard-card-label w-16 whitespace-nowrap">{t('categories.table.icon')}</th>
                       <th className="px-6 py-4 text-start dashboard-card-label whitespace-nowrap">{t('categories.table.name')}</th>
@@ -787,22 +787,22 @@ export function CategoriesPage() {
                       <th className="px-6 py-4 text-end dashboard-card-label w-32 whitespace-nowrap">{t('owner.locations.actions')}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                  <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                     {paginatedCategories.map((category) => {
                       const IconComponent = ICON_MAP[category.icon || 'tag'] || Tag;
                       return (
                         <tr
                           key={category.id}
                           onClick={() => setViewingCategory(category)}
-                          className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer"
+                          className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer"
                         >
                           <td className="px-6 py-4 text-center">
-                            <div className="w-10 h-10 mx-auto rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:bg-mintcom-green group-hover:text-black transition-colors">
+                            <div className="w-10 h-10 mx-auto rounded-lg bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-500 group-hover:bg-mintcom-green group-hover:text-black transition-colors">
                               <IconComponent size={20} />
                             </div>
                           </td>
                           <td className="px-6 py-4 text-start">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{category.name}</p>
+                            <p className="text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors">{category.name}</p>
                           </td>
                           <td className="px-6 py-4 text-center">
                             <Badge tone={isCategoryActive(category) ? 'green' : 'red'}>
@@ -810,7 +810,7 @@ export function CategoriesPage() {
                             </Badge>
                           </td>
                           <td className="px-6 py-4 text-end">
-                            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 dashboard-card-meta">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-stone-100 dark:bg-zinc-800 dashboard-card-meta">
                               <Package size={12} />
                               {category._count?.items || 0}
                             </span>
@@ -821,13 +821,13 @@ export function CategoriesPage() {
                                 <>
                                   <button
                                     onClick={(e) => openEditModal(e, category)}
-                                    className="p-2 text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"
+                                    className="p-2 text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"
                                   >
                                     <Edit2 size={16} />
                                   </button>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); handleDelete(category.id); }}
-                                    className="p-2 text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors"
+                                    className="p-2 text-stone-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors"
                                     title={t('common.archive')}
                                   >
                                     <Trash2 size={16} />
@@ -873,11 +873,11 @@ export function CategoriesPage() {
             <ModalBody>
                   {categoryProducts.length === 0 ? (
                     <div className="py-20 text-center flex flex-col items-center">
-                      <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 dark:border-white/5 shadow-sm">
-                        <Package size={40} strokeWidth={1.5} className="text-gray-300" />
+                      <div className="w-20 h-20 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 border border-stone-100 dark:border-zinc-800 shadow-sm">
+                        <Package size={40} strokeWidth={1.5} className="text-stone-300" />
                       </div>
                       <h3 className="dashboard-card-value mb-2">{t('products.messages.noProducts')}</h3>
-                      <p className="text-sm font-bold text-gray-500 max-w-xs mx-auto mb-6">{t('products.messages.noProductsDesc')}</p>
+                      <p className="text-sm font-bold text-stone-500 max-w-xs mx-auto mb-6">{t('products.messages.noProductsDesc')}</p>
                       {isCategoryActive(viewingCategory) && (
                         <button
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
@@ -896,9 +896,9 @@ export function CategoriesPage() {
                         <div
                           key={p.id}
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { productId: p.id, categoryId: viewingCategory.id } })}
-                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-mintcom-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
+                          className="p-4 bg-stone-50 dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800 rounded-xl group hover:border-mintcom-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                         >
-                          <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
+                          <div className="w-12 h-12 rounded-lg bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 overflow-hidden shrink-0">
                             <ThumbnailImage
                               src={p.image || '/default_product.png'}
                               alt={p.name || 'Default Product'}
@@ -907,7 +907,7 @@ export function CategoriesPage() {
                             />
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
+                            <p className="font-bold text-sm text-stone-900 dark:text-zinc-100 truncate">{p.name}</p>
                             <p className="text-sm font-bold text-mintcom-green mt-0.5">
                               {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                             </p>
@@ -917,14 +917,14 @@ export function CategoriesPage() {
                       {isCategoryActive(viewingCategory) && (
                         <div
                           onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { openCreateModal: true, categoryId: viewingCategory.id } })}
-                          className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-dashed border-gray-300 dark:border-white/20 rounded-xl group hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
+                          className="p-4 bg-stone-50 dark:bg-zinc-800/40 border border-dashed border-stone-300 dark:border-zinc-800 rounded-xl group hover:border-mintcom-green/50 hover:bg-mintcom-green/5 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4 shadow-sm"
                         >
-                          <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center shrink-0">
-                             <Plus size={20} className="text-gray-400 group-hover:text-mintcom-green group-hover:scale-110 transition-all" />
+                          <div className="w-12 h-12 rounded-lg bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 flex items-center justify-center shrink-0">
+                             <Plus size={20} className="text-stone-400 group-hover:text-mintcom-green group-hover:scale-110 transition-all" />
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-sm text-gray-600 dark:text-gray-300 group-hover:text-mintcom-green transition-colors truncate">{t('common.add')}</p>
-                            <p className="text-xs font-medium text-gray-400 dark:text-white/40 mt-0.5">
+                            <p className="font-bold text-sm text-stone-600 dark:text-zinc-300 group-hover:text-mintcom-green transition-colors truncate">{t('common.add')}</p>
+                            <p className="text-xs font-medium text-stone-400 dark:text-zinc-500 mt-0.5">
                               New Product
                             </p>
                           </div>
@@ -1002,9 +1002,9 @@ export function CategoriesPage() {
                       <div
                         key={p.id}
                         onClick={() => navigate(`/dashboard/${locationSlug}/products`, { state: { productId: p.id, categoryId: deleteBlockedCategory.id } })}
-                        className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group hover:border-mintcom-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
+                        className="p-4 bg-stone-50 dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800 rounded-xl group hover:border-mintcom-green/30 transition-all cursor-pointer active:scale-[0.98] flex items-center gap-4"
                       >
-                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-white/5 border border-gray-200 dark:border-white/5 overflow-hidden shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 overflow-hidden shrink-0">
                           <ThumbnailImage
                             src={p.image || '/default_product.png'}
                             alt={p.name || 'Default Product'}
@@ -1013,7 +1013,7 @@ export function CategoriesPage() {
                           />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="font-bold text-sm text-gray-900 dark:text-white truncate">{p.name}</p>
+                          <p className="font-bold text-sm text-stone-900 dark:text-zinc-100 truncate">{p.name}</p>
                           <p className="text-xs font-black text-mintcom-green mt-0.5">
                             {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                           </p>

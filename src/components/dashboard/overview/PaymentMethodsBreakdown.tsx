@@ -70,7 +70,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
   };
 
   return (
-    <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
+    <div id="tour-capital-sources" className="group relative p-4 sm:p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm flex flex-col transition-all duration-300 overflow-hidden">
       <div className="absolute top-0 end-0 w-40 h-40 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
@@ -80,7 +80,7 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
               <Wallet size={20} />
             </div>
             <div className="pt-0.5">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('dashboard.paymentMethods.title')}</h3>
+              <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{t('dashboard.paymentMethods.title')}</h3>
               <p className="card-subtitle">{t('dashboard.paymentMethods.distributionOverview', { defaultValue: 'Shift Distribution Overview' })}</p>
             </div>
           </div>
@@ -147,26 +147,26 @@ export const PaymentMethodsBreakdown = React.memo(function PaymentMethodsBreakdo
                 return (
                   <div
                     key={`${item.name}-${i}`}
-                    className="flex items-center justify-between gap-2.5 p-2 rounded-xl transition-all hover:bg-gray-50 dark:hover:bg-white/5"
+                    className="flex items-center justify-between gap-2.5 p-2 rounded-xl transition-all hover:bg-stone-50 dark:hover:bg-zinc-800"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <div
                         className="w-2.5 h-2.5 rounded-full shrink-0"
                         style={{ backgroundColor: hasData ? COLORS[i % COLORS.length] : emptyFill }}
                       />
-                      <span className="text-xs font-bold text-gray-700 dark:text-gray-200 truncate">
+                      <span className="text-xs font-bold text-stone-700 dark:text-zinc-200 truncate">
                         {getMethodName(item.name)}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <StatValue value={Number(item.value) || 0} currency={currencySymbol} className="text-xs font-bold text-gray-900 dark:text-white" />
-                      <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-gray-500 dark:text-gray-400 min-w-[36px] text-end" />
+                      <StatValue value={Number(item.value) || 0} currency={currencySymbol} className="text-xs font-bold text-stone-900 dark:text-zinc-100" />
+                      <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-stone-500 dark:text-zinc-400 min-w-[36px] text-end" />
                     </div>
                   </div>
                 );
               })
             ) : (
-              <div className="py-4 text-center text-xs text-gray-400 font-medium">
+              <div className="py-4 text-center text-xs text-stone-400 font-medium">
                 {t('common.noData', { defaultValue: 'No payment data available' })}
               </div>
             )}

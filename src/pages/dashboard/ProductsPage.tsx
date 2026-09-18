@@ -6,8 +6,6 @@ import {
     Check,
     ChevronDown,
     Plus,
-    Grid,
-    List,
     Trash2,
     Archive,
     Edit2,
@@ -28,7 +26,7 @@ import toast from 'react-hot-toast';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { ProductFormModal } from '../../components/forms/ProductFormModal';
 import { CsvImportModal, type CsvColumn, type ImportResult } from '../../components/CsvImportModal';
-import { SearchInput, SelectInput, Pagination, PageHeader, Badge, EmptyState } from '../../components/ui';
+import { SelectInput, Pagination, PageHeader, Badge, EmptyState, ListFilterBar } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import { OptimizedImage, ThumbnailImage } from '../../components/OptimizedImage';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -228,10 +226,10 @@ export function ProductsPage() {
     const getStockColor = (stock: number, redLimit?: number, yellowLimit?: number, isList: boolean = false) => {
         const r = redLimit ?? 2;
         const y = yellowLimit ?? 5;
-        if (stock <= 0) return 'text-slate-500';
+        if (stock <= 0) return 'text-stone-500';
         if (stock <= r) return 'text-mintcom-red';
         if (stock <= y) return 'text-amber-500';
-        return isList ? 'text-gray-600 dark:text-gray-300' : 'text-gray-900 dark:text-white';
+        return isList ? 'text-stone-600 dark:text-zinc-300' : 'text-stone-900 dark:text-zinc-100';
     };
 
     const isProductActive = (product: Product) => !product.deletedAt && !product.deactivatedAt;
@@ -1166,7 +1164,7 @@ export function ProductsPage() {
                     <ExportMenu onExport={handleExport} formats={['xlsx', 'pdf', 'csv']} className="!px-3 sm:!px-4 !py-2.5 sm:!py-3" />
                     <button
                         onClick={() => setShowCsvImport(true)}
-                        className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all shadow-sm group"
+                        className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-zinc-800 text-stone-900 dark:text-zinc-100 border border-stone-200 dark:border-zinc-800 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-all shadow-sm group"
                         title={t('products.importFromCsv')}
                     >
                         <Upload size={18} className="group-hover:text-mintcom-green transition-colors" />
@@ -1189,9 +1187,9 @@ export function ProductsPage() {
                 {/* Total Products */}
                 <button
                     onClick={() => setStockFilter('all')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'all'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-zinc-900/60 p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'all'
                         ? 'border-blue-500/50 ring-1 ring-blue-500/30 bg-blue-500/[0.02]'
-                        : 'border-gray-200 dark:border-white/[0.03] hover:border-blue-300'
+                        : 'border-stone-200 dark:border-zinc-800 hover:border-blue-300'
                         }`}
                 >
                     <div className="flex items-center justify-between mb-2">
@@ -1201,12 +1199,12 @@ export function ProductsPage() {
                             </div>
                             <p className="dashboard-stat-title truncate">{t('products.stats.total')}</p>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-blue-500 transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-blue-500 transition-colors">
                             <ExternalLink size={14} />
                         </div>
                     </div>
                     <StatValue value={stats.total} isInteger={true} className={`text-2xl ${stockFilter === 'all' ? 'text-blue-500' : ''}`} />
-                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                    <p className="text-[13px] font-bold text-stone-500 dark:text-zinc-400 mt-3 leading-relaxed">
                         {t('products.stats.totalDesc')}
                     </p>
                 </button>
@@ -1214,9 +1212,9 @@ export function ProductsPage() {
                 {/* Low Stock (Yellow) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'yellow' ? 'all' : 'yellow')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-zinc-900/60 p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'yellow'
                         ? 'border-[#ffc107]/50 ring-1 ring-[#ffc107]/30 bg-[#ffc107]/5'
-                        : 'border-gray-200 dark:border-white/[0.03] hover:border-[#ffc107]/30'
+                        : 'border-stone-200 dark:border-zinc-800 hover:border-[#ffc107]/30'
                         }`}
                 >
                     <div className="flex items-center justify-between mb-2">
@@ -1226,12 +1224,12 @@ export function ProductsPage() {
                             </div>
                             <p className="dashboard-stat-title truncate">{t('products.stats.low')}</p>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-[#ffc107] transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-[#ffc107] transition-colors">
                             <ExternalLink size={14} />
                         </div>
                     </div>
                     <StatValue value={stats.yellowThreshold} isInteger={true} className="text-2xl text-[#ffc107]" />
-                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                    <p className="text-[13px] font-bold text-stone-500 dark:text-zinc-400 mt-3 leading-relaxed">
                         {t('products.stats.lowDesc')}
                     </p>
                 </button>
@@ -1239,9 +1237,9 @@ export function ProductsPage() {
                 {/* Critical (Red) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'red' ? 'all' : 'red')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-zinc-900/60 p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'red'
                         ? 'border-[#D55263]/50 ring-1 ring-[#D55263]/30 bg-[#D55263]/5'
-                        : 'border-gray-200 dark:border-white/[0.03] hover:border-[#D55263]/30'
+                        : 'border-stone-200 dark:border-zinc-800 hover:border-[#D55263]/30'
                         }`}
                 >
                     <div className="flex items-center justify-between mb-2">
@@ -1251,12 +1249,12 @@ export function ProductsPage() {
                             </div>
                             <p className="dashboard-stat-title truncate">{t('products.stats.critical')}</p>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-[#D55263] transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-[#D55263] transition-colors">
                             <ExternalLink size={14} />
                         </div>
                     </div>
                     <StatValue value={stats.redThreshold} isInteger={true} className="text-2xl text-[#D55263]" />
-                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                    <p className="text-[13px] font-bold text-stone-500 dark:text-zinc-400 mt-3 leading-relaxed">
                         {t('products.stats.criticalDesc')}
                     </p>
                 </button>
@@ -1264,167 +1262,144 @@ export function ProductsPage() {
                 {/* Out of Stock (Gray) */}
                 <button
                     onClick={() => setStockFilter(stockFilter === 'out' ? 'all' : 'out')}
-                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-[#1E293B] p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'out'
-                        ? 'border-slate-500/50 ring-1 ring-slate-500/30 bg-slate-500/[0.02]'
-                        : 'border-gray-200 dark:border-white/[0.03] hover:border-slate-400'
+                    className={`group flex-shrink-0 w-[160px] sm:w-auto snap-start text-left bg-white dark:bg-zinc-900/60 p-4 sm:p-5 rounded-2xl border transition-all duration-300 overflow-hidden ${stockFilter === 'out'
+                        ? 'border-stone-500/50 ring-1 ring-stone-500/30 bg-stone-500/[0.02]'
+                        : 'border-stone-200 dark:border-zinc-800 hover:border-stone-400'
                         }`}
                 >
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="p-2 sm:p-2.5 rounded-xl bg-slate-500/10 text-slate-500 transition-transform duration-300">
+                            <div className="p-2 sm:p-2.5 rounded-xl bg-stone-500/10 text-stone-500 transition-transform duration-300">
                                 <BiIcon icon="bi-x-circle" size={19} />
                             </div>
                             <p className="dashboard-stat-title truncate">{t('products.stats.outOfStock')}</p>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-slate-500 transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-stone-500 transition-colors">
                             <ExternalLink size={14} />
                         </div>
                     </div>
-                    <StatValue value={stats.outOfStock} isInteger={true} className="text-2xl text-slate-500" />
-                    <p className="text-[13px] font-bold text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                    <StatValue value={stats.outOfStock} isInteger={true} className="text-2xl text-stone-500" />
+                    <p className="text-[13px] font-bold text-stone-500 dark:text-zinc-400 mt-3 leading-relaxed">
                         {t('products.stats.outOfStockDesc')}
                     </p>
                 </button>
             </div>
 
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                {/* Search */}
-                <div className="relative flex-1">
-                    <SearchInput
-                        placeholder={formatInputPlaceholder(t('products.searchPlaceholder'), t('common.locale'))}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onClear={() => setSearchQuery('')}
-                        className="w-full"
+            <ListFilterBar
+                searchValue={searchQuery}
+                onSearchChange={(e) => setSearchQuery(e.target.value)}
+                onSearchClear={() => setSearchQuery('')}
+                searchPlaceholder={formatInputPlaceholder(t('products.searchPlaceholder'), t('common.locale'))}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+            >
+                <div className="w-full sm:w-40">
+                    <SelectInput
+                        value={filterStatus === 'ALL' ? null : filterStatus}
+                        onChange={(value) => setFilterStatus((value as StatusFilterValue) || 'ALL')}
+                        options={[
+                            { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                            { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+                        ]}
+                        allOptionLabel={t('common.allStatuses', 'All Statuses')}
+                        placeholder={t('common.allStatuses', 'All Statuses')}
+                        searchable={false}
                     />
                 </div>
-
-                {/* Category Filter and View Toggle */}
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
-                    <div className="w-full sm:w-40">
-                        <SelectInput
-                            value={filterStatus === 'ALL' ? null : filterStatus}
-                            onChange={(value) => setFilterStatus((value as StatusFilterValue) || 'ALL')}
-                            options={[
-                                { label: t('common.active', 'Active'), value: 'ACTIVE' },
-                                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
-                            ]}
-                            allOptionLabel={t('common.allStatuses', 'All Statuses')}
-                            placeholder={t('common.allStatuses', 'All Statuses')}
-                            searchable={false}
+                <div className="relative w-full sm:w-auto sm:flex-initial sm:min-w-[200px]" ref={categoryDropdownRef}>
+                    <button
+                        onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                        className={`w-full text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none transition-all shadow-sm h-12 ${
+                            isCategoryFilterActive || showCategoryDropdown
+                                ? 'bg-mintcom-green/5 dark:bg-mintcom-green/10 border border-mintcom-green text-stone-900 dark:text-zinc-100 ring-2 ring-mintcom-green/10'
+                                : 'bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-900 dark:text-zinc-100 focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green'
+                        }`}
+                    >
+                        <span className="truncate pr-2">
+                            {selectedCategoryId === 'all'
+                                ? t('products.all')
+                                : categories.find(c => c.id === selectedCategoryId)?.name || t('common.select') + ' ' + t('products.table.category')}
+                        </span>
+                        <ChevronDown
+                            size={16}
+                            className={`transition-transform duration-200 shrink-0 ${showCategoryDropdown ? 'rotate-180' : ''} ${isCategoryFilterActive ? 'text-mintcom-green' : 'text-stone-400'}`}
                         />
-                    </div>
-                    <div className="relative w-full sm:w-auto sm:flex-initial sm:min-w-[200px]" ref={categoryDropdownRef}>
-                        <button
-                            onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-                            className={`w-full text-sm font-bold rounded-xl px-4 py-3 flex items-center justify-between focus:outline-none transition-all shadow-sm ${
-                                isCategoryFilterActive || showCategoryDropdown
-                                    ? 'bg-mintcom-green/5 dark:bg-mintcom-green/10 border border-mintcom-green text-gray-900 dark:text-white ring-2 ring-mintcom-green/10'
-                                    : 'bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green'
-                            }`}
-                        >
-                            <span>
-                                {selectedCategoryId === 'all'
-                                    ? t('products.all')
-                                    : categories.find(c => c.id === selectedCategoryId)?.name || t('common.select') + ' ' + t('products.table.category')}
-                            </span>
-                            <ChevronDown
-                                size={16}
-                                className={`transition-transform duration-200 ${showCategoryDropdown ? 'rotate-180' : ''} ${isCategoryFilterActive ? 'text-mintcom-green' : 'text-gray-400'}`}
-                            />
-                        </button>
+                    </button>
 
-                        <AnimatePresence>
-                            {showCategoryDropdown && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.15 }}
-                                    className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white dark:bg-[#0f172a] border border-gray-200 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden"
-                                >
-                                    <div className="p-2 border-b border-gray-100 dark:border-white/5 bg-white dark:bg-[#0f172a]">
-                                        <div className="relative">
-                                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" size={12} />
-                                            <input maxLength={255}
-                                                type="text"
-                                                placeholder={formatInputPlaceholder(t('common.search'), t('common.locale'))}
-                                                value={categorySearchQuery}
-                                                onChange={(e) => setCategorySearchQuery(e.target.value)}
-                                                onClick={(e) => e.stopPropagation()}
-                                                className="w-full pl-8 pr-9 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green"
-                                                autoFocus
-                                            />
-                                            {categorySearchQuery && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setCategorySearchQuery('')}
-                                                    aria-label={t('common.clearSearch', 'Clear search')}
-                                                    className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                                                >
-                                                    <X size={11} strokeWidth={2.75} />
-                                                </button>
-                                            )}
-                                        </div>
+                    <AnimatePresence>
+                        {showCategoryDropdown && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute top-[calc(100%+8px)] left-0 right-0 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-xl shadow-xl z-50 overflow-hidden"
+                            >
+                                <div className="p-2 border-b border-stone-100 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                                    <div className="relative">
+                                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400" size={12} />
+                                        <input maxLength={255}
+                                            type="text"
+                                            placeholder={formatInputPlaceholder(t('common.search'), t('common.locale'))}
+                                            value={categorySearchQuery}
+                                            onChange={(e) => setCategorySearchQuery(e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="w-full pl-8 pr-9 py-1.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-lg text-xs font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green"
+                                            autoFocus
+                                        />
+                                        {categorySearchQuery && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setCategorySearchQuery('')}
+                                                aria-label={t('common.clearSearch', 'Clear search')}
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 inline-flex h-6 w-6 items-center justify-center rounded-md border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
+                                            >
+                                                <X size={11} strokeWidth={2.75} />
+                                            </button>
+                                        )}
                                     </div>
-                                    <div className="max-h-60 overflow-y-auto custom-scrollbar p-1.5 space-y-1">
+                                </div>
+                                <div className="max-h-60 overflow-y-auto custom-scrollbar p-1.5 space-y-1">
+                                    <button
+                                        onClick={() => {
+                                            setSelectedCategoryId('all');
+                                            setShowCategoryDropdown(false);
+                                        }}
+                                        className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === 'all'
+                                            ? 'bg-mintcom-green/10 text-mintcom-green'
+                                            : 'text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800'
+                                            }`}
+                                    >
+                                        {t('products.all')}
+                                        {selectedCategoryId === 'all' && <Check size={14} />}
+                                    </button>
+
+                                    {categories
+                                        .filter(cat => cat.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
+                                        .map((cat) => (
                                         <button
+                                            key={cat.id || `cat-${Math.random()}`}
                                             onClick={() => {
-                                                setSelectedCategoryId('all');
+                                                setSelectedCategoryId(cat.id);
                                                 setShowCategoryDropdown(false);
+                                                setCategorySearchQuery('');
                                             }}
-                                            className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === 'all'
+                                            className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === cat.id
                                                 ? 'bg-mintcom-green/10 text-mintcom-green'
-                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
+                                                : 'text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800'
                                                 }`}
                                         >
-                                            {t('products.all')}
-                                            {selectedCategoryId === 'all' && <Check size={14} />}
+                                            {cat.name}
+                                            {selectedCategoryId === cat.id && <Check size={14} />}
                                         </button>
-
-                                            {categories
-                                                .filter(cat => cat.name.toLowerCase().includes(categorySearchQuery.toLowerCase()))
-                                                .map((cat) => (
-                                                <button
-                                                    key={cat.id || `cat-${Math.random()}`}
-                                                    onClick={() => {
-                                                        setSelectedCategoryId(cat.id);
-                                                        setShowCategoryDropdown(false);
-                                                        setCategorySearchQuery('');
-                                                    }}
-                                                    className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-bold flex items-center justify-between transition-colors ${selectedCategoryId === cat.id
-                                                        ? 'bg-mintcom-green/10 text-mintcom-green'
-                                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5'
-                                                        }`}
-                                                >
-                                                    {cat.name}
-                                                    {selectedCategoryId === cat.id && <Check size={14} />}
-                                                </button>
-                                            ))}
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-
-                    {/* View Mode Toggle */}
-                    <div className="flex bg-gray-100 dark:bg-white/5 p-1 rounded-xl border border-gray-200 dark:border-white/5 shrink-0">
-                        <button
-                            onClick={() => setViewMode('grid')}
-                            className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
-                        >
-                            <Grid size={18} />
-                        </button>
-                        <button
-                            onClick={() => setViewMode('list')}
-                            className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
-                        >
-                            <List size={18} />
-                        </button>
-                    </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
-            </div>
+            </ListFilterBar>
 
 
             {/* Content */}
@@ -1456,14 +1431,14 @@ export function ProductsPage() {
                                     return (
                                     <div
                                         key={p.id || `prod-${p.name}`}
-                                        className={`group bg-white dark:bg-[#1E293B] rounded-2xl border transition-all overflow-hidden flex flex-col cursor-pointer h-full ${
+                                        className={`group bg-white dark:bg-zinc-900/60 rounded-2xl border transition-all overflow-hidden flex flex-col cursor-pointer h-full ${
                                             isProductActive(p)
-                                                ? 'border-gray-200 dark:border-white/5 hover:border-mintcom-green/50 hover:shadow-xl'
-                                                : 'border-gray-200 dark:border-white/5 opacity-70'
+                                                ? 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/50 hover:shadow-xl'
+                                                : 'border-stone-200 dark:border-zinc-800 opacity-70'
                                         }`}
                                         onClick={() => handleEdit(p)}
                                     >
-                                        <div className="aspect-[4/3] bg-gray-50 dark:bg-black/20 relative overflow-hidden shrink-0 flex items-center justify-center">
+                                        <div className="aspect-[4/3] bg-stone-50 dark:bg-black/20 relative overflow-hidden shrink-0 flex items-center justify-center">
                                             <OptimizedImage
                                                 key={`${p.id}-${p.image || 'none'}`}
                                                 src={imageSrc}
@@ -1485,8 +1460,8 @@ export function ProductsPage() {
                                                     aria-label={t('products.editProduct')}
                                                     className={`p-2.5 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl transition-all shadow-sm ${
                                                         hasCustomImage
-                                                            ? 'bg-white text-gray-900 hover:bg-mintcom-green hover:text-black'
-                                                            : 'bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-200 hover:bg-mintcom-green hover:text-black hover:border-mintcom-green'
+                                                            ? 'bg-white text-stone-900 hover:bg-mintcom-green hover:text-black'
+                                                            : 'bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-700 dark:text-zinc-200 hover:bg-mintcom-green hover:text-black hover:border-mintcom-green'
                                                     }`}
                                                 >
                                                     <Edit2 size={16} />
@@ -1498,7 +1473,7 @@ export function ProductsPage() {
                                                         className={`p-2.5 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl transition-all shadow-sm ${
                                                             hasCustomImage
                                                                 ? 'bg-white text-mintcom-red hover:bg-red-500 hover:text-white'
-                                                                : 'bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-mintcom-red hover:bg-red-500 hover:text-white hover:border-red-500'
+                                                                : 'bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-mintcom-red hover:bg-red-500 hover:text-white hover:border-red-500'
                                                         }`}
                                                     >
                                                         {p.willHardDelete ? <Trash2 size={16} /> : <Archive size={16} />}
@@ -1510,7 +1485,7 @@ export function ProductsPage() {
                                                         className={`p-2.5 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl transition-all shadow-sm ${
                                                             hasCustomImage
                                                                 ? 'bg-white text-mintcom-green hover:bg-mintcom-green hover:text-black'
-                                                                : 'bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-mintcom-green hover:bg-mintcom-green hover:text-black hover:border-mintcom-green'
+                                                                : 'bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-mintcom-green hover:bg-mintcom-green hover:text-black hover:border-mintcom-green'
                                                         }`}
                                                     >
                                                         <RotateCcw size={16} />
@@ -1521,9 +1496,9 @@ export function ProductsPage() {
                                         <div className="p-3 flex-1 flex flex-col min-h-0">
                                             <div className="flex flex-col mb-2 gap-1.5">
                                                 <div className="flex items-start justify-between gap-2">
-                                                    <h3 title={p.name} className="font-bold text-sm text-gray-900 dark:text-white leading-tight line-clamp-2 break-words flex-1">{p.name}</h3>
+                                                    <h3 title={p.name} className="font-bold text-sm text-stone-900 dark:text-zinc-100 leading-tight line-clamp-2 break-words flex-1">{p.name}</h3>
                                                     <div className="flex flex-col items-end gap-1 shrink-0">
-                                                        <span className="text-[9px] uppercase font-black text-gray-400 bg-gray-100 dark:bg-white/5 px-1.5 py-0.5 rounded-md h-fit tracking-tighter">
+                                                        <span className="text-[9px] uppercase font-black text-stone-400 bg-stone-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded-md h-fit tracking-tighter">
                                                             {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
                                                         </span>
                                                         <Badge tone={isProductActive(p) ? 'green' : 'red'}>
@@ -1533,26 +1508,26 @@ export function ProductsPage() {
                                                 </div>
                                             </div>
                                             {p.description ? (
-                                                <p className="text-[11px] leading-relaxed text-gray-500 line-clamp-2 mb-3 break-words">{p.description}</p>
+                                                <p className="text-[11px] leading-relaxed text-stone-500 line-clamp-2 mb-3 break-words">{p.description}</p>
                                             ) : (
                                                 <div className="mb-3" />
                                             )}
-                                            <div className="border-t border-gray-100 dark:border-white/5 pt-3 flex items-center justify-between mt-auto gap-2">
+                                            <div className="border-t border-stone-100 dark:border-zinc-800 pt-3 flex items-center justify-between mt-auto gap-2">
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5 truncate">{t('products.table.price')}</p>
+                                                    <p className="text-[10px] font-bold text-stone-400 mb-0.5 truncate">{t('products.table.price')}</p>
                                                     <p className="text-sm font-bold text-mintcom-green truncate">
                                                         {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                                                     </p>
                                                 </div>
                                                 <div className="text-right shrink-0">
-                                                    <p className="text-[10px] font-bold text-gray-400 mb-0.5">{t('products.table.stock')}</p>
+                                                    <p className="text-[10px] font-bold text-stone-400 mb-0.5">{t('products.table.stock')}</p>
                                                     {p.trackStock ? (
                                                         <div className={`text-xs font-bold flex items-center justify-end gap-1 ${getStockColor(p.availableStock || 0, p.lowStockThresholdRed, p.lowStockThresholdYellow)}`}>
                                                             {(p.availableStock || 0) <= (p.lowStockThresholdYellow || 5) && <AlertCircle size={10} />}
                                                             {(p.availableStock || 0).toLocaleString(t('common.locale'))}
                                                         </div>
                                                     ) : (
-                                                        <div className="text-xs font-bold text-gray-400 dark:text-gray-500 flex items-center justify-end">
+                                                        <div className="text-xs font-bold text-stone-400 dark:text-zinc-500 flex items-center justify-end">
                                                             <InfinityIcon size={16} strokeWidth={3} />
                                                         </div>
                                                     )}
@@ -1573,14 +1548,14 @@ export function ProductsPage() {
                             />
                         </>
                     ) : (
-                        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                             <div className="overflow-x-auto">
                                 <table className="w-full">
-                                    <thead className="bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5">
+                                    <thead className="bg-stone-50 dark:bg-zinc-800/40 border-b border-stone-100 dark:border-zinc-800">
                                         <tr>
-                                            <th className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 w-16 whitespace-nowrap">{t('products.table.image')}</th>
+                                            <th className="px-6 py-4 text-center text-[11px] font-bold text-stone-400 w-16 whitespace-nowrap">{t('products.table.image')}</th>
                                             <th
-                                                className="px-6 py-4 text-start text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
+                                                className="px-6 py-4 text-start text-[11px] font-bold text-stone-400 cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
                                                 onClick={() => handleSort('name')}
                                             >
                                                 <div className="flex items-center gap-1">
@@ -1589,7 +1564,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors"
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-stone-400 cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('category')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -1598,7 +1573,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors"
+                                                className="px-6 py-4 text-center text-[11px] font-bold text-stone-400 cursor-pointer hover:text-mintcom-green transition-colors"
                                                 onClick={() => handleSort('status')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -1607,7 +1582,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-end text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
+                                                className="px-6 py-4 text-end text-[11px] font-bold text-stone-400 cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
                                                 onClick={() => handleSort('availableStock')}
                                             >
                                                 <div className="flex items-center justify-end gap-1">
@@ -1616,7 +1591,7 @@ export function ProductsPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-end text-[11px] font-bold text-gray-400 cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
+                                                className="px-6 py-4 text-end text-[11px] font-bold text-stone-400 cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
                                                 onClick={() => handleSort('price')}
                                             >
                                                 <div className="flex items-center justify-end gap-1">
@@ -1624,15 +1599,15 @@ export function ProductsPage() {
                                                     {sortConfig?.key === 'price' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
-                                            <th className="px-6 py-4 text-end text-[11px] font-bold text-gray-400 w-24 whitespace-nowrap">{t('owner.locations.actions')}</th>
+                                            <th className="px-6 py-4 text-end text-[11px] font-bold text-stone-400 w-24 whitespace-nowrap">{t('owner.locations.actions')}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                    <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                                         {paginatedProducts.map((p, idx) => (
-                                            <tr key={p.id || `table-row-${idx}`} className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
+                                            <tr key={p.id || `table-row-${idx}`} className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer" onClick={() => handleEdit(p)}>
                                                 <td className="px-6 py-4 text-center">
                                                     <div className="flex justify-center">
-                                                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden">
+                                                        <div className="w-10 h-10 rounded-lg bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 overflow-hidden">
                                                             <ThumbnailImage
                                                                 key={`${p.id}-${p.image || 'none'}`}
                                                                 src={p.image ? getProductImageUrl(p.image)! : '/default_product.png'}
@@ -1644,10 +1619,10 @@ export function ProductsPage() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-start">
-                                                    <p title={p.name} className="text-sm font-bold text-gray-900 dark:text-white">{p.name}</p>
+                                                    <p title={p.name} className="text-sm font-bold text-stone-900 dark:text-zinc-100">{p.name}</p>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
-                                                    <span className="inline-flex px-2 py-1 rounded-md bg-gray-100 dark:bg-white/5 text-xs font-bold text-gray-500">
+                                                    <span className="inline-flex px-2 py-1 rounded-md bg-stone-100 dark:bg-zinc-800 text-xs font-bold text-stone-500">
                                                         {(Array.isArray(categories) ? categories : []).find(c => c.id === p.categoryId)?.name || t('categories.uncategorized')}
                                                     </span>
                                                 </td>
@@ -1662,23 +1637,23 @@ export function ProductsPage() {
                                                             {t('products.table.units', { count: p.availableStock || 0 })}
                                                         </span>
                                                     ) : (
-                                                        <div className="inline-flex items-center justify-end px-2 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200/50 dark:border-white/5">
-                                                            <InfinityIcon size={16} className="text-gray-400" strokeWidth={2.5} />
+                                                        <div className="inline-flex items-center justify-end px-2 py-1 rounded-lg bg-stone-50 dark:bg-zinc-800 border border-stone-200/50 dark:border-zinc-800">
+                                                            <InfinityIcon size={16} className="text-stone-400" strokeWidth={2.5} />
                                                         </div>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-end">
-                                                    <span className="font-bold text-gray-900 dark:text-white">
+                                                    <span className="font-bold text-stone-900 dark:text-zinc-100">
                                                         {p.price.toLocaleString(t('common.locale'), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {currencySymbol}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-end">
                                                     <div className="flex items-center justify-end gap-1 sm:gap-2">
-                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
+                                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(p); }} aria-label={t('products.editProduct')} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><Edit2 size={18} /></button>
                                                         {isProductActive(p) ? (
-                                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={p.willHardDelete ? t('products.delete.title') : t('common.archive', { defaultValue: 'Archive' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors">{p.willHardDelete ? <Trash2 size={18} /> : <Archive size={18} />}</button>
+                                                            <button onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }} aria-label={p.willHardDelete ? t('products.delete.title') : t('common.archive', { defaultValue: 'Archive' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-stone-400 hover:text-mintcom-red hover:bg-mintcom-red/10 rounded-lg transition-colors">{p.willHardDelete ? <Trash2 size={18} /> : <Archive size={18} />}</button>
                                                         ) : (
-                                                            <button onClick={(e) => { e.stopPropagation(); handleReactivate(p); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><RotateCcw size={18} /></button>
+                                                            <button onClick={(e) => { e.stopPropagation(); handleReactivate(p); }} aria-label={t('common.reactivate', { defaultValue: 'Reactivate' })} className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-stone-400 hover:text-mintcom-green hover:bg-mintcom-green/10 rounded-lg transition-colors"><RotateCcw size={18} /></button>
                                                         )}
                                                     </div>
                                                 </td>

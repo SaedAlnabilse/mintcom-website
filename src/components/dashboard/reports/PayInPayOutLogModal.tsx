@@ -103,30 +103,30 @@ export function PayInPayOutLogModal({
                     {/* 1. Summary Cards Row */}
                     <div className="grid grid-cols-2 gap-4">
                         {/* PAY-IN Card */}
-                        <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5">
+                        <div className="relative overflow-hidden rounded-2xl bg-stone-50 dark:bg-black/20 border border-stone-100 dark:border-zinc-800 p-5">
                             <div className="relative z-10 flex flex-col">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/5 flex items-center justify-center shadow-sm">
+                                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-zinc-800 flex items-center justify-center shadow-sm">
                                         <ArrowUpRight size={16} className={`text-mintcom-green ${t('common.locale') === 'ar' ? '-rotate-90' : ''}`} />
                                     </div>
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('orders.reports.sales.payIn')}</span>
+                                    <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">{t('orders.reports.sales.payIn')}</span>
                                 </div>
-                                <p className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                <p className="text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                                     {formatCurrency(totals.payIn)}
                                 </p>
                             </div>
                         </div>
 
                         {/* PAY-OUT Card */}
-                        <div className="relative overflow-hidden rounded-2xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 p-5">
+                        <div className="relative overflow-hidden rounded-2xl bg-stone-50 dark:bg-black/20 border border-stone-100 dark:border-zinc-800 p-5">
                             <div className="relative z-10 flex flex-col">
                                 <div className="flex items-center gap-2 mb-3">
-                                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-white/5 flex items-center justify-center shadow-sm">
+                                    <div className="w-8 h-8 rounded-lg bg-white dark:bg-zinc-800 flex items-center justify-center shadow-sm">
                                         <ArrowDownLeft size={16} className={`text-red-500 ${t('common.locale') === 'ar' ? '-rotate-90' : ''}`} />
                                     </div>
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{t('orders.reports.sales.payOut')}</span>
+                                    <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">{t('orders.reports.sales.payOut')}</span>
                                 </div>
-                                <p className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                <p className="text-xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                                     {formatCurrency(totals.payOut)}
                                 </p>
                             </div>
@@ -135,9 +135,9 @@ export function PayInPayOutLogModal({
 
                     {/* 2. Divider */}
                     <div className="flex items-center gap-4">
-                        <div className="h-px bg-gray-100 dark:bg-white/5 flex-1" />
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('orders.reports.sales.transactionHistory')}</span>
-                        <div className="h-px bg-gray-100 dark:bg-white/5 flex-1" />
+                        <div className="h-px bg-stone-100 dark:bg-zinc-800 flex-1" />
+                        <span className="text-xs font-bold text-stone-400 uppercase tracking-widest">{t('orders.reports.sales.transactionHistory')}</span>
+                        <div className="h-px bg-stone-100 dark:bg-zinc-800 flex-1" />
                     </div>
 
                     {/* 3. Transactions List */}
@@ -145,14 +145,14 @@ export function PayInPayOutLogModal({
                         {isLoading ? (
                             <div className="py-12 flex flex-col items-center justify-center space-y-3 opacity-50">
                                 <div className="w-6 h-6 border-2 border-mintcom-green border-t-transparent rounded-full animate-spin" />
-                                <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">{t('common.loading')}</p>
+                                <p className="text-xs font-bold text-stone-400 tracking-widest uppercase">{t('common.loading')}</p>
                             </div>
                         ) : logs.length > 0 ? (
                             <div className="space-y-3">
                                 {logs.map((log) => (
                                     <div
                                         key={log.id}
-                                        className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-white/[0.02] border border-gray-100 dark:border-white/5"
+                                        className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800"
                                     >
                                         <div className="flex items-center gap-4">
                                             {/* Icon Box */}
@@ -165,18 +165,18 @@ export function PayInPayOutLogModal({
 
                                             {/* Details */}
                                             <div className="flex flex-col gap-1.5">
-                                                <span className="text-[10px] font-bold text-gray-400 bg-gray-50 dark:bg-white/5 px-2 py-0.5 rounded-md border border-gray-200 dark:border-white/10 w-fit">
+                                                <span className="text-[10px] font-bold text-stone-400 bg-stone-50 dark:bg-zinc-800 px-2 py-0.5 rounded-md border border-stone-200 dark:border-zinc-800 w-fit">
                                                     {format(new Date(log.createdAt), 'MMM dd, HH:mm', { locale: getDateLocale(t('common.locale')) })}
                                                 </span>
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex items-center gap-1.5">
-                                                        <User size={12} className="text-gray-400" />
-                                                        <span className="text-xs font-bold text-gray-500">{log.userName}</span>
+                                                        <User size={12} className="text-stone-400" />
+                                                        <span className="text-xs font-bold text-stone-500">{log.userName}</span>
                                                     </div>
                                                     {(log.reason || log.note) && (
                                                         <>
-                                                            <span className="text-gray-300 dark:text-white/10 font-bold">•</span>
-                                                            <span className="text-xs font-bold text-gray-400 truncate max-w-[150px] sm:max-w-[250px]">
+                                                            <span className="text-stone-300 dark:text-zinc-700 font-bold">•</span>
+                                                            <span className="text-xs font-bold text-stone-400 truncate max-w-[150px] sm:max-w-[250px]">
                                                                 {log.reason || log.note}
                                                                 {log.reason && log.note && log.reason !== log.note ? ` (${log.note})` : ''}
                                                             </span>

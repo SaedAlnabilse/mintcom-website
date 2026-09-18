@@ -91,7 +91,7 @@ function buildYAxisScale(minValue: number, maxValue: number, tickCount = 5) {
   return { domain: [niceMin, niceMax] as [number, number], ticks };
 }
 
-const CurrencyAmount = ({ amount, size = "text-2xl", color = "text-gray-900 dark:text-white" }: { amount: number, size?: string, color?: string }) => {
+const CurrencyAmount = ({ amount, size = "text-2xl", color = "text-stone-900 dark:text-zinc-100" }: { amount: number, size?: string, color?: string }) => {
   const { currencySymbol } = useCurrency();
   return (
     <StatValue 
@@ -318,10 +318,10 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             // per-shift durations it is the sum of.
             customContent: (
               <>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                <p className="text-2xl font-bold text-stone-900 dark:text-zinc-100">
                   {formatDurationMs(hoursToMs(salesData.totalHoursWorked ?? 0), i18n.language)}
                 </p>
-                <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                <p className="sentence-case-text text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
                   {t('orders.reports.sales.staffHours')}
                 </p>
               </>
@@ -341,12 +341,12 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             customContent: (
               <div className="w-full mt-6 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payIn')}</span>
+                  <span className="text-xs font-bold text-stone-400">{t('orders.reports.sales.payIn')}</span>
                   <CurrencyAmount amount={salesData.totalPayIn ?? 0} size="text-sm" color="text-mintcom-green" />
                 </div>
-                <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+                <div className="w-full h-px bg-stone-100 dark:bg-zinc-800" />
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-gray-400">{t('orders.reports.sales.payOut')}</span>
+                  <span className="text-xs font-bold text-stone-400">{t('orders.reports.sales.payOut')}</span>
                   <CurrencyAmount amount={salesData.totalPayOut ?? 0} size="text-sm" color="text-red-500" />
                 </div>
               </div>
@@ -360,7 +360,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] flex flex-col transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''}`}
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 flex flex-col transition-all duration-300 overflow-hidden ${stat.onClick ? 'cursor-pointer' : ''}`}
           >
             <div className={`absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10">
@@ -369,7 +369,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                   <stat.icon size={20} />
                 </div>
                 {stat.onClick && (
-                  <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-mintcom-green transition-colors">
                     <ExternalLink size={14} />
                   </div>
                 )}
@@ -387,7 +387,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                     className="text-2xl"
                     isInteger={!stat.isCurrency}
                   />
-                  <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="sentence-case-text text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
                     {stat.sub}
                   </p>
                 </>
@@ -399,22 +399,22 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Line Chart */}
-        <div className="lg:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm">
+        <div className="lg:col-span-2 p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                 <TrendingUp size={20} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100">
                   {t('orders.reports.sales.revenueStats')}
                 </h3>
                 <p className="card-subtitle">{t('orders.reports.sales.performance')}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+            <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-stone-50 dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800">
               <Activity size={12} className="text-mintcom-green" />
-              <span className="sentence-case-text text-xs font-bold text-gray-500 tracking-wide">{t('orders.reports.sales.realtime')}</span>
+              <span className="sentence-case-text text-xs font-bold text-stone-500 tracking-wide">{t('orders.reports.sales.realtime')}</span>
             </div>
           </div>
           <div className="h-[400px]">
@@ -505,7 +505,7 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                       icon={Activity}
                       title={t('orders.reports.sales.noRevenue')}
                       description={t('orders.reports.sales.noRevenueDesc')}
-                      className="h-full w-full rounded-2xl bg-gray-50/50 dark:bg-black/20 border border-dashed border-gray-200 dark:border-white/[0.03]"
+                      className="h-full w-full rounded-2xl bg-stone-50/50 dark:bg-black/20 border border-dashed border-stone-200 dark:border-zinc-800"
                     />
                   );
                 }
@@ -641,14 +641,14 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
         </div>
 
         {/* Payment Source Breakdown */}
-        <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] shadow-sm flex flex-col">
+        <div className="p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm flex flex-col">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green">
                 <Wallet size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('orders.reports.sales.paymentMethods')}</h3>
+                <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{t('orders.reports.sales.paymentMethods')}</h3>
                 <p className="card-subtitle">{t('orders.reports.sales.breakdown')}</p>
               </div>
             </div>
@@ -661,14 +661,14 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
           </div>
 
           {/* Clickable Filter Tabs */}
-          <div className="flex items-center gap-1 p-1 bg-gray-100/80 dark:bg-white/5 rounded-xl mb-3">
+          <div className="flex items-center gap-1 p-1 bg-stone-100/80 dark:bg-zinc-800 rounded-xl mb-3">
             <button
               type="button"
               onClick={() => setSalesPaymentTab('all')}
               className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                 salesPaymentTab === 'all'
-                  ? 'bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 shadow-sm'
+                  : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
               }`}
             >
               <Layers size={13} className="shrink-0" />
@@ -679,15 +679,15 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               onClick={() => setSalesPaymentTab('cards')}
               className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                 salesPaymentTab === 'cards'
-                  ? 'bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 shadow-sm'
+                  : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
               }`}
             >
               <CreditCard size={13} className="shrink-0" />
               <span>{t('orders.payment.allCards', { defaultValue: 'Cards' })}</span>
               {cardsData.length > 0 && (
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
-                  salesPaymentTab === 'cards' ? 'bg-mintcom-green/15 text-mintcom-green' : 'bg-gray-200/70 dark:bg-white/10 text-gray-500'
+                  salesPaymentTab === 'cards' ? 'bg-mintcom-green/15 text-mintcom-green' : 'bg-stone-200/70 dark:bg-zinc-800 text-stone-500'
                 }`}>
                   {cardsData.length}
                 </span>
@@ -698,15 +698,15 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
               onClick={() => setSalesPaymentTab('others')}
               className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                 salesPaymentTab === 'others'
-                  ? 'bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white shadow-sm'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 shadow-sm'
+                  : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100'
               }`}
             >
               <Wallet size={13} className="shrink-0" />
               <span>{t('orders.payment.allOther', { defaultValue: 'Others' })}</span>
               {othersData.length > 0 && (
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
-                  salesPaymentTab === 'others' ? 'bg-mintcom-green/15 text-mintcom-green' : 'bg-gray-200/70 dark:bg-white/10 text-gray-500'
+                  salesPaymentTab === 'others' ? 'bg-mintcom-green/15 text-mintcom-green' : 'bg-stone-200/70 dark:bg-zinc-800 text-stone-500'
                 }`}>
                   {othersData.length}
                 </span>
@@ -792,8 +792,8 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                       }}
                       className={`flex items-center justify-between gap-2.5 p-2 rounded-xl transition-all ${
                         isClickable
-                          ? 'cursor-pointer hover:bg-mintcom-green/5 dark:hover:bg-white/5 active:scale-[0.99] group/item'
-                          : 'hover:bg-gray-50 dark:hover:bg-white/5'
+                          ? 'cursor-pointer hover:bg-mintcom-green/5 dark:hover:bg-zinc-800 active:scale-[0.99] group/item'
+                          : 'hover:bg-stone-50 dark:hover:bg-zinc-800'
                       }`}
                     >
                       <div className="flex items-center gap-2 min-w-0">
@@ -801,23 +801,23 @@ export const SalesView = React.memo(function SalesView({ salesData, selectedDate
                           className="w-2.5 h-2.5 rounded-full shrink-0"
                           style={{ backgroundColor: hasPaymentData ? COLORS[i % COLORS.length] : emptyFill }}
                         />
-                        <span className="sentence-case-text text-sm font-bold text-gray-700 dark:text-gray-300 truncate">{getMethodName(item.name)}</span>
+                        <span className="sentence-case-text text-sm font-bold text-stone-700 dark:text-zinc-300 truncate">{getMethodName(item.name)}</span>
                         {isClickable && (
                           <ChevronRight
                             size={13}
-                            className="text-gray-400 opacity-0 group-hover/item:opacity-100 transition-opacity shrink-0"
+                            className="text-stone-400 opacity-0 group-hover/item:opacity-100 transition-opacity shrink-0"
                           />
                         )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-sm font-bold text-gray-900 dark:text-white"><FormatCurrency value={item.value} /></span>
-                        <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-gray-500 min-w-[36px] text-end" />
+                        <span className="text-sm font-bold text-stone-900 dark:text-zinc-100"><FormatCurrency value={item.value} /></span>
+                        <StatValue value={percentage} isPercentage={true} className="text-xs font-bold text-stone-500 min-w-[36px] text-end" />
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <div className="py-4 text-center text-xs text-gray-400 font-medium">
+                <div className="py-4 text-center text-xs text-stone-400 font-medium">
                   {t('common.noData', { defaultValue: 'No payment data available' })}
                 </div>
               )}

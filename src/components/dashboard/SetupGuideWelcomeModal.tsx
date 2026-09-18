@@ -121,7 +121,7 @@ export function SetupGuideWelcomeModal({
         <motion.div
           id="mintcom-dashboard-welcome-popup"
           dir={isRTL ? 'rtl' : 'ltr'}
-          className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-slate-950/50 p-4 font-sans backdrop-blur-sm dark:bg-black/70"
+          className="fixed inset-0 z-[2147483647] flex items-center justify-center bg-stone-950/50 p-4 font-sans backdrop-blur-sm dark:bg-black/70"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -138,7 +138,7 @@ export function SetupGuideWelcomeModal({
             aria-describedby="setup-guide-welcome-description"
             tabIndex={-1}
             onKeyDown={handleDialogKeyDown}
-            className="relative w-full max-w-sm overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white px-6 py-8 text-center shadow-2xl dark:border-white/10 dark:bg-slate-900 sm:px-8"
+            className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-stone-200/80 bg-white px-6 py-8 text-center shadow-md dark:border-zinc-800 dark:bg-zinc-900 sm:px-8"
             initial={{ opacity: 0, y: 18, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
@@ -157,13 +157,13 @@ export function SetupGuideWelcomeModal({
 
             <h2
               id="setup-guide-welcome-title"
-              className="text-2xl font-extrabold text-slate-950 dark:text-white"
+              className="text-2xl font-extrabold text-stone-950 dark:text-zinc-100"
             >
               {t('dashboard.setupGuide.title')}
             </h2>
             <p
               id="setup-guide-welcome-description"
-              className="mt-2 text-sm font-medium leading-6 text-slate-600 dark:text-slate-300"
+              className="mt-2 text-sm font-medium leading-6 text-stone-600 dark:text-zinc-300"
             >
               {t('dashboard.setupGuide.message', {
                 location:
@@ -176,14 +176,14 @@ export function SetupGuideWelcomeModal({
               <button
                 type="button"
                 onClick={start}
-                className="w-full rounded-2xl bg-mintcom-green px-4 py-3.5 text-sm font-extrabold text-slate-950 shadow-lg shadow-mintcom-green/25 transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green focus-visible:ring-offset-2 dark:ring-offset-slate-900"
+                className="w-full rounded-2xl bg-mintcom-green px-4 py-3.5 text-sm font-extrabold text-stone-950 shadow-lg shadow-mintcom-green/25 transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green focus-visible:ring-offset-2 dark:ring-offset-zinc-900"
               >
                 {t('dashboard.setupGuide.start')}
               </button>
               <button
                 type="button"
                 onClick={close}
-                className="w-full rounded-2xl px-4 py-3 text-sm font-bold text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-white"
+                className="w-full rounded-2xl px-4 py-3 text-sm font-bold text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-mintcom-green dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               >
                 {t('dashboard.setupGuide.later')}
               </button>

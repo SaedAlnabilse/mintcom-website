@@ -1395,7 +1395,7 @@ export function OrdersPage() {
                 placeholder={formatInputPlaceholder(t('orders.checkShift'), t('common.locale'))}
                 showAllOption={false}
                 searchable={false}
-                buttonClassName="!bg-white dark:!bg-white/5 !text-gray-900 dark:!text-white !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10 !h-auto !py-2.5 sm:!py-3 !rounded-xl"
+                buttonClassName="!bg-white dark:!bg-zinc-800 !text-stone-900 dark:!text-white !border-stone-200 dark:!border-zinc-800 hover:!bg-stone-50 dark:hover:!bg-zinc-800 !h-auto !py-2.5 sm:!py-3 !rounded-xl"
               />
             </div>
           )}
@@ -1529,7 +1529,7 @@ export function OrdersPage() {
               className="w-full h-full"
               buttonClassName={`!h-full !min-h-[48px] !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedEmployeeId
                 ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green'
-                : '!bg-white dark:!bg-[#1E293B] !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10'
+                : '!bg-white dark:!bg-[#1E293B] !border-stone-200 dark:!border-zinc-800 hover:!bg-stone-50 dark:hover:!bg-zinc-800'
                 }`}
             />
           </div>
@@ -1550,7 +1550,7 @@ export function OrdersPage() {
               className="w-full h-full"
               buttonClassName={`!h-full !min-h-[48px] !rounded-xl !px-4 !text-xs sm:!text-sm !font-bold border transition-all ${selectedShiftId
                 ? '!bg-mintcom-green/5 !border-mintcom-green !text-mintcom-green'
-                : '!bg-white dark:!bg-[#1E293B] !border-gray-200 dark:!border-white/10 hover:!bg-gray-50 dark:hover:!bg-white/10'
+                : '!bg-white dark:!bg-[#1E293B] !border-stone-200 dark:!border-zinc-800 hover:!bg-stone-50 dark:hover:!bg-zinc-800'
                 }`}
             />
           </div>
@@ -1560,13 +1560,13 @@ export function OrdersPage() {
 
       {/* Shift Info Bar - shows when viewing shift data */}
       {(selectedDateRange === 'current_shift' || selectedDateRange === 'previous_shift') && (
-        <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-stone-50 dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800">
           <div className="flex items-center gap-3">
             <span className="text-mintcom-green">
               {selectedDateRange === 'current_shift' ? <PlayCircle size={16} /> : <History size={16} />}
             </span>
             <div>
-              <span className="text-sm font-bold text-gray-900 dark:text-white">
+              <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                 {selectedDateRange === 'current_shift' && shiftStatus?.activeShift && (
                   <>{t('dashboard.viewMode.showingSince', { date: format(new Date(shiftStatus.activeShift.startTime), 'MMM d, h:mm a') })}</>
                 )}
@@ -1585,12 +1585,12 @@ export function OrdersPage() {
             {t('common.activeFilters', { defaultValue: 'Active filters' })}
           </span>
           {selectedEmployeeName && (
-            <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-white/10 border border-mintcom-green/15 text-xs font-bold text-gray-700 dark:text-gray-200">
+            <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-mintcom-green/15 text-xs font-bold text-stone-700 dark:text-zinc-200">
               {t('common.staff', { defaultValue: 'Staff' })}: {selectedEmployeeName}
             </span>
           )}
           {selectedEmployeeShift && (
-            <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-white/10 border border-mintcom-green/15 text-xs font-bold text-gray-700 dark:text-gray-200">
+            <span className="px-2.5 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-mintcom-green/15 text-xs font-bold text-stone-700 dark:text-zinc-200">
               {t('common.shift', { defaultValue: 'Shift' })}: {selectedEmployeeShift.label}
             </span>
           )}
@@ -1645,11 +1645,11 @@ export function OrdersPage() {
           <div
             key={i}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border transition-all duration-300 overflow-hidden min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink
               ${stat.onClick ? 'cursor-pointer' : 'cursor-default'}
               ${stat.active
                 ? 'border-mintcom-green/40 bg-mintcom-green/[0.04]'
-                : 'border-gray-200 dark:border-white/[0.03] hover:border-mintcom-green/30'}`}
+                : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'}`}
           >
             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg} ${stat.active ? 'opacity-20' : 'group-hover:opacity-10'}`} />
             <div className="relative z-10 flex items-center gap-3 sm:gap-4">
@@ -1665,7 +1665,7 @@ export function OrdersPage() {
                   className="text-2xl"
                 />
                 {stat.sub && (
-                  <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1 truncate">{stat.sub}</p>
+                  <p className="sentence-case-text text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1 truncate">{stat.sub}</p>
                 )}
               </div>
             </div>
@@ -1677,7 +1677,7 @@ export function OrdersPage() {
 
             {/* Clickable Indicator Icon */}
             {stat.onClick && !stat.active && (
-              <div className="absolute top-3 right-3 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300 transition-colors">
+              <div className="absolute top-3 right-3 text-stone-400 group-hover:text-stone-600 dark:text-zinc-500 dark:group-hover:text-zinc-300 transition-colors">
                 <ExternalLink size={16} />
               </div>
             )}
@@ -1689,7 +1689,7 @@ export function OrdersPage() {
       {heldOrders.length > 0 && statusFilter !== 'HELD' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 tracking-tight">
+            <h2 className="text-lg sm:text-xl font-bold text-stone-900 dark:text-zinc-100 flex items-center gap-2 tracking-tight">
               <Clock size={16} className="text-orange-500" />
               {t('orders.status.onHold')} ({heldOrders.length})
             </h2>
@@ -1716,7 +1716,7 @@ export function OrdersPage() {
                 onClick={() => {
                   void openOrderDetails(order);
                 }}
-                className="group flex-1 min-w-0 w-full bg-white dark:bg-[#1E293B] p-5 rounded-2xl border border-orange-200 dark:border-orange-500/20 shadow-sm hover:shadow-md transition-all cursor-pointer relative overflow-hidden"
+                className="group flex-1 min-w-0 w-full bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-orange-200 dark:border-orange-500/20 shadow-sm hover:shadow-md transition-all cursor-pointer relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
 
@@ -1727,14 +1727,14 @@ export function OrdersPage() {
                         <Clock size={18} />
                       </div>
                       <div>
-                        <p className="font-black text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
+                        <p className="font-black text-stone-900 dark:text-zinc-100 text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-1">
                     {order.customer?.name && (
-                      <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
+                      <p className="text-sm font-bold text-stone-800 dark:text-zinc-200 truncate">
                         {order.customer.name}
                       </p>
                     )}
@@ -1744,8 +1744,8 @@ export function OrdersPage() {
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 capitalize">
+                  <div className="pt-3 border-t border-stone-100 dark:border-zinc-800 flex items-center justify-between">
+                    <span className="text-xs font-bold text-stone-500 dark:text-zinc-400 capitalize">
                       {t('orders.table.staff')}: {order.user?.username}
                     </span>
                     <ChevronRight size={14} className="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -1761,7 +1761,7 @@ export function OrdersPage() {
       <div
         ref={ordersListRef}
         aria-busy={Boolean(orderDetailLoadingId || refundLoadingId)}
-        className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]"
+        className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col min-h-[250px] lg:min-h-[350px]"
       >
 
         {/* Loading State */}
@@ -1769,7 +1769,7 @@ export function OrdersPage() {
           <div className="py-20 text-center">
             <div className="flex flex-col items-center justify-center">
               <div className="w-12 h-12 border-4 border-mintcom-green/10 border-t-mintcom-green rounded-full animate-spin mb-4" />
-              <p className="text-xs font-black text-gray-400">{t('orders.messages.loading')}</p>
+              <p className="text-xs font-black text-stone-400">{t('orders.messages.loading')}</p>
             </div>
           </div>
         )}
@@ -1778,8 +1778,8 @@ export function OrdersPage() {
         {!isLoading && orders.length === 0 && (
           <div className="py-20 text-center">
             <div className="flex flex-col items-center justify-center">
-              <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-4">
-                <ShoppingCart className="w-8 h-8 text-gray-300" />
+              <div className="w-16 h-16 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-4">
+                <ShoppingCart className="w-8 h-8 text-stone-300" />
               </div>
               <h3 className="dashboard-card-value mb-2">
                 {hasOrderSearch
@@ -1789,7 +1789,7 @@ export function OrdersPage() {
                     : t('orders.messages.noOrders')}
               </h3>
               {(hasOrderSearch || hasOrderFilters) && (
-                <p className="text-sm font-bold text-gray-500">
+                <p className="text-sm font-bold text-stone-500">
                   {hasOrderSearch
                     ? t('common.noMatchingResults', {
                       entity: 'orders',
@@ -1805,23 +1805,23 @@ export function OrdersPage() {
 
         {/* Mobile Card View (visible on small screens) */}
         {sortedOrders.length > 0 && (
-          <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+          <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
             {sortedOrders.map((order) => (
               <div
                 key={order.id}
                 data-order-id={order.id}
                 onClick={() => void openOrderDetails(order)}
-                className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer active:bg-gray-100 dark:active:bg-white/[0.04]"
+                className="p-4 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-all cursor-pointer active:bg-stone-100 dark:active:bg-zinc-800"
               >
                 {/* Card Header: Order # and Status */}
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500">
+                    <div className="w-10 h-10 rounded-lg bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-500">
                       <ShoppingCart size={16} />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">
+                      <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
+                      <p className="text-xs text-stone-500 dark:text-zinc-400 font-medium tracking-wide">
                         {formatDate(order.createdAt)}
                       </p>
                     </div>
@@ -1839,16 +1839,16 @@ export function OrdersPage() {
                         <p className="font-bold text-mintcom-red text-sm truncate">
                           {order.refundedByName}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-stone-500">
                           {t('orders.table.refundedBy')} &bull; {formatPaymentMethod(order)}
                         </p>
                       </>
                     ) : (
                       <>
-                        <p className="font-bold text-gray-800 dark:text-gray-300 text-sm truncate">
+                        <p className="font-bold text-stone-800 dark:text-zinc-300 text-sm truncate">
                           {order.employeeName || order.user?.username || t('common.pos')}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-stone-500">
                           {t('orders.table.takenBy')} &bull; {formatPaymentMethod(order)}
                         </p>
                       </>
@@ -1860,13 +1860,13 @@ export function OrdersPage() {
                 </div>
 
                 {/* Card Footer: Actions */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 dark:border-white/5">
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-stone-100 dark:border-zinc-800">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       void openOrderDetails(order);
                     }}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-stone-600 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                   >
                     <Eye size={14} />
                     {t('orders.actions.viewDetails')}
@@ -1883,7 +1883,7 @@ export function OrdersPage() {
                         disabled={!canCancelReceipts || refundLoadingId === order.id}
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
                           ? 'text-mintcom-red hover:bg-mintcom-red/10'
-                          : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                          : 'text-stone-400 bg-stone-100 dark:bg-zinc-800 cursor-not-allowed'
                           }`}
                       >
                         <Undo2 size={14} />
@@ -1897,7 +1897,7 @@ export function OrdersPage() {
                     </div>
                   )}
 
-                  <ChevronRight size={16} className="text-gray-400" />
+                  <ChevronRight size={16} className="text-stone-400" />
                 </div>
               </div>
             ))}
@@ -1908,10 +1908,10 @@ export function OrdersPage() {
         {orders.length > 0 && (
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                <tr className="border-b border-gray-200 dark:border-white/5">
+              <thead className="bg-stone-50 dark:bg-zinc-800/40">
+                <tr className="border-b border-stone-200 dark:border-zinc-800">
                   <th
-                    className={`px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'date' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'date' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                     onClick={() => requestSort('date')}
                   >
                     <div className="flex items-center gap-2">
@@ -1920,7 +1920,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'staff' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-start label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'staff' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                     onClick={() => requestSort('staff')}
                   >
                     <div className="flex items-center gap-2">
@@ -1929,7 +1929,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'total' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                     onClick={() => requestSort('total')}
                   >
                     <div className="flex items-center justify-end gap-2">
@@ -1938,7 +1938,7 @@ export function OrdersPage() {
                     </div>
                   </th>
                   <th
-                    className={`px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                    className={`px-6 py-4 text-end label-strong font-sans whitespace-nowrap cursor-pointer select-none transition-colors group ${sortConfig?.key === 'status' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                     onClick={() => requestSort('status')}
                   >
                     <div className="flex items-center justify-end gap-2">
@@ -1949,22 +1949,22 @@ export function OrdersPage() {
                   <th className="px-6 py-4 text-end dashboard-card-label whitespace-nowrap">{t('orders.table.actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+              <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                 {sortedOrders.map((order) => (
                   <tr
                     key={order.id}
                     data-order-id={order.id}
                     onClick={() => void openOrderDetails(order)}
-                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-all cursor-pointer"
+                    className="group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-all cursor-pointer"
                   >
                     <td className="px-6 py-4 text-start">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-500 group-hover:text-mintcom-green transition-colors shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-500 group-hover:text-mintcom-green transition-colors shrink-0">
                           <ShoppingCart size={16} />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
+                          <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{order.invoiceNumber ?? `#${order.orderNumber}`}</p>
+                          <p className="text-xs text-stone-500 dark:text-zinc-400 font-medium tracking-wide">{formatDate(order.createdAt)}</p>
                         </div>
                       </div>
                     </td>
@@ -1972,18 +1972,18 @@ export function OrdersPage() {
                       {order.refundedByName ? (
                         <>
                           <p className="font-bold text-mintcom-red text-sm">{order.refundedByName}</p>
-                          <p className="text-xs text-gray-500">{t('orders.table.refundedBy')}</p>
+                          <p className="text-xs text-stone-500">{t('orders.table.refundedBy')}</p>
                         </>
                       ) : (
                         <>
-                          <p className="font-bold text-gray-800 dark:text-gray-300 text-sm">{order.employeeName || order.user?.username || t('common.pos')}</p>
-                          <p className="text-xs text-gray-500">{t('orders.table.takenBy')}</p>
+                          <p className="font-bold text-stone-800 dark:text-zinc-300 text-sm">{order.employeeName || order.user?.username || t('common.pos')}</p>
+                          <p className="text-xs text-stone-500">{t('orders.table.takenBy')}</p>
                         </>
                       )}
                     </td>
                     <td className="px-6 py-4 text-end">
                       <StatValue value={order.total} currency={currencySymbol} className="text-base" containerClassName="justify-end w-full" />
-                      <p className="text-xs text-gray-500 font-bold tracking-wider">{formatPaymentMethod(order)}</p>
+                      <p className="text-xs text-stone-500 font-bold tracking-wider">{formatPaymentMethod(order)}</p>
                     </td>
                     <td className="px-6 py-4 text-end">
                       <div className="flex justify-end">
@@ -2004,8 +2004,8 @@ export function OrdersPage() {
                             aria-label={t('common.orderActions')}
                             aria-expanded={activeActionMenu === order.id}
                             className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors ${activeActionMenu === order.id
-                              ? 'text-mintcom-green bg-gray-100 dark:bg-white/5'
-                              : 'text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5'
+                              ? 'text-mintcom-green bg-stone-100 dark:bg-zinc-800'
+                              : 'text-stone-400 hover:text-mintcom-green hover:bg-stone-100 dark:hover:bg-zinc-800'
                               }`}
                           >
                             <MoreVertical size={18} />
@@ -2024,7 +2024,7 @@ export function OrdersPage() {
                                   e.stopPropagation();
                                   void openOrderDetails(order);
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors"
                               >
                                 <Eye size={14} />
                                 {t('orders.actions.viewDetails')}
@@ -2041,7 +2041,7 @@ export function OrdersPage() {
                                   disabled={!canCancelReceipts || refundLoadingId === order.id}
                                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-bold transition-colors ${canCancelReceipts
                                     ? 'text-mintcom-red hover:bg-mintcom-red/10'
-                                    : 'text-gray-400 bg-gray-100 dark:bg-white/5 cursor-not-allowed'
+                                    : 'text-stone-400 bg-stone-100 dark:bg-zinc-800 cursor-not-allowed'
                                     }`}
                                 >
                                   <Undo2 size={14} />
@@ -2056,7 +2056,7 @@ export function OrdersPage() {
                             </div>
                           </PortalDropdown>
                         </div>
-                        <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green group-hover:border-mintcom-green/30 transition-all">
+                        <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-mintcom-green group-hover:border-mintcom-green/30 transition-all">
                           <ChevronRight size={14} />
                         </div>
                       </div>
@@ -2101,7 +2101,7 @@ export function OrdersPage() {
       {/* Refund shift-required error popup — centered like ConfirmModal */}
       {refundErrorPopup.open && (
         <div className="fixed inset-0 z-[10001] flex items-end justify-center bg-black/40 p-0 backdrop-blur-sm sm:items-center sm:p-4 dark:bg-black/80">
-          <div className="relative w-full max-w-sm rounded-t-3xl border border-gray-200 bg-white p-6 text-center shadow-2xl dark:border-white/10 dark:bg-[#1E293B] sm:rounded-2xl">
+          <div className="relative w-full max-w-sm rounded-t-3xl border border-stone-200 bg-white p-6 text-center shadow-md dark:border-zinc-800 dark:bg-zinc-900/60 sm:rounded-2xl">
             <ModalCloseButton
               onClose={() => setRefundErrorPopup({ open: false, message: '' })}
               autoPositionAbsolute
@@ -2111,10 +2111,10 @@ export function OrdersPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white sm:text-xl">
+            <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 sm:text-xl">
               {t('common.error', { defaultValue: 'Error' })}
             </h3>
-            <p className="mx-auto mt-2 max-w-sm text-sm font-medium leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="mx-auto mt-2 max-w-sm text-sm font-medium leading-relaxed text-stone-500 dark:text-zinc-400">
               {refundErrorPopup.message}
             </p>
             <div className="mt-6 flex justify-center">

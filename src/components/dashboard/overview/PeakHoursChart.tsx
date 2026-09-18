@@ -20,16 +20,16 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
   const isDark = resolvedTheme === 'dark';
 
   return (
-    <div className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm transition-all duration-300">
+    <div className="group relative bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm transition-all duration-300">
       <div className="absolute top-0 end-0 w-40 h-40 bg-orange-500/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
       <div className="relative z-10">
-        <div className="p-4 sm:p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-b border-stone-100 dark:border-zinc-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 transition-transform duration-300">
               <Clock size={20} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 dark:text-white">{t('dashboard.peakHours.title')}</h3>
+              <h3 className="text-base font-bold text-stone-900 dark:text-zinc-100">{t('dashboard.peakHours.title')}</h3>
               <p className="card-subtitle">{t('dashboard.peakHours.subtitle')}</p>
             </div>
           </div>
@@ -94,13 +94,13 @@ export const PeakHoursChart = React.memo(function PeakHoursChart({ peakHours }: 
               </ResponsiveContainer>
             </div>
           ) : (
-            <div className="h-[250px] flex flex-col items-center justify-center space-y-3 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/5">
-              <div className="p-4 rounded-full bg-gray-100 dark:bg-black/20">
-                <Clock size={28} className="text-gray-400 dark:text-gray-600" />
+            <div className="h-[250px] flex flex-col items-center justify-center space-y-3 bg-stone-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-stone-200 dark:border-zinc-800">
+              <div className="p-4 rounded-full bg-stone-100 dark:bg-black/20">
+                <Clock size={28} className="text-stone-400 dark:text-zinc-600" />
               </div>
               <div className="text-center">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 tracking-wide">{t('dashboard.peakHours.noData')}</p>
-                <p className="text-xs text-gray-400 mt-1">{t('dashboard.peakHours.noDataDesc')}</p>
+                <p className="text-sm font-medium text-stone-500 dark:text-zinc-400 tracking-wide">{t('dashboard.peakHours.noData')}</p>
+                <p className="text-xs text-stone-400 mt-1">{t('dashboard.peakHours.noDataDesc')}</p>
               </div>
             </div>
           )}

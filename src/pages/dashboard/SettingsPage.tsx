@@ -944,7 +944,7 @@ export function SettingsPage() {
             <button
               type="button"
               onClick={() => handleTabChange('overview')}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-mintcom-green transition-colors group"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-stone-500 dark:text-zinc-400 hover:text-mintcom-green transition-colors group"
             >
               <ArrowLeft
                 size={16}
@@ -955,7 +955,7 @@ export function SettingsPage() {
               <span>{t('settings.overview.backToSettings', 'Back to Settings')}</span>
             </button>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-white/10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200 dark:border-zinc-800">
               <div className="flex items-center gap-3.5">
                 {currentTabMeta?.icon && (
                   <div
@@ -970,7 +970,7 @@ export function SettingsPage() {
                 )}
                 <div>
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    <h1 className="text-xl sm:text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                       {currentTabMeta?.label || t('settings.title')}
                     </h1>
                     {currentEstablishment?.name && (
@@ -979,7 +979,7 @@ export function SettingsPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className="text-xs sm:text-sm text-stone-500 dark:text-zinc-400 mt-0.5">
                     {activeTab === 'profile' && t('settings.profile.detailsDesc', 'Manage your establishment identity')}
                     {activeTab === 'sales' && t('settings.sales.subtitle', 'Configure Taxes, Currency, and Table Structure')}
                     {activeTab === 'pos' && t('settings.tabs.pos', 'POS Terminal & Shift Operations')}
@@ -999,7 +999,7 @@ export function SettingsPage() {
                   className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 shrink-0"
                 >
                   {isSaving ? (
-                    <div className="w-[18px] h-[18px] border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                    <div className="w-[18px] h-[18px] border-2 border-stone-200 border-t-black rounded-full animate-spin" />
                   ) : (
                     <Save size={18} />
                   )}
@@ -1035,7 +1035,7 @@ export function SettingsPage() {
           }
           
           return (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-8 space-y-10 rounded-2xl shadow-sm">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 p-8 space-y-10 rounded-2xl shadow-sm">
             {/* Location Login ID Banner */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-blue-50/70 dark:bg-blue-500/10 rounded-2xl border border-blue-100 dark:border-blue-500/20 transition-colors">
               <div className="space-y-1">
@@ -1049,17 +1049,17 @@ export function SettingsPage() {
                     {t('owner.account.locationLoginBadge', 'Establishment')}
                   </span>
                 </div>
-                <code className="block text-sm sm:text-base font-mono font-bold text-gray-900 dark:text-white truncate select-all">
+                <code className="block text-sm sm:text-base font-mono font-bold text-stone-900 dark:text-zinc-100 truncate select-all">
                   {estLoginId}
                 </code>
                 <p className="text-xs text-blue-700/80 dark:text-blue-200/80 font-medium leading-relaxed">
                   {t('settings.profile.locationLoginHint', 'Use this ID to sign in to this establishment dashboard.')} •{' '}
-                  <span className="text-gray-500 dark:text-gray-400">
+                  <span className="text-stone-500 dark:text-zinc-400">
                     {t('settings.profile.passwordResetNote', 'Password reset can only be done from the owner portal')}
                   </span>
                 </p>
               </div>
-              <div className="sm:pl-4 sm:border-l border-gray-200 dark:border-white/10 shrink-0">
+              <div className="sm:pl-4 sm:border-l border-stone-200 dark:border-zinc-800 shrink-0">
                 <button
                   type="button"
                   onClick={() => {
@@ -1069,7 +1069,7 @@ export function SettingsPage() {
                     }
                   }}
                   disabled={!estLoginId}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-white/10 text-blue-600 dark:text-blue-300 border border-blue-200/80 dark:border-blue-400/20 hover:bg-blue-50 dark:hover:bg-white/15 transition-all shadow-xs"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-zinc-800 text-blue-600 dark:text-blue-300 border border-blue-200/80 dark:border-blue-400/20 hover:bg-blue-50 dark:hover:bg-zinc-800 transition-all shadow-xs"
                 >
                   <Copy size={13} />
                   <span>{t('common.copy', 'Copy')}</span>
@@ -1079,15 +1079,15 @@ export function SettingsPage() {
 
             <div className="space-y-6">
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-normal text-gray-900 dark:text-white tracking-normal ">{formatInputLabel(t('settings.profile.logo'), t('common.locale'))}</label>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{t('settings.profile.logoGuidelines')}</p>
+                <label className="text-sm font-normal text-stone-900 dark:text-zinc-100 tracking-normal ">{formatInputLabel(t('settings.profile.logo'), t('common.locale'))}</label>
+                <p className="text-xs text-stone-500 dark:text-zinc-400 font-medium">{t('settings.profile.logoGuidelines')}</p>
               </div>
               <div className="flex items-center gap-8">
-                <div className="w-32 h-32 bg-gray-50 dark:bg-white/5 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
-                  {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-12 h-12 text-gray-300 dark:text-gray-600" />}
+                <div className="w-32 h-32 bg-stone-50 dark:bg-zinc-800 rounded-2xl overflow-hidden flex items-center justify-center border border-stone-200 dark:border-zinc-800">
+                  {previewImage ? <img src={previewImage} alt="Logo" className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-12 h-12 text-stone-300 dark:text-zinc-600" />}
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <label className="px-5 py-3 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.03] rounded-xl text-gray-900 dark:text-white font-normal text-sm shadow-sm transition-all cursor-pointer hover:bg-gray-100 dark:hover:bg-black/40 hover:scale-[1.02] active:scale-[0.98] hover:border-mintcom-green/30">
+                  <label className="px-5 py-3 bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-xl text-stone-900 dark:text-zinc-100 font-normal text-sm shadow-sm transition-all cursor-pointer hover:bg-stone-100 dark:hover:bg-black/40 hover:scale-[1.02] active:scale-[0.98] hover:border-mintcom-green/30">
                     {t('settings.profile.changeLogo')}
                     <input type="file" accept="image/*" onChange={handleLogoChange} className="hidden" />
                   </label>
@@ -1105,25 +1105,25 @@ export function SettingsPage() {
             </div>
             <div className="space-y-2">
               <label className="label-strong font-sans  block">{formatInputLabel(t('settings.profile.name'), t('common.locale'))}</label>
-              <input type="text" {...restaurantNameField} maxLength={MAX_ESTABLISHMENT_NAME_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
+              <input type="text" {...restaurantNameField} maxLength={MAX_ESTABLISHMENT_NAME_LENGTH} className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-stone-900 dark:text-zinc-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
             </div>
             <div className="space-y-2">
               <label className="label-strong font-sans  block">{formatInputLabel(t('settings.profile.about'), t('common.locale'))}</label>
-              <textarea {...restaurantDescriptionField} rows={3} maxLength={MAX_ESTABLISHMENT_TAGLINE_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal resize-none" />
+              <textarea {...restaurantDescriptionField} rows={3} maxLength={MAX_ESTABLISHMENT_TAGLINE_LENGTH} className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-stone-900 dark:text-zinc-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal resize-none" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <label className="label-strong font-sans  block">{formatInputLabel(t('settings.profile.address'), t('common.locale'))}</label>
-                <input type="text" {...restaurantAddressField} maxLength={MAX_ESTABLISHMENT_ADDRESS_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
+                <input type="text" {...restaurantAddressField} maxLength={MAX_ESTABLISHMENT_ADDRESS_LENGTH} className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-stone-900 dark:text-zinc-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
               </div>
               <div className="space-y-2">
                 <label className="label-strong font-sans  block">{formatInputLabel(t('settings.profile.email'), t('common.locale'))}</label>
-                <input type="email" {...emailField} maxLength={MAX_ESTABLISHMENT_EMAIL_LENGTH} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
+                <input type="email" {...emailField} maxLength={MAX_ESTABLISHMENT_EMAIL_LENGTH} className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-stone-900 dark:text-zinc-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
               </div>
               <div className="space-y-2">
                 <label className="label-strong font-sans  block">{formatInputLabel(t('settings.profile.taxId'), t('common.locale'))}</label>
-                <input type="text" {...taxIdField} autoCapitalize="characters" maxLength={MAX_ESTABLISHMENT_TAX_ID_LENGTH} onInput={(e) => { const target = e.target as HTMLInputElement; target.value = sanitizeTaxId(target.value, MAX_ESTABLISHMENT_TAX_ID_LENGTH); }} className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
-                <p className="text-xs text-gray-400 mt-1">{t('settings.profile.taxIdDisclaimer')}</p>
+                <input type="text" {...taxIdField} autoCapitalize="characters" maxLength={MAX_ESTABLISHMENT_TAX_ID_LENGTH} onInput={(e) => { const target = e.target as HTMLInputElement; target.value = sanitizeTaxId(target.value, MAX_ESTABLISHMENT_TAX_ID_LENGTH); }} className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-stone-900 dark:text-zinc-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all font-normal" />
+                <p className="text-xs text-stone-400 mt-1">{t('settings.profile.taxIdDisclaimer')}</p>
               </div>
             </div>
           </motion.div>
@@ -1133,7 +1133,7 @@ export function SettingsPage() {
         {activeTab === 'sales' && (() => {
           const isRTL = t('common.locale') === 'ar';
           return (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 space-y-8 rounded-2xl shadow-sm font-sans">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 space-y-8 rounded-2xl shadow-sm font-sans">
               {/* Tax rates — single source of truth: the default row in the table below is applied to new products */}
               <div>
                 <input type="hidden" {...taxRateField} />
@@ -1160,7 +1160,7 @@ export function SettingsPage() {
                     />
                   </div>
                   <div className="mt-2 min-h-[2.75rem]">
-                    <p className="text-[11px] font-medium text-gray-400 leading-snug">
+                    <p className="text-[11px] font-medium text-stone-400 leading-snug">
                       {t('settings.sales.currencyOwnerOnly')}{' '}
                       <a
                         href="/owner/account"
@@ -1175,20 +1175,20 @@ export function SettingsPage() {
               {/* Service Charge — separate card; fields always visible, disabled when off */}
               <div
                 ref={serviceChargeSectionRef}
-                className="mt-6 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.02] p-5 sm:p-6 scroll-mt-24 shadow-sm"
+                className="mt-6 rounded-2xl border border-stone-200 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-5 sm:p-6 scroll-mt-24 shadow-sm"
               >
-                <div className="flex items-center justify-between gap-4 pb-4 border-b border-gray-200/80 dark:border-white/10">
+                <div className="flex items-center justify-between gap-4 pb-4 border-b border-stone-200/80 dark:border-zinc-800">
                   <div>
-                    <h4 className="text-base font-bold text-gray-900 dark:text-white">
+                    <h4 className="text-base font-bold text-stone-900 dark:text-zinc-100">
                       {t('settings.sales.serviceChargeTitle', { defaultValue: 'Service Charge' })}
                     </h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                    <p className="text-xs text-stone-500 dark:text-zinc-400 mt-0.5 font-medium">
                       {t('settings.sales.serviceChargeEnabled', { defaultValue: 'Enable a service charge on orders' })}
                     </p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer shrink-0">
                     <input type="checkbox" {...register('serviceChargeEnabled')} className="sr-only peer" />
-                    <div className="h-7 w-12 rounded-full bg-slate-300/90 ring-1 ring-inset ring-slate-400/40 shadow-inner transition-all duration-200 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-mintcom-green/50 peer-focus-visible:ring-offset-2 dark:bg-white/15 dark:ring-white/20 peer-checked:bg-mintcom-green peer-checked:ring-mintcom-green/40 peer-checked:shadow-[0_0_0_3px_rgba(125,198,162,0.22)] after:absolute after:left-0.5 after:top-0.5 after:h-6 after:w-6 after:rounded-full after:bg-white after:shadow-[0_1px_3px_rgba(0,0,0,0.18)] after:transition-all after:content-[''] peer-checked:after:translate-x-5" />
+                    <div className="h-7 w-12 rounded-full bg-stone-300/90 ring-1 ring-inset ring-stone-400/40 shadow-inner transition-all duration-200 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-mintcom-green/50 peer-focus-visible:ring-offset-2 dark:bg-zinc-800 dark:ring-zinc-800 peer-checked:bg-mintcom-green peer-checked:ring-mintcom-green/40 peer-checked:shadow-[0_0_0_3px_rgba(125,198,162,0.22)] after:absolute after:left-0.5 after:top-0.5 after:h-6 after:w-6 after:rounded-full after:bg-white after:shadow-[0_1px_3px_rgba(0,0,0,0.18)] after:transition-all after:content-[''] peer-checked:after:translate-x-5" />
                   </label>
                 </div>
 
@@ -1204,7 +1204,7 @@ export function SettingsPage() {
                   {/* Row: Name · Type · Value — equal width + matching h-11 controls */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                     <div className="space-y-2 min-w-0">
-                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block">
+                      <label className="text-xs font-bold text-stone-500 dark:text-zinc-400 block">
                         {t('settings.sales.serviceChargeName', { defaultValue: 'Charge name' })}
                       </label>
                       <input
@@ -1219,7 +1219,7 @@ export function SettingsPage() {
                           setValueAs: (value) => sanitizeLimitedText(value, MAX_SERVICE_CHARGE_NAME_LENGTH),
                         })}
                         placeholder={formatInputPlaceholder(t('settings.sales.serviceChargeName', { defaultValue: 'e.g. Service Charge' }), t('common.locale'))}
-                        className={`w-full h-11 px-3 box-border bg-white dark:bg-white/5 border ${errors.serviceChargeName ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/10 focus:ring-mintcom-green/20 focus:border-mintcom-green'} rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/[0.03] disabled:text-gray-400`}
+                        className={`w-full h-11 px-3 box-border bg-white dark:bg-zinc-800 border ${errors.serviceChargeName ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-stone-200 dark:border-zinc-800 focus:ring-mintcom-green/20 focus:border-mintcom-green'} rounded-xl text-sm font-semibold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 transition-all disabled:cursor-not-allowed disabled:bg-stone-100 dark:disabled:bg-zinc-800/40 disabled:text-stone-400`}
                       />
                       {errors.serviceChargeName && serviceChargeEnabled && (
                         <p className="text-[11px] font-medium text-red-500 leading-relaxed flex items-start gap-1.5">
@@ -1230,7 +1230,7 @@ export function SettingsPage() {
                     </div>
 
                     <div className="space-y-2 min-w-0">
-                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block">
+                      <label className="text-xs font-bold text-stone-500 dark:text-zinc-400 block">
                         {t('settings.sales.serviceChargeType', { defaultValue: 'Charge type' })}
                       </label>
                       <CustomSelect
@@ -1258,7 +1258,7 @@ export function SettingsPage() {
                     </div>
 
                     <div className="space-y-2 min-w-0">
-                      <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block">
+                      <label className="text-xs font-bold text-stone-500 dark:text-zinc-400 block">
                         {t('settings.sales.serviceChargeValue', { defaultValue: 'Charge value' })}
                       </label>
                       <div className="relative group">
@@ -1338,11 +1338,11 @@ export function SettingsPage() {
                               : t('common.zeroDecimal', { defaultValue: '0.00' }),
                             t('common.locale'),
                           )}
-                          className={`w-full h-11 px-3 box-border bg-white dark:bg-white/5 border ${
+                          className={`w-full h-11 px-3 box-border bg-white dark:bg-zinc-800 border ${
                             errors.serviceChargeValue
                               ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20'
-                              : 'border-gray-200 dark:border-white/10 focus:ring-mintcom-green/20 focus:border-mintcom-green'
-                          } rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 transition-all disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/[0.03] disabled:text-gray-400 ${
+                              : 'border-stone-200 dark:border-zinc-800 focus:ring-mintcom-green/20 focus:border-mintcom-green'
+                          } rounded-xl text-sm font-semibold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 transition-all disabled:cursor-not-allowed disabled:bg-stone-100 dark:disabled:bg-zinc-800/40 disabled:text-stone-400 ${
                             isRTL ? 'pl-12' : 'pr-12'
                           }`}
                         />
@@ -1350,7 +1350,7 @@ export function SettingsPage() {
                           className={`absolute ${isRTL ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 px-2 py-1 rounded-lg text-xs font-black pointer-events-none ${
                             serviceChargeEnabled
                               ? 'bg-mintcom-green/10 border border-mintcom-green/20 text-mintcom-green'
-                              : 'bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-400'
+                              : 'bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-400'
                           }`}
                         >
                           {serviceChargeType === 'PERCENTAGE'
@@ -1379,11 +1379,11 @@ export function SettingsPage() {
                   </div>
 
                   {/* Nested option toggles */}
-                  <div className="pt-3 mt-1 border-t border-gray-200/80 dark:border-white/10 divide-y divide-gray-100 dark:divide-white/5">
+                  <div className="pt-3 mt-1 border-t border-stone-200/80 dark:border-zinc-800 divide-y divide-stone-100 dark:divide-zinc-800">
                     <div className="flex items-center justify-between py-3">
                       <div>
-                        <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeTaxable', { defaultValue: 'Taxable Service Charge' })}</span>
-                        <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeTaxableDesc', { defaultValue: 'Apply sales tax to this service charge' })}</span>
+                        <span className="block text-xs font-bold text-stone-700 dark:text-zinc-200">{t('settings.sales.serviceChargeTaxable', { defaultValue: 'Taxable Service Charge' })}</span>
+                        <span className="block text-[10px] text-stone-400 mt-0.5">{t('settings.sales.serviceChargeTaxableDesc', { defaultValue: 'Apply sales tax to this service charge' })}</span>
                       </div>
                       <Toggle
                         size="sm"
@@ -1394,8 +1394,8 @@ export function SettingsPage() {
 
                     <div className="flex items-center justify-between py-3">
                       <div>
-                        <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeAutoApply', { defaultValue: 'Auto apply to orders' })}</span>
-                        <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeAutoApplyDesc', { defaultValue: 'Add charge to all new orders automatically' })}</span>
+                        <span className="block text-xs font-bold text-stone-700 dark:text-zinc-200">{t('settings.sales.serviceChargeAutoApply', { defaultValue: 'Auto apply to orders' })}</span>
+                        <span className="block text-[10px] text-stone-400 mt-0.5">{t('settings.sales.serviceChargeAutoApplyDesc', { defaultValue: 'Add charge to all new orders automatically' })}</span>
                       </div>
                       <Toggle
                         size="sm"
@@ -1406,8 +1406,8 @@ export function SettingsPage() {
 
                     <div className="flex items-center justify-between py-3">
                       <div>
-                        <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">{t('settings.sales.serviceChargeOverride', { defaultValue: 'Allow cashier override' })}</span>
-                        <span className="block text-[10px] text-gray-400 mt-0.5">{t('settings.sales.serviceChargeOverrideDesc', { defaultValue: 'Allow cashiers to remove or modify this charge' })}</span>
+                        <span className="block text-xs font-bold text-stone-700 dark:text-zinc-200">{t('settings.sales.serviceChargeOverride', { defaultValue: 'Allow cashier override' })}</span>
+                        <span className="block text-[10px] text-stone-400 mt-0.5">{t('settings.sales.serviceChargeOverrideDesc', { defaultValue: 'Allow cashiers to remove or modify this charge' })}</span>
                       </div>
                       <Toggle
                         size="sm"
@@ -1424,21 +1424,21 @@ export function SettingsPage() {
         })()}
 
         {activeTab === 'pos' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 space-y-8 rounded-2xl shadow-sm font-sans">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 space-y-8 rounded-2xl shadow-sm font-sans">
             {/* Multiple Cash Drawers (Simultaneous Shifts) Toggle Card */}
-            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.02] p-5 sm:p-6 shadow-sm">
+            <div className="rounded-2xl border border-stone-200 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-5 sm:p-6 shadow-sm">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h4 className="text-base font-bold text-gray-900 dark:text-white">
+                  <h4 className="text-base font-bold text-stone-900 dark:text-zinc-100">
                     {t('settings.pos.allowMultipleShiftsTitle', { defaultValue: 'Multiple Cash Drawers' })}
                   </h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
+                  <p className="text-xs text-stone-500 dark:text-zinc-400 mt-0.5 font-medium">
                     {t('settings.pos.allowMultipleShiftsDesc', {
                       defaultValue:
                         'Allow multiple employees to open and operate independent cash shifts simultaneously at this location.',
                     })}
                   </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 font-medium">
+                  <p className="text-xs text-stone-400 dark:text-zinc-500 mt-2 font-medium">
                     {t('settings.pos.allowMultipleShiftsOffHint', {
                       defaultValue:
                         'Turning this off closes any extra open drawers and keeps the most recently opened one.',
@@ -1451,13 +1451,13 @@ export function SettingsPage() {
                     {...register('allowMultipleShifts')}
                     className="sr-only peer"
                   />
-                  <div className="h-7 w-12 rounded-full bg-slate-300/90 ring-1 ring-inset ring-slate-400/40 shadow-inner transition-all duration-200 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-mintcom-green/50 peer-focus-visible:ring-offset-2 dark:bg-white/15 dark:ring-white/20 peer-checked:bg-mintcom-green peer-checked:ring-mintcom-green/40 peer-checked:shadow-[0_0_0_3px_rgba(125,198,162,0.22)] after:absolute after:left-0.5 after:top-0.5 after:h-6 after:w-6 after:rounded-full after:bg-white after:shadow-[0_1px_3px_rgba(0,0,0,0.18)] after:transition-all after:content-[''] peer-checked:after:translate-x-5" />
+                  <div className="h-7 w-12 rounded-full bg-stone-300/90 ring-1 ring-inset ring-stone-400/40 shadow-inner transition-all duration-200 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-mintcom-green/50 peer-focus-visible:ring-offset-2 dark:bg-zinc-800 dark:ring-zinc-800 peer-checked:bg-mintcom-green peer-checked:ring-mintcom-green/40 peer-checked:shadow-[0_0_0_3px_rgba(125,198,162,0.22)] after:absolute after:left-0.5 after:top-0.5 after:h-6 after:w-6 after:rounded-full after:bg-white after:shadow-[0_1px_3px_rgba(0,0,0,0.18)] after:transition-all after:content-[''] peer-checked:after:translate-x-5" />
                 </label>
               </div>
             </div>
 
             {/* Hold Order / Table Count */}
-            <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.02] p-5 sm:p-6 shadow-sm">
+            <div className="rounded-2xl border border-stone-200 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-5 sm:p-6 shadow-sm">
               <div className="flex flex-col min-w-0 max-w-sm">
                 <label className="label-strong font-sans block h-5 leading-5 mb-2 truncate">
                   {formatInputLabel(t('settings.pos.holdOrderTableCountTitle'), t('common.locale'))}
@@ -1491,7 +1491,7 @@ export function SettingsPage() {
                       max: { value: MAX_HOLD_ORDER_TABLE_COUNT, message: t('settings.pos.holdOrderTableCountErrorRange', { max: MAX_HOLD_ORDER_TABLE_COUNT }) },
                       setValueAs: (value) => normalizeHoldOrderTableCount(value),
                     })}
-                    className={`w-full h-11 px-3 box-border bg-white dark:bg-[#0F172A] border shadow-sm ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-gray-200 dark:border-white/15 hover:border-gray-300 dark:hover:border-white/25 focus:ring-mintcom-green/25 focus:border-mintcom-green'} rounded-xl text-sm font-bold text-gray-900 dark:text-white caret-mintcom-green placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all`}
+                    className={`w-full h-11 px-3 box-border bg-white dark:bg-zinc-900 border shadow-sm ${errors.holdOrderTableCount ? 'border-red-500 bg-red-500/5 focus:ring-red-500/20' : 'border-stone-200 dark:border-zinc-800 hover:border-stone-300 dark:hover:border-zinc-800 focus:ring-mintcom-green/25 focus:border-mintcom-green'} rounded-xl text-sm font-bold text-stone-900 dark:text-zinc-100 caret-mintcom-green placeholder:text-stone-400 focus:outline-none focus:ring-2 transition-all`}
                     placeholder={formatInputPlaceholder(t('settings.pos.holdOrderTableCountPlaceholder'), t('common.locale'))}
                   />
                 </div>
@@ -1503,10 +1503,10 @@ export function SettingsPage() {
                     </p>
                   ) : (
                     <div className="space-y-1">
-                      <p className="text-[11px] font-medium text-gray-400 leading-snug">
+                      <p className="text-[11px] font-medium text-stone-400 leading-snug">
                         {t('settings.pos.holdOrderTableCountDesc')}
                       </p>
-                      <p className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 leading-snug">
+                      <p className="text-[11px] font-semibold text-stone-500 dark:text-zinc-400 leading-snug">
                         {t('settings.pos.holdOrderTableCountMaxHint', {
                           defaultValue: `Maximum is ${MAX_HOLD_ORDER_TABLE_COUNT} tables.`,
                           max: MAX_HOLD_ORDER_TABLE_COUNT,
@@ -1521,15 +1521,15 @@ export function SettingsPage() {
         )}
 
         {activeTab === 'receipt' && (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] p-6 sm:p-8 rounded-2xl shadow-sm font-sans divide-y divide-gray-100 dark:divide-white/5">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 p-6 sm:p-8 rounded-2xl shadow-sm font-sans divide-y divide-stone-100 dark:divide-zinc-800">
             {/* Identity Visibility */}
             <div className="space-y-6 pb-6">
               {/* Restaurant Name */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div>
-                    <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showName')}</span>
-                    <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
+                    <span className="block text-sm font-semibold text-stone-900 dark:text-zinc-100 tracking-tight">{t('settings.receipts.showName')}</span>
+                    <span className="block text-xs text-stone-500 dark:text-zinc-400 mt-0.5">{t('settings.receipts.showNameDesc')}</span>
                   </div>
                   <Toggle
                     size="sm"
@@ -1542,7 +1542,7 @@ export function SettingsPage() {
                   {...restaurantNameField}
                   disabled={!showRestaurantName}
                   maxLength={MAX_ESTABLISHMENT_NAME_LENGTH}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                  className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-normal text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-stone-100 dark:disabled:bg-zinc-800"
                   placeholder={formatInputPlaceholder(t('settings.profile.namePlaceholder'), t('common.locale'))}
                 />
               </div>
@@ -1551,8 +1551,8 @@ export function SettingsPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div>
-                    <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showTagline')}</span>
-                    <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
+                    <span className="block text-sm font-semibold text-stone-900 dark:text-zinc-100 tracking-tight">{t('settings.receipts.showTagline')}</span>
+                    <span className="block text-xs text-stone-500 dark:text-zinc-400 mt-0.5">{t('settings.receipts.showTaglineDesc')}</span>
                   </div>
                   <Toggle
                     size="sm"
@@ -1565,7 +1565,7 @@ export function SettingsPage() {
                   {...restaurantDescriptionField}
                   disabled={!showDescription}
                   maxLength={MAX_ESTABLISHMENT_TAGLINE_LENGTH}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                  className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-normal text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-stone-100 dark:disabled:bg-zinc-800"
                   placeholder={formatInputPlaceholder(t('settings.profile.aboutPlaceholder'), t('common.locale'))}
                 />
               </div>
@@ -1575,9 +1575,9 @@ export function SettingsPage() {
             <div className="pt-6 pb-6 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showLogo')}</span>
-                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
-                  <p className="text-[10px] text-gray-400 font-bold mt-1.5">{t('settings.profile.logoGuidelines')}</p>
+                  <span className="block text-sm font-semibold text-stone-900 dark:text-zinc-100 tracking-tight">{t('settings.receipts.showLogo')}</span>
+                  <span className="block text-xs text-stone-500 dark:text-zinc-400 mt-0.5">{t('settings.receipts.showLogoDesc')}</span>
+                  <p className="text-[10px] text-stone-400 font-bold mt-1.5">{t('settings.profile.logoGuidelines')}</p>
                 </div>
                 <Toggle
                   size="sm"
@@ -1587,10 +1587,10 @@ export function SettingsPage() {
               </div>
               <div className={`overflow-hidden transition-all duration-300 ${watch('showLogoOnReceipt') ? 'opacity-100' : 'opacity-50 pointer-events-none grayscale'}`}>
                 <div className="flex items-center gap-6 p-2">
-                  <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-white/5">
-                    {receiptLogoPreview ? <img src={receiptLogoPreview} alt={t('settings.receipts.logoAlt')} className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-8 h-8 text-gray-300 dark:text-gray-600" />}
+                  <div className="w-20 h-20 bg-stone-50 dark:bg-zinc-800 rounded-xl overflow-hidden flex items-center justify-center border border-stone-200 dark:border-zinc-800">
+                    {receiptLogoPreview ? <img src={receiptLogoPreview} alt={t('settings.receipts.logoAlt')} className="w-full h-full object-cover" loading="lazy" decoding="async" /> : <Store className="w-8 h-8 text-stone-300 dark:text-zinc-600" />}
                   </div>
-                  <label className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl hover:opacity-90 cursor-pointer label-strong font-sans transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
+                  <label className="px-5 py-2.5 bg-stone-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl hover:opacity-90 cursor-pointer label-strong font-sans transition-all hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg">
                     {t('settings.receipts.uploadLogo')}
                     <input type="file" accept="image/*" onChange={handleReceiptLogoChange} className="hidden" disabled={!watch('showLogoOnReceipt')} />
                   </label>
@@ -1602,8 +1602,8 @@ export function SettingsPage() {
             <div className="pt-6 pb-6 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showAddress')}</span>
-                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
+                  <span className="block text-sm font-semibold text-stone-900 dark:text-zinc-100 tracking-tight">{t('settings.receipts.showAddress')}</span>
+                  <span className="block text-xs text-stone-500 dark:text-zinc-400 mt-0.5">{t('settings.receipts.showAddressDesc')}</span>
                 </div>
                 <Toggle
                   size="sm"
@@ -1616,7 +1616,7 @@ export function SettingsPage() {
                 {...restaurantAddressField}
                 disabled={!showAddress}
                 maxLength={MAX_ESTABLISHMENT_ADDRESS_LENGTH}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-normal text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-stone-100 dark:disabled:bg-zinc-800"
                 placeholder={formatInputPlaceholder(t('settings.profile.addressPlaceholder'), t('common.locale'))}
               />
             </div>
@@ -1625,8 +1625,8 @@ export function SettingsPage() {
             <div className="pt-6 pb-6 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.showTaxId')}</span>
-                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
+                  <span className="block text-sm font-semibold text-stone-900 dark:text-zinc-100 tracking-tight">{t('settings.receipts.showTaxId')}</span>
+                  <span className="block text-xs text-stone-500 dark:text-zinc-400 mt-0.5">{t('settings.receipts.showTaxIdDesc')}</span>
                 </div>
                 <Toggle
                   size="sm"
@@ -1644,18 +1644,18 @@ export function SettingsPage() {
                   const target = e.target as HTMLInputElement;
                   target.value = sanitizeTaxId(target.value, MAX_ESTABLISHMENT_TAX_ID_LENGTH);
                 }}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-normal text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-stone-100 dark:disabled:bg-zinc-800"
                 placeholder={formatInputPlaceholder(t('settings.profile.taxIdPlaceholder'), t('common.locale'))}
               />
-              <p className="text-xs text-gray-400 mt-1">{t('settings.profile.taxIdDisclaimer')}</p>
+              <p className="text-xs text-stone-400 mt-1">{t('settings.profile.taxIdDisclaimer')}</p>
             </div>
 
             {/* Footer */}
             <div className="pt-6 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">{t('settings.receipts.footerMessage')}</span>
-                  <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
+                  <span className="block text-sm font-semibold text-stone-900 dark:text-zinc-100 tracking-tight">{t('settings.receipts.footerMessage')}</span>
+                  <span className="block text-xs text-stone-500 dark:text-zinc-400 mt-0.5">{t('settings.receipts.footerMessageDesc')}</span>
                 </div>
                 <Toggle
                   size="sm"
@@ -1668,18 +1668,18 @@ export function SettingsPage() {
                 rows={2}
                 disabled={!showFarewellMessage}
                 maxLength={MAX_RECEIPT_FAREWELL_LENGTH}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-normal text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-100 dark:disabled:bg-white/5"
+                className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-normal text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all resize-none disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-stone-100 dark:disabled:bg-zinc-800"
                 placeholder={formatInputPlaceholder(t('settings.receipts.footerPlaceholder'), t('common.locale'))}
               />
             </div>
 
             {/* Product News & Offers (Marketing Consent) */}
-            <div className="pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+            <div className="pt-6 border-t border-stone-100 dark:border-zinc-800 flex items-center justify-between">
               <div>
-                <span className="block text-sm font-semibold text-gray-900 dark:text-white tracking-tight">
+                <span className="block text-sm font-semibold text-stone-900 dark:text-zinc-100 tracking-tight">
                   {t('settings.profile.marketingConsentTitle')}
                 </span>
-                <span className="block text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                <span className="block text-xs text-stone-500 dark:text-zinc-400 mt-0.5">
                   {t('settings.profile.marketingConsentDesc')}
                 </span>
               </div>
@@ -1723,8 +1723,8 @@ export function SettingsPage() {
               </div>
             ) : (
               <div className="space-y-6">
-                <div className="p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-red-200/50 dark:border-red-900/20 shadow-sm">
-                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                <div className="p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-red-200/50 dark:border-red-900/20 shadow-sm">
+                  <p className="text-sm text-stone-600 dark:text-zinc-300 leading-relaxed font-medium">
                     {t('settings.danger.description', { name: establishmentInfo?.name || t('settings.danger.thisLocation') })}
                   </p>
                   <div className="mt-6 flex flex-col gap-3">

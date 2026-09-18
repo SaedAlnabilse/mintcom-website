@@ -174,12 +174,12 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       customContent: (
         <div className="space-y-3 mt-6">
           <div className="flex min-w-0 items-center justify-between gap-3">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payIn')}</span>
+            <span className="text-xs font-bold text-stone-500 dark:text-zinc-400">{t('dashboard.stats.payIn')}</span>
             <StatValue value={stats?.totalPayIn ?? 0} currency={currencySymbol} prefix="+" className="text-sm text-mintcom-green" />
           </div>
-          <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+          <div className="w-full h-px bg-stone-100 dark:bg-zinc-800" />
           <div className="flex min-w-0 items-center justify-between gap-3">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.payOut')}</span>
+            <span className="text-xs font-bold text-stone-500 dark:text-zinc-400">{t('dashboard.stats.payOut')}</span>
             <StatValue value={stats?.totalPayOut ?? 0} currency={currencySymbol} prefix="-" className="text-sm text-red-500" />
           </div>
         </div>
@@ -199,23 +199,23 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
       customContent: (
         <div className="space-y-3 mt-6">
           <div className="flex min-w-0 items-center justify-between gap-3">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.expected')}</span>
-            <StatValue value={previousShiftSnapshot.drawerAmount || 0} currency={currencySymbol} className="text-sm text-gray-700 dark:text-gray-300" />
+            <span className="text-xs font-bold text-stone-500 dark:text-zinc-400">{t('dashboard.stats.expected')}</span>
+            <StatValue value={previousShiftSnapshot.drawerAmount || 0} currency={currencySymbol} className="text-sm text-stone-700 dark:text-zinc-300" />
           </div>
-          <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+          <div className="w-full h-px bg-stone-100 dark:bg-zinc-800" />
           <div className="flex min-w-0 items-center justify-between gap-3">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.actual')}</span>
+            <span className="text-xs font-bold text-stone-500 dark:text-zinc-400">{t('dashboard.stats.actual')}</span>
             <StatValue value={previousShiftSnapshot.closingBalance || 0} currency={currencySymbol} className="text-sm text-mintcom-green" />
           </div>
-          <div className="w-full h-px bg-gray-100 dark:bg-white/5" />
+          <div className="w-full h-px bg-stone-100 dark:bg-zinc-800" />
           <div className="flex min-w-0 items-center justify-between gap-3">
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t('dashboard.stats.variance')}</span>
+            <span className="text-xs font-bold text-stone-500 dark:text-zinc-400">{t('dashboard.stats.variance')}</span>
             {previousShiftSnapshot.discrepancy > 0.01 ? (
               <StatValue value={previousShiftSnapshot.discrepancy} currency={currencySymbol} prefix="+" suffix={t('dashboard.stats.over')} className="text-sm text-amber-500" />
             ) : previousShiftSnapshot.discrepancy < -0.01 ? (
               <StatValue value={Math.abs(previousShiftSnapshot.discrepancy)} currency={currencySymbol} prefix="-" suffix={t('dashboard.stats.short')} className="text-sm text-red-500" />
             ) : (
-              <StatValue value={0} currency={currencySymbol} prefix={`${t('dashboard.stats.perfect')} `} className="text-sm text-gray-500" />
+              <StatValue value={0} currency={currencySymbol} prefix={`${t('dashboard.stats.perfect')} `} className="text-sm text-stone-500" />
             )}
           </div>
         </div>
@@ -235,7 +235,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
             onClick={stat.onClick}
-            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden min-w-[160px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''}`}
+            className={`group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 transition-all duration-300 overflow-hidden min-w-[160px] sm:min-w-0 flex-shrink-0 sm:flex-shrink ${stat.onClick ? 'cursor-pointer' : ''}`}
           >
             <div className={`absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
             <div className="relative z-10">
@@ -244,7 +244,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                   <stat.icon size={20} />
                 </div>
                 {stat.onClick && (
-                  <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green transition-colors">
+                  <div className="w-8 h-8 rounded-lg bg-stone-50 dark:bg-zinc-800 flex items-center justify-center text-stone-400 group-hover:text-mintcom-green transition-colors">
                     <ExternalLink size={14} />
                   </div>
                 )}
@@ -264,7 +264,7 @@ export const DashboardStatsCards = React.memo(function DashboardStatsCards({ sta
                     className="text-2xl"
                     isInteger={!stat.isCurrency}
                   />
-                  <p className="sentence-case-text text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="sentence-case-text text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">
                     {stat.sub}
                   </p>
                 </>

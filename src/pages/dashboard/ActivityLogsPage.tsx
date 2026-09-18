@@ -5,13 +5,12 @@ import {
   type ActivityLogQuery,
 } from '../../services/activityLogService';
 import {
-  Search,
   X,
   Shield,
   UserRound,
   Layers,
 } from 'lucide-react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, PageHeader, Badge } from '../../components/ui';
+import { Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, PageHeader, Badge, SearchInput, ListFilterBar } from '../../components/ui';
 
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -494,73 +493,49 @@ export function ActivityLogsPage() {
       />
 
       {/* Control Panel */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 sm:p-5 shadow-sm space-y-3">
-        {/* Top Controls: Search Bar + Date Range Group */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
-          {/* Search Bar - expands dynamically, never squished */}
-          <div className="flex-1 min-w-0 relative group">
-            <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            <input
-              maxLength={255}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); }}
-              placeholder={formatInputPlaceholder(t('activity.searchPlaceholder'), t('common.locale'))}
-              className="w-full h-12 ps-11 pe-11 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+      <ListFilterBar
+        searchValue={searchQuery}
+        onSearchChange={(e) => { setSearchQuery(e.target.value); }}
+        onSearchClear={() => { setSearchQuery(''); }}
+        searchPlaceholder={formatInputPlaceholder(t('activity.searchPlaceholder'), t('common.locale'))}
+      >
+        {/* Date Filter Group */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Presets Dropdown */}
+          <div className="w-full sm:w-44 shrink-0 relative z-[50]">
+            <SingleSelect
+              value={activePreset === 'custom' ? null : activePreset}
+              onChange={(val) => {
+                if (val) handlePresetChange(val);
+              }}
+              options={localizedDateOptions}
+              placeholder={formatInputPlaceholder(t('activity.customRange'), t('common.locale'))}
+              showAllOption={false}
+              allowClear={false}
+              searchable={false}
+              className="w-full"
+              buttonClassName="!h-12 !rounded-xl"
             />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => { setSearchQuery(''); }}
-                aria-label={t('common.clearSearch', 'Clear search')}
-                className="absolute end-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-              >
-                <X size={12} strokeWidth={2.75} />
-              </button>
-            )}
           </div>
-
-          {/* Date Filter Group */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            {/* Presets Dropdown */}
-            <div className="w-full sm:w-44 shrink-0 relative z-[50]">
-              <SingleSelect
-                value={activePreset === 'custom' ? null : activePreset}
-                onChange={(val) => {
-                  if (val) handlePresetChange(val);
-                }}
-                options={localizedDateOptions}
-                placeholder={formatInputPlaceholder(t('activity.customRange'), t('common.locale'))}
-                showAllOption={false}
-                allowClear={false}
-                searchable={false}
-                className="w-full"
-                buttonClassName="!h-12 !rounded-xl"
-              />
-            </div>
-
-            {/* Custom Date Range Picker */}
-            <div className="w-full sm:w-auto shrink-0 relative z-[60]">
-              <DateRangePicker
-                startDate={dateRange.start}
-                endDate={dateRange.end}
-                onRangeChange={(start, end) => {
-                  setDateRange({ start, end });
-                  setActivePreset('custom');
-                 
-                }}
-                onClear={() => handlePresetChange('today')}
-                isActive={activePreset === 'custom'}
-                align={t('common.locale') === 'ar' ? 'left' : 'right'}
-              />
-            </div>
+          {/* Custom Date Range Picker */}
+          <div className="w-full sm:w-auto shrink-0 relative z-[60]">
+            <DateRangePicker
+              startDate={dateRange.start}
+              endDate={dateRange.end}
+              onRangeChange={(start, end) => {
+                setDateRange({ start, end });
+                setActivePreset('custom');
+              }}
+              onClear={() => handlePresetChange('today')}
+              isActive={activePreset === 'custom'}
+              align={t('common.locale') === 'ar' ? 'left' : 'right'}
+            />
           </div>
         </div>
-
         {/* Secondary Filter Row: Categorical Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="flex flex-wrap gap-3 w-full">
           {/* User / actor filter */}
-          <div className="min-w-0 relative z-[40]">
+          <div className="min-w-0 flex-1 relative z-[40]">
             <SingleSelect
               value={userFilter === 'all' ? null : userFilter}
               onChange={(val) => {
@@ -573,7 +548,6 @@ export function ActivityLogsPage() {
                   );
                 }
                 setUserFilter(next);
-               
               }}
               options={userFilterOptions}
               allOptionLabel={t('activity.allUsers', { defaultValue: 'All users' })}
@@ -585,9 +559,8 @@ export function ActivityLogsPage() {
               buttonClassName="!h-12 !rounded-xl"
             />
           </div>
-
           {/* Action Filter */}
-          <div className="min-w-0 relative z-[30]">
+          <div className="min-w-0 flex-1 relative z-[30]">
             <SingleSelect
               value={actionFilter === 'all' ? null : actionFilter}
               onChange={(val) => { setActionFilter(val || 'all'); }}
@@ -599,9 +572,8 @@ export function ActivityLogsPage() {
               buttonClassName="!h-12 !rounded-xl"
             />
           </div>
-
           {/* Resource Type Filter */}
-          <div className="min-w-0 sm:col-span-2 lg:col-span-1 relative z-[20]">
+          <div className="min-w-0 flex-1 relative z-[20]">
             <SingleSelect
               value={resourceFilter === 'all' ? null : resourceFilter}
               onChange={(val) => { setResourceFilter(val || 'all'); }}
@@ -614,11 +586,10 @@ export function ActivityLogsPage() {
             />
           </div>
         </div>
-
         {/* Active filter summary */}
         {hasActiveFilters && (
-          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-white/5 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-gray-400 tracking-wide">
+          <div className="mt-3 pt-3 border-t border-stone-100 dark:border-zinc-800 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-stone-400 tracking-wide">
               <UserRound size={12} />
               {t('activity.activeFilters', { defaultValue: 'Filters' })}
             </span>
@@ -661,7 +632,7 @@ export function ActivityLogsPage() {
               <button
                 type="button"
                 onClick={() => { setSearchQuery(''); }}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 text-[11px] font-bold border border-gray-200 dark:border-white/10 hover:bg-gray-200/80 dark:hover:bg-white/15 transition-colors max-w-[200px]"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 text-[11px] font-bold border border-stone-200 dark:border-zinc-800 hover:bg-stone-200/80 dark:hover:bg-zinc-800 transition-colors max-w-[200px]"
               >
                 <span className="truncate">“{searchQuery.trim()}”</span>
                 <X size={11} strokeWidth={2.5} className="shrink-0" />
@@ -682,18 +653,18 @@ export function ActivityLogsPage() {
             <button
               type="button"
               onClick={clearAllFilters}
-              className="ms-auto text-[11px] font-bold text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+              className="ms-auto text-[11px] font-bold text-stone-500 hover:text-stone-800 dark:hover:text-zinc-200 transition-colors"
             >
               {t('common.clearAll', { defaultValue: 'Clear all' })}
             </button>
           </div>
         )}
-      </div>
+      </ListFilterBar>
 
       {/* Main Logs Area — grouped timeline instead of a 5-column table, so the
           description and the metadata each get their own line rather than being
           squeezed (and cut mid-word) into one cramped row. */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col min-h-[350px]">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col min-h-[350px]">
         <ActivityTimeline
           logs={logs}
           isLoading={isLoading}
@@ -710,7 +681,7 @@ export function ActivityLogsPage() {
           whole partitioned table on every load.
         */}
         {hasMore && (
-          <div className="flex justify-center py-4 border-t border-gray-100 dark:border-white/5">
+          <div className="flex justify-center py-4 border-t border-stone-100 dark:border-zinc-800">
             <button
               type="button"
               onClick={loadMore}
@@ -739,17 +710,17 @@ export function ActivityLogsPage() {
                 <div className="grid grid-cols-2 gap-8">
                   <div>
                     <p className="label-strong font-sans mb-2">{t('activity.time')}</p>
-                    <p className="font-bold text-gray-900 dark:text-white">{formatDate(selectedLog.timestamp)}</p>
+                    <p className="font-bold text-stone-900 dark:text-zinc-100">{formatDate(selectedLog.timestamp)}</p>
                   </div>
                   <div>
                     <p className="label-strong font-sans mb-2">{t('activity.user')}</p>
-                    <p className="font-bold text-gray-900 dark:text-white">{getActorName(selectedLog, t('activity.owner'), t('activity.system'))}</p>
+                    <p className="font-bold text-stone-900 dark:text-zinc-100">{getActorName(selectedLog, t('activity.owner'), t('activity.system'))}</p>
                   </div>
                 </div>
 
                 <div>
                   <p className="label-strong font-sans mb-2">{t('activity.details')}</p>
-                  <p className="text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-300 break-words">
+                  <p className="text-sm font-medium leading-relaxed text-stone-600 dark:text-zinc-300 break-words">
                     {selectedLog.description}
                   </p>
                 </div>
@@ -762,24 +733,24 @@ export function ActivityLogsPage() {
                     const detailEntries = getMetadataEntries(selectedLog.metadata, metadataOptions);
                     if (detailEntries.length === 0) {
                       return (
-                        <p className="text-sm font-bold text-gray-400">{t('activity.noData')}</p>
+                        <p className="text-sm font-bold text-stone-400">{t('activity.noData')}</p>
                       );
                     }
                     return (
-                      <dl className="rounded-2xl border border-gray-200 dark:border-white/5 divide-y divide-gray-100 dark:divide-white/5 overflow-hidden">
+                      <dl className="rounded-2xl border border-stone-200 dark:border-zinc-800 divide-y divide-stone-100 dark:divide-zinc-800 overflow-hidden">
                         {detailEntries.map((entry) => (
                           <div
                             key={entry.key}
-                            className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-4 px-5 py-3 bg-gray-50/60 dark:bg-white/[0.02]"
+                            className="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-4 px-5 py-3 bg-stone-50/60 dark:bg-zinc-800/40"
                           >
-                            <dt className="text-[11px] font-black uppercase tracking-wider text-gray-400 self-center">
+                            <dt className="text-[11px] font-black uppercase tracking-wider text-stone-400 self-center">
                               {entry.label}
                             </dt>
                             <dd
                               className={`sm:col-span-2 text-sm break-words ${
                                 entry.isIdentifier
-                                  ? 'font-mono text-xs text-gray-500 dark:text-gray-400'
-                                  : 'font-bold text-gray-900 dark:text-white'
+                                  ? 'font-mono text-xs text-stone-500 dark:text-zinc-400'
+                                  : 'font-bold text-stone-900 dark:text-zinc-100'
                               }`}
                             >
                               {entry.value}

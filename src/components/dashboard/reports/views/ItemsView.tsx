@@ -412,17 +412,17 @@ export const ItemsView = React.memo(function ItemsView({
         <img
           src={imageUrl}
           alt=""
-          className="h-16 w-16 rounded-xl object-cover border border-gray-200 dark:border-white/10"
+          className="h-16 w-16 rounded-xl object-cover border border-stone-200 dark:border-zinc-800"
         />
       ) : (
-        <span className="text-sm font-bold text-gray-400">
+        <span className="text-sm font-bold text-stone-400">
           {t('reports.history.noImage', { defaultValue: 'No image' })}
         </span>
       );
     }
 
     return (
-      <span className="text-sm font-bold text-gray-700 dark:text-gray-200 break-words">
+      <span className="text-sm font-bold text-stone-700 dark:text-zinc-200 break-words">
         {typeof value === 'string' && value.trim()
           ? value
           : t('reports.history.emptyValue', { defaultValue: 'Empty' })}
@@ -436,20 +436,20 @@ export const ItemsView = React.memo(function ItemsView({
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         {/* Search Bar */}
         <div className="relative w-full md:flex-1">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
           <input maxLength={255}
             type="text"
             placeholder={t('orders.reports.items.searchPlaceholder', { type: t(`orders.reports.items.types.${itemReportTab}`) })}
             value={itemSearchQuery}
             onChange={(e) => setItemSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-11 py-3 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all"
+            className="w-full pl-12 pr-11 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-sm font-medium text-stone-900 dark:text-zinc-100 placeholder-stone-400 focus:outline-none transition-all"
           />
           {itemSearchQuery && (
             <button
               type="button"
               onClick={() => setItemSearchQuery('')}
               aria-label={t('common.clearSearch', 'Clear search')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
             >
               <X size={12} strokeWidth={2.75} />
             </button>
@@ -464,7 +464,7 @@ export const ItemsView = React.memo(function ItemsView({
                 onClick={() => setItemReportTab('items')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'items'
                   ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                  : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                  : 'bg-white dark:bg-zinc-800 text-stone-500 hover:bg-stone-50 dark:hover:bg-zinc-800 border border-stone-200 dark:border-zinc-800'
                   }`}
               >
                 {t('orders.reports.items.byProducts')}
@@ -473,7 +473,7 @@ export const ItemsView = React.memo(function ItemsView({
                 onClick={() => setItemReportTab('categories')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'categories'
                   ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                  : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                  : 'bg-white dark:bg-zinc-800 text-stone-500 hover:bg-stone-50 dark:hover:bg-zinc-800 border border-stone-200 dark:border-zinc-800'
                   }`}
               >
                 {t('orders.reports.items.byCategory')}
@@ -485,7 +485,7 @@ export const ItemsView = React.memo(function ItemsView({
                 onClick={() => setItemReportTab('modifiers')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'modifiers'
                   ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                  : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                  : 'bg-white dark:bg-zinc-800 text-stone-500 hover:bg-stone-50 dark:hover:bg-zinc-800 border border-stone-200 dark:border-zinc-800'
                   }`}
               >
                 {t('orders.reports.items.byAddons')}
@@ -494,7 +494,7 @@ export const ItemsView = React.memo(function ItemsView({
                 onClick={() => setItemReportTab('attributes')}
                 className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${itemReportTab === 'attributes'
                   ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20'
-                  : 'bg-white dark:bg-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10'
+                  : 'bg-white dark:bg-zinc-800 text-stone-500 hover:bg-stone-50 dark:hover:bg-zinc-800 border border-stone-200 dark:border-zinc-800'
                   }`}
               >
                 {t('orders.reports.items.byAttributes')}
@@ -505,13 +505,13 @@ export const ItemsView = React.memo(function ItemsView({
       </div>
 
       {/* Data Table */}
-      <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.03] overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 dark:bg-white/[0.02]">
-              <tr className="border-b border-gray-200 dark:border-white/5">
+            <thead className="bg-stone-50 dark:bg-zinc-800/40">
+              <tr className="border-b border-stone-200 dark:border-zinc-800">
                 <th
-                  className={`px-8 py-5 text-start label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-start label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'name' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                   onClick={() => requestSort('name')}
                 >
                   <div className="flex items-center gap-2">
@@ -520,7 +520,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'quantity' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                   onClick={() => requestSort('quantity')}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -529,7 +529,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'revenue' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                   onClick={() => requestSort('revenue')}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -538,7 +538,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'refundQuantity' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'refundQuantity' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                   onClick={() => requestSort('refundQuantity')}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -547,7 +547,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                 </th>
                 <th
-                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'totalRefunds' ? 'text-mintcom-green' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'}`}
+                  className={`px-8 py-5 text-center label-strong font-sans cursor-pointer select-none transition-colors group ${sortConfig?.key === 'totalRefunds' ? 'text-mintcom-green' : 'text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300'}`}
                   onClick={() => requestSort('totalRefunds')}
                 >
                   <div className="flex items-center justify-center gap-2">
@@ -557,7 +557,7 @@ export const ItemsView = React.memo(function ItemsView({
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+            <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
               {sortedItems.length > 0 ? (
                 paginatedItems.map((item: any, idx: number) => {
                     const itemId =
@@ -609,22 +609,22 @@ export const ItemsView = React.memo(function ItemsView({
                             }
                           }
                         }}
-                        className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${itemReportTab === 'categories' ? 'cursor-pointer select-none active:scale-[0.995]' : ''}`}
+                        className={`group hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors ${itemReportTab === 'categories' ? 'cursor-pointer select-none active:scale-[0.995]' : ''}`}
                       >
                         <td className="px-8 py-5 text-start">
                           <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-xs text-gray-500 border border-gray-200 dark:border-white/5 shadow-sm">
+                            <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center font-black text-xs text-stone-500 border border-stone-200 dark:border-zinc-800 shadow-sm">
                               <StatValue value={(currentPage - 1) * itemsPerPage + idx + 1} isInteger={true} className="text-xs" />
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-gray-900 dark:text-white text-sm">{displayName}</span>
+                              <span className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{displayName}</span>
                               {isDeleted && (
                                 <span className="text-[11px] font-black uppercase tracking-wider text-paymint-red">
                                   {t('reports.deletedBadge', { defaultValue: '[Deleted]' })}
                                 </span>
                               )}
                               {itemReportTab === 'categories' && (
-                                <ChevronRight size={14} className="text-gray-300 dark:text-white/10 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
+                                <ChevronRight size={14} className="text-stone-300 dark:text-zinc-700 opacity-40 group-hover:opacity-100 transition-all group-hover:translate-x-1" />
                               )}
                               {canShowHistory && (
                                  <button
@@ -640,7 +640,7 @@ export const ItemsView = React.memo(function ItemsView({
                                    className={`flex items-center justify-center w-7 h-7 rounded-lg border transition-all ${
                                      hasHistoryInRange
                                        ? 'bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20'
-                                       : 'bg-slate-500/10 text-slate-500 border-slate-500/20 hover:bg-slate-500/20'
+                                       : 'bg-stone-500/10 text-stone-500 border-stone-500/20 hover:bg-stone-500/20'
                                    }`}
                                    title={
                                      hasHistoryInRange
@@ -662,7 +662,7 @@ export const ItemsView = React.memo(function ItemsView({
                             </div>
                           </div>
                         </td>
-                        <td className="px-8 py-5 text-center font-bold text-gray-700 dark:text-gray-300">
+                        <td className="px-8 py-5 text-center font-bold text-stone-700 dark:text-zinc-300">
                           <StatValue 
                             value={item.quantity} 
                             isInteger={true}
@@ -673,7 +673,7 @@ export const ItemsView = React.memo(function ItemsView({
                         <td className="px-8 py-5 text-center font-bold text-mintcom-green">
                           {formatCurrency((item.totalSales || item.revenue) || 0, 'center')}
                         </td>
-                        <td className="px-8 py-5 text-center font-bold text-gray-700 dark:text-gray-300">
+                        <td className="px-8 py-5 text-center font-bold text-stone-700 dark:text-zinc-300">
                           <StatValue 
                             value={item.refundQuantity || 0} 
                             isInteger={true}
@@ -681,7 +681,7 @@ export const ItemsView = React.memo(function ItemsView({
                             containerClassName="justify-center w-full"
                           />
                         </td>
-                        <td className={`px-8 py-5 text-center font-bold ${(item.totalRefunds || 0) > 0 ? 'text-paymint-red' : 'text-gray-400'}`}>
+                        <td className={`px-8 py-5 text-center font-bold ${(item.totalRefunds || 0) > 0 ? 'text-paymint-red' : 'text-stone-400'}`}>
                           {formatCurrency(item.totalRefunds || 0, 'center')}
                         </td>
                       </motion.tr>
@@ -727,19 +727,19 @@ export const ItemsView = React.memo(function ItemsView({
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative w-full max-w-lg bg-white dark:bg-[#1E293B] rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5"
+                className="relative w-full max-w-lg bg-white dark:bg-zinc-900/60 rounded-[32px] shadow-md overflow-hidden border border-stone-100 dark:border-zinc-800"
               >
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-gray-100 dark:border-white/5 flex items-center justify-between bg-gray-50/50 dark:bg-white/[0.02]">
+                <div className="px-6 py-5 border-b border-stone-100 dark:border-zinc-800 flex items-center justify-between bg-stone-50/50 dark:bg-zinc-800/40">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                       <History size={20} />
                     </div>
                     <div>
-                       <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">
+                       <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                          {selectedHistoryItem.name}
                        </h3>
-                       <p className="text-xs text-gray-500 mt-0.5">
+                       <p className="text-xs text-stone-500 mt-0.5">
                          {t('reports.history.modalTitle', { defaultValue: 'Change History' })}
                        </p>
                      </div>
@@ -748,13 +748,13 @@ export const ItemsView = React.memo(function ItemsView({
                 </div>
 
                  {/* Content */}
-                 <div className="p-6 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+                 <div className="p-6 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-stone-200 dark:scrollbar-thumb-white/10">
                    <div className="mb-4 flex items-center justify-between gap-3">
                      <div>
-                       <p className="text-xs font-black uppercase tracking-widest text-gray-400">
+                       <p className="text-xs font-black uppercase tracking-widest text-stone-400">
                          {t('reports.history.scopeLabel', { defaultValue: 'Scope' })}
                        </p>
-                       <p className="text-xs text-gray-500 mt-1">
+                       <p className="text-xs text-stone-500 mt-1">
                          {t('reports.history.scopeSummary', {
                           defaultValue: '{{all}} total changes - {{period}} in selected range',
                            all: selectedAllHistory.length,
@@ -762,14 +762,14 @@ export const ItemsView = React.memo(function ItemsView({
                          })}
                        </p>
                      </div>
-                     <div className="inline-flex rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.03] p-1">
+                     <div className="inline-flex rounded-xl border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800/40 p-1">
                        <button
                          type="button"
                          onClick={() => setHistoryScope('all')}
                          className={`px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${
                            historyScope === 'all'
-                             ? 'bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white shadow-sm'
-                             : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
+                             ? 'bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 shadow-sm'
+                             : 'text-stone-500 hover:text-stone-700 dark:hover:text-zinc-200'
                          }`}
                        >
                          {t('reports.history.scopeAll', { defaultValue: 'All history' })}
@@ -779,8 +779,8 @@ export const ItemsView = React.memo(function ItemsView({
                          onClick={() => setHistoryScope('period')}
                          className={`px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${
                            historyScope === 'period'
-                             ? 'bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white shadow-sm'
-                             : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
+                             ? 'bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 shadow-sm'
+                             : 'text-stone-500 hover:text-stone-700 dark:hover:text-zinc-200'
                          }`}
                        >
                          {t('reports.history.scopePeriod', { defaultValue: 'This period' })}
@@ -791,10 +791,10 @@ export const ItemsView = React.memo(function ItemsView({
                      {selectedHistoryEntries.length > 0 ? selectedHistoryEntries.map((history) => (
                        <div
                          key={history.id}
-                         className="p-4 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 flex flex-col gap-3"
+                         className="p-4 rounded-2xl bg-stone-50 dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800 flex flex-col gap-3"
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
+                          <div className="flex items-center gap-2 text-xs font-bold text-stone-400">
                             <Calendar size={12} />
                             {format(new Date(history.createdAt), 'PPpp', { locale: getDateLocale(t('common.locale')) })}
                           </div>
@@ -808,13 +808,13 @@ export const ItemsView = React.memo(function ItemsView({
                           !selectedHistoryItem.name
                             .toLowerCase()
                             .includes(history.name.toLowerCase()) && (
-                          <div className="text-sm font-bold text-gray-900 dark:text-white">
+                          <div className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                             {history.name}
                           </div>
                         )}
 
                         {(history.changedByName || history.changedById) && (
-                          <div className="px-3 py-2 rounded-xl bg-white dark:bg-black/20 border border-gray-100 dark:border-white/5 text-xs font-bold text-gray-500 dark:text-gray-400">
+                          <div className="px-3 py-2 rounded-xl bg-white dark:bg-black/20 border border-stone-100 dark:border-zinc-800 text-xs font-bold text-stone-500 dark:text-zinc-400">
                             {t('reports.history.changedBy', {
                               defaultValue: 'Changed by {{name}}',
                               name: history.changedByName || history.changedById,
@@ -822,8 +822,8 @@ export const ItemsView = React.memo(function ItemsView({
                           </div>
                         )}
 
-                        <div className="flex items-center justify-between gap-3 rounded-xl bg-white dark:bg-black/20 border border-gray-100 dark:border-white/5 px-3 py-2">
-                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        <div className="flex items-center justify-between gap-3 rounded-xl bg-white dark:bg-black/20 border border-stone-100 dark:border-zinc-800 px-3 py-2">
+                          <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest">
                             {t('reports.history.fieldLabel', { defaultValue: 'Changed field' })}
                           </p>
                           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase tracking-wider">
@@ -834,36 +834,36 @@ export const ItemsView = React.memo(function ItemsView({
 
                         <div className="flex items-center justify-center gap-4 py-2">
                           <div className="min-w-0 flex-1 text-center">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                            <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">
                               {t('reports.history.from', { defaultValue: 'Old value' })}
                             </p>
-                            <div className={['price', 'cost'].includes(history.field || 'price') ? 'text-lg font-bold text-gray-500 line-through decoration-mintcom-red/40' : 'flex justify-center'}>
+                            <div className={['price', 'cost'].includes(history.field || 'price') ? 'text-lg font-bold text-stone-500 line-through decoration-mintcom-red/40' : 'flex justify-center'}>
                               {renderHistoryValue(history, 'old')}
                             </div>
                           </div>
-                          <ChevronRight className="text-gray-300" />
+                          <ChevronRight className="text-stone-300" />
                           <div className="min-w-0 flex-1 text-center">
                             <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">
                               {t('reports.history.to', { defaultValue: 'New value' })}
                             </p>
-                            <div className={['price', 'cost'].includes(history.field || 'price') ? 'text-xl font-black text-gray-900 dark:text-white' : 'flex justify-center'}>
+                            <div className={['price', 'cost'].includes(history.field || 'price') ? 'text-xl font-black text-stone-900 dark:text-zinc-100' : 'flex justify-center'}>
                               {renderHistoryValue(history, 'new')}
                             </div>
                           </div>
                         </div>
 
                         {history.reason && (
-                          <div className="mt-2 p-3 rounded-xl bg-white dark:bg-black/20 border border-gray-100 dark:border-white/5">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                          <div className="mt-2 p-3 rounded-xl bg-white dark:bg-black/20 border border-stone-100 dark:border-zinc-800">
+                            <p className="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">
                               {t('reports.history.reason', { defaultValue: 'Reason' })}
                             </p>
-                            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 italic">"{history.reason}"</p>
+                            <p className="text-sm font-medium text-stone-700 dark:text-zinc-300 italic">"{history.reason}"</p>
                           </div>
                         )}
                       </div>
                      )) : (
                        <div className="py-10 text-center">
-                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                         <p className="text-sm font-medium text-stone-500 dark:text-zinc-400">
                            {historyScope === 'all'
                              ? t('reports.history.noAllHistory', {
                                  defaultValue: 'No history has been recorded for this item yet.',
@@ -878,15 +878,15 @@ export const ItemsView = React.memo(function ItemsView({
                  </div>
 
                 {/* Footer */}
-                 <div className="px-6 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
-                   <p className="text-xs font-bold text-gray-500 max-w-[280px]">
+                 <div className="px-6 py-5 border-t border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40 flex items-center justify-between">
+                   <p className="text-xs font-bold text-stone-500 max-w-[280px]">
                      {t('reports.history.disclaimer', {
                        defaultValue: 'History helps explain reporting changes when item or add-on details are updated over time.',
                      })}
                    </p>
                    <button
                      onClick={() => setSelectedHistoryItem(null)}
-                     className="px-6 py-2.5 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all"
+                     className="px-6 py-2.5 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all"
                    >
                      {t('common.close', { defaultValue: 'Close' })}
                    </button>
@@ -914,19 +914,19 @@ export const ItemsView = React.memo(function ItemsView({
                 initial={{ opacity: 0, y: 100, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 100, scale: 0.95 }}
-                className="relative w-full max-w-4xl bg-white dark:bg-[#1E293B] rounded-t-[32px] sm:rounded-[32px] shadow-2xl overflow-hidden border border-gray-100 dark:border-white/5 flex flex-col max-h-[90vh]"
+                className="relative w-full max-w-4xl bg-white dark:bg-zinc-900/60 rounded-t-[32px] sm:rounded-[32px] shadow-md overflow-hidden border border-stone-100 dark:border-zinc-800 flex flex-col max-h-[90vh]"
               >
                 {/* Header */}
-                <div className="px-8 py-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between">
+                <div className="px-8 py-6 border-b border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm">
                       <LayoutGrid size={24} />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                      <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                         {selectedCategory?.name}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-stone-500 mt-1">
                         {t('orders.reports.items.breakdownTitle', { count: filteredBreakdown.length })}
                       </p>
                     </div>
@@ -935,21 +935,21 @@ export const ItemsView = React.memo(function ItemsView({
                 </div>
 
                 {/* Filter Bar */}
-                <div className="px-8 py-4 bg-white dark:bg-[#1E293B] border-b border-gray-100 dark:border-white/5">
+                <div className="px-8 py-4 bg-white dark:bg-zinc-900/60 border-b border-stone-100 dark:border-zinc-800">
                   <div className="relative">
-                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" />
                     <input maxLength={255}
                       type="text"
                       placeholder={t('orders.reports.items.searchPlaceholder', { type: t('orders.reports.items.types.items') })}
                       value={breakdownSearchQuery}
                       onChange={(e) => setBreakdownSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-11 py-3 rounded-xl bg-gray-50 dark:bg-black/20 border border-gray-100 dark:border-white/5 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none transition-all focus:ring-2 focus:ring-mintcom-green/20"
+                      className="w-full pl-12 pr-11 py-3 rounded-xl bg-stone-50 dark:bg-black/20 border border-stone-100 dark:border-zinc-800 text-sm font-medium text-stone-900 dark:text-zinc-100 placeholder-stone-400 focus:outline-none transition-all focus:ring-2 focus:ring-mintcom-green/20"
                     />
                     {breakdownSearchQuery && (
                       <button
                         type="button"
                         onClick={() => setBreakdownSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 transition-colors"
                       >
                         <X size={12} strokeWidth={2.75} />
                       </button>
@@ -958,10 +958,10 @@ export const ItemsView = React.memo(function ItemsView({
                 </div>
 
                 {/* Table Content */}
-                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-white/10">
+                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-stone-200 dark:scrollbar-thumb-white/10">
                   <table className="w-full">
-                    <thead className="bg-gray-50/50 dark:bg-white/[0.01] sticky top-0 z-10 backdrop-blur-md">
-                      <tr className="border-b border-gray-100 dark:border-white/5">
+                    <thead className="bg-stone-50/50 dark:bg-zinc-800/40 sticky top-0 z-10 backdrop-blur-md">
+                      <tr className="border-b border-stone-100 dark:border-zinc-800">
                         <th className="px-8 py-4 text-start label-strong font-sans">{t('orders.reports.items.productName')}</th>
                         <th className="px-8 py-4 text-center label-strong font-sans">{t('orders.reports.items.unitsSold')}</th>
                         <th className="px-8 py-4 text-center label-strong font-sans">{t('orders.reports.items.grossRevenue')}</th>
@@ -969,29 +969,29 @@ export const ItemsView = React.memo(function ItemsView({
                         <th className="px-8 py-4 text-center label-strong font-sans">{t('orders.reports.items.refunds')}</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                    <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                       {isFetchingBreakdown ? (
                         [...Array(5)].map((_, i) => (
                           <tr key={i} className="animate-pulse">
-                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-2/3" /></td>
-                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-1/3 ml-auto" /></td>
-                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-1/3 ml-auto" /></td>
-                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-1/3 ml-auto" /></td>
-                            <td className="px-8 py-6"><div className="h-4 bg-gray-100 dark:bg-white/5 rounded w-1/3 ml-auto" /></td>
+                            <td className="px-8 py-6"><div className="h-4 bg-stone-100 dark:bg-zinc-800 rounded w-2/3" /></td>
+                            <td className="px-8 py-6"><div className="h-4 bg-stone-100 dark:bg-zinc-800 rounded w-1/3 ml-auto" /></td>
+                            <td className="px-8 py-6"><div className="h-4 bg-stone-100 dark:bg-zinc-800 rounded w-1/3 ml-auto" /></td>
+                            <td className="px-8 py-6"><div className="h-4 bg-stone-100 dark:bg-zinc-800 rounded w-1/3 ml-auto" /></td>
+                            <td className="px-8 py-6"><div className="h-4 bg-stone-100 dark:bg-zinc-800 rounded w-1/3 ml-auto" /></td>
                           </tr>
                         ))
                       ) : filteredBreakdown.length > 0 ? (
                         filteredBreakdown.map((item, idx) => (
-                          <tr key={idx} className="group hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                          <tr key={idx} className="group hover:bg-stone-50/50 dark:hover:bg-zinc-800/40 transition-colors">
                             <td className="px-8 py-5 text-start">
                               <div className="flex items-center gap-4">
-                                <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center font-black text-[10px] text-gray-400 border border-gray-100 dark:border-white/5">
+                                <div className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-zinc-800 flex items-center justify-center font-black text-[10px] text-stone-400 border border-stone-100 dark:border-zinc-800">
                                   <StatValue value={idx + 1} isInteger={true} className="text-[10px]" />
                                 </div>
-                                <span className="font-bold text-gray-900 dark:text-white text-sm">{stripNameMarkers(item.itemName || item.name || '') || t('common.unknown')}</span>
+                                <span className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{stripNameMarkers(item.itemName || item.name || '') || t('common.unknown')}</span>
                               </div>
                             </td>
-                            <td className="px-8 py-5 text-center font-bold text-gray-700 dark:text-gray-300">
+                            <td className="px-8 py-5 text-center font-bold text-stone-700 dark:text-zinc-300">
                                <StatValue
                                 value={item.quantity}
                                 isInteger={true}
@@ -1002,7 +1002,7 @@ export const ItemsView = React.memo(function ItemsView({
                             <td className="px-8 py-5 text-center font-bold text-mintcom-green">
                               {formatCurrency((item.totalSales || item.revenue) || 0, 'center')}
                             </td>
-                            <td className="px-8 py-5 text-center font-bold text-gray-700 dark:text-gray-300">
+                            <td className="px-8 py-5 text-center font-bold text-stone-700 dark:text-zinc-300">
                               <StatValue 
                                 value={item.refundQuantity || 0} 
                                 isInteger={true}
@@ -1010,7 +1010,7 @@ export const ItemsView = React.memo(function ItemsView({
                                 containerClassName="justify-center w-full"
                               />
                             </td>
-                            <td className={`px-8 py-5 text-center font-bold ${(item.totalRefunds || 0) > 0 ? 'text-paymint-red' : 'text-gray-400'}`}>
+                            <td className={`px-8 py-5 text-center font-bold ${(item.totalRefunds || 0) > 0 ? 'text-paymint-red' : 'text-stone-400'}`}>
                               {formatCurrency(item.totalRefunds || 0, 'center')}
                             </td>
                           </tr>
@@ -1032,21 +1032,21 @@ export const ItemsView = React.memo(function ItemsView({
                 </div>
 
                 {/* Footer */}
-                <div className="px-8 py-5 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02] flex items-center justify-between gap-6">
+                <div className="px-8 py-5 border-t border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40 flex items-center justify-between gap-6">
                   <div className="flex items-center gap-6 sm:gap-8 min-w-0">
                     <div className="flex flex-col gap-1 min-w-0">
-                      <p className="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400">
+                      <p className="text-xs sm:text-sm font-semibold text-stone-500 dark:text-zinc-400">
                         {t('orders.reports.items.totalItems')}
                       </p>
                       <StatValue
                         value={filteredBreakdown.reduce((acc, curr) => acc + curr.quantity, 0)}
                         isInteger={true}
-                        className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white"
+                        className="text-xl sm:text-2xl font-bold text-stone-900 dark:text-zinc-100"
                       />
                     </div>
-                    <div className="w-px h-10 bg-gray-200 dark:bg-white/10" />
+                    <div className="w-px h-10 bg-stone-200 dark:bg-zinc-800" />
                     <div className="flex flex-col gap-1 min-w-0">
-                      <p className="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400">
+                      <p className="text-xs sm:text-sm font-semibold text-stone-500 dark:text-zinc-400">
                         {t('orders.reports.items.totalRevenue')}
                       </p>
                       <StatValue
@@ -1058,7 +1058,7 @@ export const ItemsView = React.memo(function ItemsView({
                   </div>
                   <button
                     onClick={() => setIsBreakdownModalOpen(false)}
-                    className="px-8 py-3 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all shadow-lg active:scale-95 shrink-0"
+                    className="px-8 py-3 rounded-2xl bg-stone-900 dark:bg-white text-white dark:text-black font-bold text-sm hover:scale-105 transition-all shadow-lg active:scale-95 shrink-0"
                   >
                     {t('common.done')}
                   </button>

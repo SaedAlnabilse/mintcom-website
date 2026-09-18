@@ -86,13 +86,13 @@ export function ActivityTimeline({
     return (
       <div className="flex-1 py-32 text-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center">
-            <History size={24} className="text-gray-300" />
+          <div className="w-16 h-16 bg-stone-50 dark:bg-zinc-800 rounded-2xl flex items-center justify-center">
+            <History size={24} className="text-stone-300" />
           </div>
           {searchQuery.trim() ? (
             <>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('common.noResults')}</h3>
-              <p className="text-sm font-bold text-gray-500">
+              <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{t('common.noResults')}</h3>
+              <p className="text-sm font-bold text-stone-500">
                 {t('common.noMatchingResults', {
                   entity: 'logs',
                   query: searchQuery.trim(),
@@ -100,7 +100,7 @@ export function ActivityTimeline({
               </p>
             </>
           ) : (
-            <p className="text-gray-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
+            <p className="text-stone-500 font-bold text-xs tracking-widest">{t('activity.noLogs')}</p>
           )}
         </div>
       </div>
@@ -113,12 +113,12 @@ export function ActivityTimeline({
         <section key={group.key}>
           {/* Day separator — the date moves out of every row, so each entry
               only has to carry its time. */}
-          <div className="flex items-center gap-2 px-5 sm:px-7 py-2.5 bg-gray-50 dark:bg-white/[0.03] border-y border-gray-100 dark:border-white/5">
-            <CalendarDays size={13} className="text-gray-400 shrink-0" />
+          <div className="flex items-center gap-2 px-5 sm:px-7 py-2.5 bg-stone-50 dark:bg-zinc-800/40 border-y border-stone-100 dark:border-zinc-800">
+            <CalendarDays size={13} className="text-stone-400 shrink-0" />
             <span className="label-strong font-sans">{formatDayHeading(group.date)}</span>
           </div>
 
-          <ol className="divide-y divide-gray-100 dark:divide-white/5">
+          <ol className="divide-y divide-stone-100 dark:divide-zinc-800">
             {group.items.map((log) => {
               const inlineEntries = getVisibleMetadataEntries(log.metadata, metadataOptions).slice(
                 0,
@@ -130,7 +130,7 @@ export function ActivityTimeline({
               return (
                 <li
                   key={log.id}
-                  className="px-5 sm:px-7 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                  className="px-5 sm:px-7 py-5 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors"
                 >
                   <div className="flex gap-4">
                     <div className="w-9 h-9 shrink-0 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center text-sm font-black">
@@ -139,7 +139,7 @@ export function ActivityTimeline({
 
                     <div className="flex-1 min-w-0 space-y-2">
                       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-                        <span className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">
+                        <span className="text-sm font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                           {getActorName(log, ownerLabel, systemLabel)}
                         </span>
                         <span
@@ -149,12 +149,12 @@ export function ActivityTimeline({
                         >
                           {getActionLabel(log.action)}
                         </span>
-                        <span className="ms-auto text-xs font-bold text-gray-400 tabular-nums whitespace-nowrap">
+                        <span className="ms-auto text-xs font-bold text-stone-400 tabular-nums whitespace-nowrap">
                           {formatTime(log.timestamp)}
                         </span>
                       </div>
 
-                      <p className="text-sm font-medium leading-relaxed text-gray-600 dark:text-gray-300 break-words">
+                      <p className="text-sm font-medium leading-relaxed text-stone-600 dark:text-zinc-300 break-words">
                         {log.description}
                       </p>
 
@@ -164,12 +164,12 @@ export function ActivityTimeline({
                             <span
                               key={entry.key}
                               title={`${entry.label}: ${entry.value}`}
-                              className="inline-flex max-w-full items-baseline gap-1.5 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 px-2.5 py-1"
+                              className="inline-flex max-w-full items-baseline gap-1.5 rounded-lg border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 px-2.5 py-1"
                             >
-                              <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 whitespace-nowrap">
+                              <span className="text-[10px] font-black uppercase tracking-wider text-stone-400 whitespace-nowrap">
                                 {entry.label}
                               </span>
-                              <span className="text-xs font-bold text-gray-700 dark:text-gray-200 truncate">
+                              <span className="text-xs font-bold text-stone-700 dark:text-zinc-200 truncate">
                                 {entry.value}
                               </span>
                             </span>
@@ -177,7 +177,7 @@ export function ActivityTimeline({
                           <button
                             type="button"
                             onClick={() => onSelect(log)}
-                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-colors"
+                            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold text-stone-500 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-colors"
                           >
                             <FileText size={13} />
                             {hiddenFields > 0
