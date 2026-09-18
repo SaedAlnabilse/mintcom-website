@@ -535,10 +535,10 @@ export function OwnerAccountManagementPage() {
                 className={`flex items-center justify-between shrink-0 ${fit ? 'gap-3' : ''}`}
             >
                 <div className="min-w-0">
-                    <h1 className={`${fit ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'} font-bold text-gray-900 dark:text-white tracking-tight truncate`}>
+                    <h1 className={`${fit ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'} font-bold text-stone-900 dark:text-zinc-100 tracking-tight truncate`}>
                         {t('owner.account.title')}
                     </h1>
-                    <p className={`${fit ? 'text-xs mt-0.5 line-clamp-1' : 'text-sm sm:text-base mt-2'} text-gray-500 dark:text-gray-400`}>
+                    <p className={`${fit ? 'text-xs mt-0.5 line-clamp-1' : 'text-sm sm:text-base mt-2'} text-stone-500 dark:text-zinc-400`}>
                         {t('owner.account.subtitle')}
                     </p>
                 </div>
@@ -553,12 +553,12 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className={`flex-1 min-w-0 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] shadow-sm overflow-hidden ${fit ? 'lg:max-h-[11.5rem]' : ''}`}
+                        className={`flex-1 min-w-0 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden ${fit ? 'lg:max-h-[11.5rem]' : ''}`}
                     >
                         {/* Top bar — shared metrics with System Currency header (padding / icon / title) */}
-                        <div className={`flex flex-col sm:items-center justify-between gap-2 border-b border-gray-100 dark:border-white/[0.05] ${isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'} ${fit ? 'px-4 py-2.5' : 'px-5 sm:px-6 py-3.5 gap-3'}`}>
+                        <div className={`flex flex-col sm:items-center justify-between gap-2 border-b border-stone-100 dark:border-zinc-800 ${isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'} ${fit ? 'px-4 py-2.5' : 'px-5 sm:px-6 py-3.5 gap-3'}`}>
                             <div className="flex items-center min-w-0">
-                                <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-none">
+                                <h2 className="text-lg font-bold tracking-tight text-stone-900 dark:text-zinc-100 leading-none">
                                     {t('owner.account.ownerAccountTitle')}
                                 </h2>
                             </div>
@@ -567,18 +567,19 @@ export function OwnerAccountManagementPage() {
                                     <>
                                         <button
                                             onClick={handleCancelEdit}
-                                            className="px-3.5 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-lg text-sm font-semibold transition-colors"
+                                            className="px-3.5 py-2 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 text-stone-600 dark:text-zinc-300 rounded-xl text-sm font-semibold transition-colors"
                                             disabled={isSaving}
                                         >
                                             {t('owner.account.cancel')}
                                         </button>
                                         <button
                                             onClick={handleSaveProfile}
-                                            className="flex items-center gap-2 px-3.5 py-2 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-lg text-sm font-semibold transition-colors disabled:opacity-70"
+                                            className="flex items-center gap-2 px-3.5 py-2 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-xl text-sm font-semibold transition-colors disabled:opacity-70"
                                             disabled={isSaving}
                                         >
                                             {isSaving ? (
                                                 <>
+                                                    {/* design-token-exempt: spinner track must match the CTA's own text-black on mintcom-green */}
                                                     <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                                                     {t('owner.account.saving')}
                                                 </>
@@ -594,7 +595,7 @@ export function OwnerAccountManagementPage() {
                                     <>
                                         <button
                                             onClick={handleEditClick}
-                                            className="px-3.5 py-2 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-lg text-sm font-semibold transition-colors"
+                                            className="px-3.5 py-2 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 text-stone-600 dark:text-zinc-300 rounded-xl text-sm font-semibold transition-colors"
                                         >
                                             {t('owner.account.editProfile')}
                                         </button>
@@ -614,7 +615,7 @@ export function OwnerAccountManagementPage() {
                             {isEditing ? (
                                 <div className={`grid grid-cols-1 sm:grid-cols-2 ${fit ? 'gap-2.5' : 'gap-4'}`}>
                                     <div className="space-y-1.5 sm:col-span-1">
-                                        <label className="text-[11px] font-bold text-gray-500 flex items-center gap-1.5">
+                                        <label className="text-[11px] font-bold text-stone-500 flex items-center gap-1.5">
                                             <User size={12} />
                                             {t('owner.account.firstName')}
                                         </label>
@@ -624,11 +625,11 @@ export function OwnerAccountManagementPage() {
                                             value={editForm.firstName}
                                             onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
                                             placeholder={formatInputPlaceholder(t('owner.account.firstName'), t('common.locale'))}
-                                            className="w-full h-11 px-3 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 focus:border-mintcom-green"
+                                            className="w-full h-11 px-3 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-semibold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 focus:border-mintcom-green"
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <label className="text-[11px] font-bold text-gray-500 flex items-center gap-1.5">
+                                        <label className="text-[11px] font-bold text-stone-500 flex items-center gap-1.5">
                                             <User size={12} />
                                             {t('owner.account.lastName')}
                                         </label>
@@ -638,11 +639,11 @@ export function OwnerAccountManagementPage() {
                                             value={editForm.lastName}
                                             onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
                                             placeholder={formatInputPlaceholder(t('owner.account.lastName'), t('common.locale'))}
-                                            className="w-full h-11 px-3 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 focus:border-mintcom-green"
+                                            className="w-full h-11 px-3 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-semibold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 focus:border-mintcom-green"
                                         />
                                     </div>
                                     <div className="space-y-1.5 sm:col-span-2">
-                                        <label className="text-[11px] font-bold text-gray-500 flex items-center gap-1.5">
+                                        <label className="text-[11px] font-bold text-stone-500 flex items-center gap-1.5">
                                             <Mail size={12} />
                                             {t('owner.account.email')}
                                         </label>
@@ -652,7 +653,7 @@ export function OwnerAccountManagementPage() {
                                             value={editForm.email}
                                             onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                                             placeholder={formatInputPlaceholder(t('owner.account.email'), t('common.locale'))}
-                                            className="w-full h-11 px-3 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-xl text-sm font-semibold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 focus:border-mintcom-green"
+                                            className="w-full h-11 px-3 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-semibold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 focus:border-mintcom-green"
                                         />
                                     </div>
                                 </div>
@@ -665,12 +666,12 @@ export function OwnerAccountManagementPage() {
                                             {(accountDetails?.lastName?.[0] || '').toUpperCase()}
                                         </div>
                                         <div className="min-w-0">
-                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate">
+                                            <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 truncate">
                                                 {accountDetails?.firstName} {accountDetails?.lastName}
                                             </h3>
                                             <div className="flex items-center flex-wrap gap-2 mt-1">
-                                                <span dir="ltr" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 dark:text-gray-300 truncate">
-                                                    <Mail size={13} className="text-gray-400 shrink-0" />
+                                                <span dir="ltr" className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 dark:text-zinc-300 truncate">
+                                                    <Mail size={13} className="text-stone-400 shrink-0" />
                                                     <span className="truncate">{accountDetails?.email}</span>
                                                 </span>
                                                 {accountDetails?.emailVerified ? (
@@ -689,24 +690,24 @@ export function OwnerAccountManagementPage() {
 
                                     {/* Meta chips */}
                                     <div className={`flex flex-wrap items-center gap-2 shrink-0 ${isRtl ? 'sm:justify-start' : 'sm:justify-end'}`}>
-                                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-white/[0.04] border border-gray-100 dark:border-white/[0.06]">
-                                            <Calendar size={14} className="text-gray-400 shrink-0" />
+                                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800">
+                                            <Calendar size={14} className="text-stone-400 shrink-0" />
                                             <div className="leading-tight">
-                                                <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
+                                                <p className="text-[10px] font-bold uppercase tracking-wide text-stone-400">
                                                     {t('owner.account.joined')}
                                                 </p>
-                                                <p className="text-xs font-bold text-gray-900 dark:text-white">
+                                                <p className="text-xs font-bold text-stone-900 dark:text-zinc-100">
                                                     {formatDate(accountDetails?.createdAt || '')}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-white/[0.04] border border-gray-100 dark:border-white/[0.06]">
+                                        <div className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800">
                                             <Shield size={14} className="text-mintcom-green shrink-0" />
                                             <div className="leading-tight">
-                                                <p className="text-[10px] font-bold uppercase tracking-wide text-gray-400">
+                                                <p className="text-[10px] font-bold uppercase tracking-wide text-stone-400">
                                                     {t('owner.account.badge', { defaultValue: 'Role' })}
                                                 </p>
-                                                <p className="text-xs font-bold text-gray-900 dark:text-white">
+                                                <p className="text-xs font-bold text-stone-900 dark:text-zinc-100">
                                                     {t('owner.account.owner', { defaultValue: 'Owner' })}
                                                 </p>
                                             </div>
@@ -717,18 +718,18 @@ export function OwnerAccountManagementPage() {
 
                             {/* Profile Completion Bar — hide in viewport-fit to save vertical space */}
                             {profileCompletion < 100 && !fit && (
-                                <div className="mt-5 pt-4 border-t border-gray-100 dark:border-white/[0.05]">
+                                <div className="mt-5 pt-4 border-t border-stone-100 dark:border-zinc-800">
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-xs font-bold text-gray-500">{t('owner.account.profileCompletion')}</span>
+                                        <span className="text-xs font-bold text-stone-500">{t('owner.account.profileCompletion')}</span>
                                         <span className="text-xs font-bold text-mintcom-green">{profileCompletion}%</span>
                                     </div>
-                                    <div className="h-1.5 bg-gray-100 dark:bg-white/[0.05] rounded-full overflow-hidden">
+                                    <div className="h-1.5 bg-stone-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                                         <div
                                             className="h-full bg-gradient-to-r from-mintcom-green to-emerald-500 rounded-full transition-all duration-500"
                                             style={{ width: `${profileCompletion}%` }}
                                         />
                                     </div>
-                                    <p className="text-xs font-medium text-gray-500 mt-2">
+                                    <p className="text-xs font-medium text-stone-500 mt-2">
                                         {t('owner.account.completeProfileHint')}
                                     </p>
                                 </div>
@@ -741,20 +742,19 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.15 }}
-                        className={`relative w-full lg:w-[24rem] shrink-0 flex flex-col bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] shadow-sm overflow-hidden ${fit ? 'lg:max-h-[11.5rem]' : ''}`}
+                        className={`relative w-full lg:w-[24rem] shrink-0 flex flex-col bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden ${fit ? 'lg:max-h-[11.5rem]' : ''}`}
                     >
-                        <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-                        {/* Top bar — same structure as Owner Account */}
-                        <div className={`relative z-10 flex items-center border-b border-gray-100 dark:border-white/[0.05] ${fit ? 'px-4 py-2.5' : 'px-5 sm:px-6 py-3.5'}`}>
+                                                {/* Top bar — same structure as Owner Account */}
+                        <div className={`relative z-10 flex items-center border-b border-stone-100 dark:border-zinc-800 ${fit ? 'px-4 py-2.5' : 'px-5 sm:px-6 py-3.5'}`}>
                             <div className="flex items-center gap-3 min-w-0">
                                 <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0">
                                     <Landmark className="w-5 h-5 text-amber-500" />
                                 </div>
                                 <div className="min-w-0">
-                                    <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-none">
+                                    <h2 className="text-lg font-bold tracking-tight text-stone-900 dark:text-zinc-100 leading-none">
                                         {t('owner.account.systemCurrency')}
                                     </h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
+                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 line-clamp-1">
                                         {t('owner.account.systemCurrencySubtitle')}
                                     </p>
                                 </div>
@@ -769,15 +769,15 @@ export function OwnerAccountManagementPage() {
                                         if (next !== globalCurrency) setPendingCurrency(next);
                                     }}
                                     disabled={isUpdatingCurrency}
-                                    className="w-full h-12 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/[0.08] rounded-xl px-4 font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all appearance-none cursor-pointer disabled:opacity-50"
+                                    className="w-full h-12 bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-xl px-4 font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all appearance-none cursor-pointer disabled:opacity-50"
                                 >
                                     {CURRENCIES.filter((c) => c.code !== 'ALL').map((c) => (
-                                        <option key={c.code} value={c.code} className="bg-white dark:bg-gray-800">
+                                        <option key={c.code} value={c.code} className="bg-white dark:bg-zinc-800">
                                             {c.code}
                                         </option>
                                     ))}
                                 </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-stone-400">
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
@@ -800,21 +800,21 @@ export function OwnerAccountManagementPage() {
                             transition={{ delay: 0.15 }}
                             className={
                                 fit
-                                    ? 'flex flex-col min-h-0 max-h-[min(28rem,55vh)] lg:max-h-[min(36rem,60vh)] bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] shadow-sm overflow-hidden'
-                                    : 'w-full flex flex-col bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] shadow-sm overflow-hidden'
+                                    ? 'flex flex-col min-h-0 max-h-[min(28rem,55vh)] lg:max-h-[min(36rem,60vh)] bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden'
+                                    : 'w-full flex flex-col bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden'
                             }
                         >
                             {/* Header */}
-                            <div className={`shrink-0 border-b border-gray-100 dark:border-white/[0.05] ${fit ? 'p-3 sm:p-4' : 'p-5 sm:p-6'}`}>
+                            <div className={`shrink-0 border-b border-stone-100 dark:border-zinc-800 ${fit ? 'p-3 sm:p-4' : 'p-5 sm:p-6'}`}>
                                 <div className={`flex flex-col lg:items-center lg:justify-between gap-4 ${isRtl ? 'lg:flex-row-reverse' : 'lg:flex-row'}`}>
                                     <div className="flex items-center min-w-0">
                                         <div className="min-w-0">
-                                            <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                            <h2 className="text-lg sm:text-xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">
                                                 {t('owner.account.accessCredentials', {
                                                     defaultValue: 'Access Credentials',
                                                 })}
                                             </h2>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                            <p className="text-xs text-stone-500 dark:text-zinc-400 mt-0.5">
                                                 {t('owner.account.accessCredentialsSubtitle', {
                                                     defaultValue: 'Login IDs for establishment and brand dashboards. Search, copy, open, or reset.',
                                                 })}
@@ -822,7 +822,7 @@ export function OwnerAccountManagementPage() {
                                         </div>
                                     </div>
                                     <div className="relative w-full lg:w-72 shrink-0">
-                                        <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none ${isRtl ? 'right-3' : 'left-3'}`} />
+                                        <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400 pointer-events-none ${isRtl ? 'right-3' : 'left-3'}`} />
                                         <input
                                             type="text"
                                             value={credSearch}
@@ -833,13 +833,13 @@ export function OwnerAccountManagementPage() {
                                                 }),
                                                 t('common.locale'),
                                             )}
-                                            className={`w-full h-10 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-sm font-semibold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all ${isRtl ? 'pr-9 pl-9 text-right' : 'pl-9 pr-9'}`}
+                                            className={`w-full h-10 rounded-xl bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-sm font-semibold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all ${isRtl ? 'pr-9 pl-9 text-right' : 'pl-9 pr-9'}`}
                                         />
                                         {credSearch && (
                                             <button
                                                 type="button"
                                                 onClick={() => setCredSearch('')}
-                                                className={`absolute top-1/2 -translate-y-1/2 p-1 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 ${isRtl ? 'left-2.5' : 'right-2.5'}`}
+                                                className={`absolute top-1/2 -translate-y-1/2 p-1 rounded-md text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 ${isRtl ? 'left-2.5' : 'right-2.5'}`}
                                                 aria-label={t('common.clearSearch', { defaultValue: 'Clear search' })}
                                             >
                                                 <X size={14} />
@@ -851,7 +851,7 @@ export function OwnerAccountManagementPage() {
                                 {/* Tabs (only when both types exist) + Staff */}
                                 <div className={`mt-4 flex flex-col sm:items-center gap-2 sm:gap-3 ${isRtl ? 'sm:flex-row-reverse' : 'sm:flex-row'}`}>
                                     {showCredTabs ? (
-                                    <div className="flex items-center gap-1 p-1 rounded-xl bg-gray-100/80 dark:bg-white/[0.04] w-full sm:w-auto min-w-0">
+                                    <div className="flex items-center gap-1 p-1 rounded-xl bg-stone-100/80 dark:bg-zinc-800 w-full sm:w-auto min-w-0">
                                         {([
                                             {
                                                 id: 'locations' as const,
@@ -879,9 +879,9 @@ export function OwnerAccountManagementPage() {
                                                     className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-2 h-9 px-3.5 rounded-lg text-xs font-bold transition-all ${
                                                         active
                                                             ? isBrandTab
-                                                                ? 'bg-white dark:bg-[#0F172A] text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-blue-500/20'
-                                                                : 'bg-white dark:bg-[#0F172A] text-mintcom-green shadow-sm'
-                                                            : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200'
+                                                                ? 'bg-white dark:bg-zinc-900 text-blue-600 dark:text-blue-400 shadow-sm ring-1 ring-blue-500/20'
+                                                                : 'bg-white dark:bg-zinc-900 text-mintcom-green shadow-sm'
+                                                            : 'text-stone-500 hover:text-stone-800 dark:hover:text-zinc-200'
                                                     }`}
                                                 >
                                                     <TabIcon size={14} className="shrink-0" />
@@ -892,7 +892,7 @@ export function OwnerAccountManagementPage() {
                                                                 ? isBrandTab
                                                                     ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
                                                                     : 'bg-mintcom-green/10 text-mintcom-green'
-                                                                : 'bg-gray-200/80 dark:bg-white/10 text-gray-500'
+                                                                : 'bg-stone-200/80 dark:bg-zinc-800 text-stone-500'
                                                         }`}
                                                     >
                                                         {tab.count}
@@ -936,21 +936,21 @@ export function OwnerAccountManagementPage() {
                                     <button
                                         type="button"
                                         onClick={() => navigate('/owner/employees')}
-                                        className="inline-flex items-center justify-center gap-2 h-11 sm:h-11 px-3.5 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.03] text-xs font-bold text-gray-700 dark:text-gray-200 hover:border-mintcom-green/40 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all shrink-0"
+                                        className="inline-flex items-center justify-center gap-2 h-11 sm:h-11 px-3.5 rounded-xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 text-xs font-bold text-stone-700 dark:text-zinc-200 hover:border-mintcom-green/40 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all shrink-0"
                                         title={t('owner.overview.staffManagement', { defaultValue: 'Staff management' })}
                                     >
-                                        <Users size={14} className="shrink-0 text-pink-500" />
+                                        <Users size={14} className="shrink-0 text-stone-500 dark:text-zinc-400" />
                                         <span>{t('owner.account.totalStaff', { defaultValue: 'Staff' })}</span>
-                                        <span className="min-w-[1.25rem] h-5 px-1.5 rounded-md text-[10px] font-black flex items-center justify-center tabular-nums bg-pink-500/10 text-pink-600 dark:text-pink-400">
+                                        <span className="min-w-[1.25rem] h-5 px-1.5 rounded-md text-[10px] font-black flex items-center justify-center tabular-nums bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300">
                                             {totalStaff}
                                         </span>
-                                        <ExternalLink size={12} className="text-gray-400 shrink-0" />
+                                        <ExternalLink size={12} className="text-stone-400 shrink-0" />
                                     </button>
                                 </div>
                             </div>
 
                             {/* Column header — fixed outside scroll so nothing can appear above it */}
-                            <div className="shrink-0 hidden sm:grid grid-cols-[minmax(0,1fr)_13.5rem_5.25rem] gap-0 table-header-row bg-gray-50 dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/10">
+                            <div className="shrink-0 hidden sm:grid grid-cols-[minmax(0,1fr)_13.5rem_5.25rem] gap-0 table-header-row bg-white dark:bg-zinc-900/60 border-b border-stone-200 dark:border-zinc-800">
                                 <div className={`${isRtl ? 'text-right' : 'text-left'} font-semibold px-5 lg:px-6 py-3.5`}>
                                     {credTab === 'locations'
                                         ? t('owner.account.locations', { defaultValue: 'Establishments' })
@@ -1047,7 +1047,7 @@ export function OwnerAccountManagementPage() {
                                     if (allRows.length === 0) {
                                         return (
                                             <div className="py-12 px-6 text-center">
-                                                <p className="text-sm font-bold text-gray-500">
+                                                <p className="text-sm font-bold text-stone-500">
                                                     {credSearch.trim()
                                                         ? t('common.noResults', { defaultValue: 'No results found' })
                                                         : t('owner.account.noLocationsOrBrands')}
@@ -1064,27 +1064,27 @@ export function OwnerAccountManagementPage() {
 
                                     // Rows only (column header is fixed above this scroll area)
                                     return (
-                                        <div className="divide-y divide-gray-100 dark:divide-white/5">
+                                        <div className="divide-y divide-stone-100 dark:divide-zinc-800">
                                             {rows.map((row) => {
                                                 const RowIcon = row.icon;
                                                 return (
                                                     <div
                                                         key={row.key}
-                                                        className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_13.5rem_5.25rem] gap-3 sm:gap-0 items-center px-5 lg:px-0 py-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                                        className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_13.5rem_5.25rem] gap-3 sm:gap-0 items-center px-5 lg:px-0 py-4 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors"
                                                     >
                                                         <div className="flex items-center gap-3 min-w-0 sm:px-5 lg:px-6">
                                                             <div
                                                                 className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                                                                     row.kind === 'brand'
-                                                                        ? 'bg-blue-500/10 text-blue-500'
-                                                                        : 'bg-gray-100 dark:bg-white/5 text-gray-400'
+                                                                        ? 'bg-mintcom-green/10 text-mintcom-green'
+                                                                        : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'
                                                                 }`}
                                                             >
                                                                 <RowIcon className="w-5 h-5" />
                                                             </div>
                                                             <div className="min-w-0 flex-1">
                                                                 <div className="flex items-center gap-2 min-w-0">
-                                                                    <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white truncate" title={row.name}>
+                                                                    <h3 className="text-sm font-bold tracking-tight text-stone-900 dark:text-zinc-100 truncate" title={row.name}>
                                                                         {row.name}
                                                                     </h3>
                                                                     <Badge
@@ -1100,7 +1100,7 @@ export function OwnerAccountManagementPage() {
                                                                     </Badge>
                                                                 </div>
                                                                 {row.meta && (
-                                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                                                                    <p className="text-sm text-stone-500 dark:text-zinc-400 mt-0.5 truncate">
                                                                         {row.meta}
                                                                     </p>
                                                                 )}
@@ -1108,15 +1108,15 @@ export function OwnerAccountManagementPage() {
                                                         </div>
 
                                                         <div className="min-w-0 w-full sm:px-2 flex items-center">
-                                                            <div className="min-w-0 w-full flex items-center gap-1.5 h-9 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] px-2.5">
-                                                                <code className="flex-1 min-w-0 text-sm font-bold text-gray-900 dark:text-white truncate select-all font-mono" title={row.loginId}>
+                                                            <div className="min-w-0 w-full flex items-center gap-1.5 h-9 rounded-xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 px-2.5">
+                                                                <code className="flex-1 min-w-0 text-sm font-bold text-stone-900 dark:text-zinc-100 truncate select-all font-mono" title={row.loginId}>
                                                                     {row.loginId || t('common.na')}
                                                                 </code>
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => copyToClipboard(row.loginId, row.copyKey)}
                                                                     disabled={!row.loginId}
-                                                                    className={`shrink-0 p-1 rounded-md text-gray-500 transition-colors disabled:opacity-40 ${
+                                                                    className={`shrink-0 p-1 rounded-md text-stone-500 transition-colors disabled:opacity-40 ${
                                                                         row.kind === 'brand'
                                                                             ? 'hover:text-blue-600 hover:bg-blue-500/10'
                                                                             : 'hover:text-mintcom-green hover:bg-mintcom-green/10'
@@ -1142,7 +1142,7 @@ export function OwnerAccountManagementPage() {
                                                                         type="button"
                                                                         onClick={row.onOpen}
                                                                         disabled={!row.onOpen}
-                                                                        className={`w-7 h-7 rounded-lg inline-flex items-center justify-center text-gray-400 transition-all disabled:opacity-0 disabled:pointer-events-none sm:disabled:opacity-30 sm:disabled:pointer-events-none sm:disabled:hover:bg-transparent sm:disabled:hover:text-gray-400 ${
+                                                                        className={`w-7 h-7 rounded-xl inline-flex items-center justify-center text-stone-400 transition-all disabled:opacity-0 disabled:pointer-events-none sm:disabled:opacity-30 sm:disabled:pointer-events-none sm:disabled:hover:bg-transparent sm:disabled:hover:text-stone-400 ${
                                                                             row.kind === 'brand'
                                                                                 ? 'hover:text-blue-600 hover:bg-blue-500/10'
                                                                                 : 'hover:text-mintcom-green hover:bg-mintcom-green/10'
@@ -1161,7 +1161,7 @@ export function OwnerAccountManagementPage() {
                                                                     {row.onOpen && (
                                                                         <span
                                                                             role="tooltip"
-                                                                            className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-2 z-30 whitespace-nowrap rounded-lg bg-gray-900 dark:bg-gray-100 px-2.5 py-1.5 text-[11px] font-bold text-white dark:text-gray-900 opacity-0 translate-x-1 group-hover/action:opacity-100 group-hover/action:translate-x-0 transition-all shadow-lg"
+                                                                            className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-2 z-30 whitespace-nowrap rounded-lg bg-stone-900 dark:bg-zinc-800 border border-stone-800 dark:border-zinc-700 px-2.5 py-1.5 text-[11px] font-bold text-stone-100 dark:text-zinc-100 opacity-0 translate-x-1 group-hover/action:opacity-100 group-hover/action:translate-x-0 transition-all shadow-lg"
                                                                         >
                                                                             {row.kind === 'brand'
                                                                                 ? t('owner.brands.viewDashboard', { defaultValue: 'View brand dashboard' })
@@ -1173,14 +1173,14 @@ export function OwnerAccountManagementPage() {
                                                                     <button
                                                                         type="button"
                                                                         onClick={row.onReset}
-                                                                        className="w-7 h-7 rounded-lg inline-flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
+                                                                        className="w-7 h-7 rounded-xl inline-flex items-center justify-center text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
                                                                         aria-label={t('owner.account.resetPassword')}
                                                                     >
                                                                         <Lock size={14} />
                                                                     </button>
                                                                     <span
                                                                         role="tooltip"
-                                                                        className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-2 z-30 whitespace-nowrap rounded-lg bg-gray-900 dark:bg-gray-100 px-2.5 py-1.5 text-[11px] font-bold text-white dark:text-gray-900 opacity-0 translate-x-1 group-hover/action:opacity-100 group-hover/action:translate-x-0 transition-all shadow-lg"
+                                                                        className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-2 z-30 whitespace-nowrap rounded-lg bg-stone-900 dark:bg-zinc-800 border border-stone-800 dark:border-zinc-700 px-2.5 py-1.5 text-[11px] font-bold text-stone-100 dark:text-zinc-100 opacity-0 translate-x-1 group-hover/action:opacity-100 group-hover/action:translate-x-0 transition-all shadow-lg"
                                                                     >
                                                                         {t('owner.account.resetPassword')}
                                                                     </span>
@@ -1196,9 +1196,9 @@ export function OwnerAccountManagementPage() {
                             </div>
 
                             {/* Hint + pagination (same Pagination component as locations table) */}
-                            <div className="shrink-0 border-t border-gray-100 dark:border-white/[0.05]">
-                                <div className="px-5 py-2.5 bg-gray-50/50 dark:bg-white/[0.02]">
-                                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 leading-relaxed">
+                            <div className="shrink-0 border-t border-stone-100 dark:border-zinc-800">
+                                <div className="px-5 py-2.5 bg-white dark:bg-zinc-900/40">
+                                    <p className="text-[11px] font-medium text-stone-500 dark:text-zinc-400 leading-relaxed">
                                         {credTab === 'locations'
                                             ? t('owner.account.locationLoginHint', {
                                                 defaultValue: 'Use this ID to sign in to this establishment dashboard.',
@@ -1239,7 +1239,7 @@ export function OwnerAccountManagementPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.15 }}
-                        className={`lg:col-span-2 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] shadow-sm overflow-hidden h-full ${
+                        className={`lg:col-span-2 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden h-full ${
                             fit ? 'min-h-0 flex flex-col' : ''
                         }`}
                     >
@@ -1250,39 +1250,39 @@ export function OwnerAccountManagementPage() {
                                     <Library className="w-5 h-5 text-blue-500" />
                                 </div>
                                 <div className="min-w-0">
-                                    <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-none">
+                                    <h2 className="text-lg font-bold tracking-tight text-stone-900 dark:text-zinc-100 leading-none">
                                         {t('owner.account.resources.title')}
                                     </h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
+                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 line-clamp-1">
                                         {t('owner.account.resources.subtitle')}
                                     </p>
                                 </div>
                             </div>
 
                             {/* Guides — 3-column tiles (stacks on phones) */}
-                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2.5 px-0.5">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-2.5 px-0.5">
                                 {t('owner.account.resources.guides', { defaultValue: 'Guides' })}
                             </p>
                             <div className={`grid grid-cols-1 md:grid-cols-3 gap-2.5 ${fit ? 'mb-3' : 'mb-5'}`}>
                                 <a
                                     href={userManualDoc.path}
                                     download={userManualDoc.filename}
-                                    className="group relative flex flex-col gap-3 p-3.5 rounded-2xl border border-blue-100 dark:border-blue-500/15 bg-gradient-to-br from-blue-50/90 to-white dark:from-blue-500/10 dark:to-white/[0.02] hover:border-blue-300 dark:hover:border-blue-500/30 hover:shadow-md hover:shadow-blue-500/5 transition-all"
+                                    className="group relative flex flex-col gap-3 p-3.5 rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:border-stone-300 dark:hover:border-zinc-700 transition-colors"
                                 >
                                     <div className="flex items-start justify-between gap-2">
-                                        <div className="w-9 h-9 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-sm shadow-blue-500/25">
+                                        <div className="w-9 h-9 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                                             <BookOpen size={16} />
                                         </div>
-                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 opacity-70 group-hover:opacity-100 transition-opacity">
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-stone-400 opacity-70 group-hover:opacity-100 transition-opacity">
                                             <Download size={12} />
                                             PDF
                                         </span>
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                                        <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 leading-tight">
                                             {t('owner.account.resources.userManual.title')}
                                         </h4>
-                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug line-clamp-2">
+                                        <p className="text-[11px] text-stone-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-2">
                                             {t('owner.account.resources.userManual.desc')}
                                         </p>
                                     </div>
@@ -1291,22 +1291,22 @@ export function OwnerAccountManagementPage() {
                                 <a
                                     href={setupManualDoc.path}
                                     download={setupManualDoc.filename}
-                                    className="group relative flex flex-col gap-3 p-3.5 rounded-2xl border border-amber-100 dark:border-amber-500/15 bg-gradient-to-br from-amber-50/90 to-white dark:from-amber-500/10 dark:to-white/[0.02] hover:border-amber-300 dark:hover:border-amber-500/30 hover:shadow-md hover:shadow-amber-500/5 transition-all"
+                                    className="group relative flex flex-col gap-3 p-3.5 rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:border-stone-300 dark:hover:border-zinc-700 transition-colors"
                                 >
                                     <div className="flex items-start justify-between gap-2">
-                                        <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-sm shadow-amber-500/25">
+                                        <div className="w-9 h-9 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                                             <Settings size={16} />
                                         </div>
-                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-600 dark:text-amber-400 opacity-70 group-hover:opacity-100 transition-opacity">
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-stone-400 opacity-70 group-hover:opacity-100 transition-opacity">
                                             <Download size={12} />
                                             PDF
                                         </span>
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                                        <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 leading-tight">
                                             {t('owner.account.resources.setupManual.title')}
                                         </h4>
-                                        <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug line-clamp-2">
+                                        <p className="text-[11px] text-stone-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-2">
                                             {t('owner.account.resources.setupManual.desc')}
                                         </p>
                                     </div>
@@ -1319,22 +1319,22 @@ export function OwnerAccountManagementPage() {
                                         href={ONBOARDING_VIDEO_URL}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="group relative flex flex-col gap-3 p-3.5 rounded-2xl border border-red-100 dark:border-red-500/15 bg-gradient-to-br from-red-50/90 to-white dark:from-red-500/10 dark:to-white/[0.02] hover:border-red-300 dark:hover:border-red-500/30 hover:shadow-md hover:shadow-red-500/5 transition-all"
+                                        className="group relative flex flex-col gap-3 p-3.5 rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:border-stone-300 dark:hover:border-zinc-700 transition-colors"
                                     >
                                         <div className="flex items-start justify-between gap-2">
-                                            <div className="w-9 h-9 rounded-xl bg-red-500 text-white flex items-center justify-center shadow-sm shadow-red-500/25">
+                                            <div className="w-9 h-9 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                                                 <PlayCircle size={16} />
                                             </div>
-                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-600 dark:text-red-400 opacity-70 group-hover:opacity-100 transition-opacity">
+                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-stone-400 opacity-70 group-hover:opacity-100 transition-opacity">
                                                 <ExternalLink size={12} />
                                                 {t('common.view')}
                                             </span>
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                                            <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 leading-tight">
                                                 {t('owner.account.resources.videoTutorial.title')}
                                             </h4>
-                                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug line-clamp-2">
+                                            <p className="text-[11px] text-stone-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-2">
                                                 {t('owner.account.resources.videoTutorial.desc')}
                                             </p>
                                         </div>
@@ -1342,21 +1342,21 @@ export function OwnerAccountManagementPage() {
                                 ) : (
                                     <div
                                         aria-label={t('owner.account.videoGuideComingSoon')}
-                                        className="flex flex-col gap-3 p-3.5 rounded-2xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] opacity-60"
+                                        className="flex flex-col gap-3 p-3.5 rounded-2xl border border-stone-100 dark:border-zinc-800 bg-white/80 dark:bg-zinc-800 opacity-60"
                                     >
                                         <div className="flex items-start justify-between gap-2">
-                                            <div className="w-9 h-9 rounded-xl bg-gray-200 dark:bg-white/10 text-gray-500 flex items-center justify-center">
+                                            <div className="w-9 h-9 rounded-xl bg-stone-100 dark:bg-zinc-800 text-stone-500 flex items-center justify-center">
                                                 <PlayCircle size={16} />
                                             </div>
-                                            <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                                            <span className="text-[10px] font-bold text-stone-400 dark:text-stone-500 whitespace-nowrap">
                                                 {t('common.comingSoon', { defaultValue: 'Coming soon' })}
                                             </span>
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+                                            <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 leading-tight">
                                                 {t('owner.account.resources.videoTutorial.title')}
                                             </h4>
-                                            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 leading-snug line-clamp-2">
+                                            <p className="text-[11px] text-stone-500 dark:text-zinc-400 mt-0.5 leading-snug line-clamp-2">
                                                 {t('owner.account.resources.videoTutorial.desc')}
                                             </p>
                                         </div>
@@ -1366,7 +1366,7 @@ export function OwnerAccountManagementPage() {
 
                             {/* Company / legal — fills the remaining panel height. */}
                             <div className="flex min-h-0 flex-1 flex-col">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2.5 px-0.5 shrink-0">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-stone-400 mb-2.5 px-0.5 shrink-0">
                                     {t('owner.account.resources.company', { defaultValue: 'Company & legal' })}
                                 </p>
                                 <div className="grid min-h-[12rem] flex-1 grid-cols-1 auto-rows-fr gap-3 sm:grid-cols-2">
@@ -1405,20 +1405,20 @@ export function OwnerAccountManagementPage() {
                                         href={item.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className={`group flex min-h-[5.5rem] items-center gap-4 rounded-2xl border bg-white p-4 transition-all hover:shadow-sm dark:bg-white/[0.02] sm:p-5 ${item.tone}`}
+                                        className={`group flex min-h-[5.5rem] items-center gap-4 rounded-2xl border bg-white p-4 transition-all hover:shadow-sm dark:bg-zinc-900/40 sm:p-5 ${item.tone}`}
                                     >
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-black/[0.03] bg-white shadow-sm dark:border-white/5 dark:bg-white/5">
+                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-stone-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-800">
                                             <item.icon size={20} className="shrink-0" />
                                         </div>
                                         <div className="min-w-0 flex-1 self-center">
-                                            <h3 className="text-sm font-bold leading-tight text-gray-900 dark:text-white sm:text-base">
+                                            <h3 className="text-sm font-bold leading-tight text-stone-900 dark:text-zinc-100 sm:text-base">
                                                 {item.title}
                                             </h3>
-                                            <p className="mt-1 text-xs font-medium leading-relaxed text-gray-500 dark:text-gray-400">
+                                            <p className="mt-1 text-xs font-medium leading-relaxed text-stone-500 dark:text-zinc-400">
                                                 {item.description}
                                             </p>
                                         </div>
-                                        <ExternalLink size={15} className="shrink-0 self-start text-gray-300 transition-colors group-hover:text-gray-500" />
+                                        <ExternalLink size={15} className="shrink-0 self-start text-stone-300 transition-colors group-hover:text-stone-500" />
                                     </a>
                                 ))}
                                 </div>
@@ -1433,7 +1433,7 @@ export function OwnerAccountManagementPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.18 }}
-                            className="flex-1 min-h-0 rounded-2xl border border-mintcom-green/20 dark:border-mintcom-green/25 bg-gradient-to-br from-mintcom-green/10 via-emerald-50/90 to-white dark:from-mintcom-green/15 dark:via-mintcom-green/5 dark:to-[#1E293B] p-5 sm:p-6 shadow-sm shadow-mintcom-green/5 flex flex-col"
+                            className="flex-1 min-h-0 rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 p-5 sm:p-6 shadow-sm flex flex-col"
                         >
                             {/* Header — matches Useful Resources (same padding, icon size, title row) */}
                             <div className="flex items-center gap-3 mb-5 shrink-0">
@@ -1441,10 +1441,10 @@ export function OwnerAccountManagementPage() {
                                     <Shield className="w-5 h-5 text-mintcom-green" />
                                 </div>
                                 <div className="min-w-0">
-                                    <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-none">
+                                    <h2 className="text-lg font-bold tracking-tight text-stone-900 dark:text-zinc-100 leading-none">
                                         {t('owner.account.securityTips.title')}
                                     </h2>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
+                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 line-clamp-1">
                                         {t('owner.account.securityTips.subtitle', {
                                             defaultValue: 'Keep your account and logins safe',
                                         })}
@@ -1452,7 +1452,7 @@ export function OwnerAccountManagementPage() {
                                 </div>
                             </div>
                             {/* Indent to match title/subtitle text column (icon is w-10 + gap-3) */}
-                            <ul className="space-y-2 flex-1 text-xs font-medium text-gray-600 dark:text-gray-300 ps-[3.25rem]">
+                            <ul className="space-y-2 flex-1 text-xs font-medium text-stone-600 dark:text-zinc-300 ps-[3.25rem]">
                                 {[
                                     t('owner.account.securityTips.uniquePasswords'),
                                     t('owner.account.securityTips.updatePeriodically'),
@@ -1476,15 +1476,10 @@ export function OwnerAccountManagementPage() {
                             transition={{ delay: 0.22 }}
                             className={`relative flex flex-col rounded-2xl border shadow-sm overflow-hidden min-h-[14rem] ${
                                 accountDetails?.deletionRequestedAt
-                                    ? 'border-mintcom-green/25 bg-gradient-to-b from-white via-white to-mintcom-green/5 dark:from-[#1E293B] dark:to-mintcom-green/10'
-                                    : 'border-red-500/25 bg-gradient-to-b from-white via-white to-red-50/80 dark:from-[#1E293B] dark:via-[#1E293B] dark:to-red-500/10'
+                                    ? 'border-mintcom-green/25 bg-mintcom-green/5 dark:bg-mintcom-green/5'
+                                    : 'border-red-500/25 bg-white dark:bg-zinc-900/60'
                             }`}
                         >
-                            <div
-                                className={`absolute -top-10 -right-10 w-36 h-36 rounded-full blur-3xl pointer-events-none ${
-                                    accountDetails?.deletionRequestedAt ? 'bg-mintcom-green/20' : 'bg-red-500/15'
-                                }`}
-                            />
                             <div className="relative z-10 flex flex-col flex-1 p-5 sm:p-6">
                                 {/* Header — same icon/title metrics as Resources & Security Tips */}
                                 <div className="flex items-center gap-3 mb-5 shrink-0">
@@ -1500,12 +1495,12 @@ export function OwnerAccountManagementPage() {
                                         )}
                                     </div>
                                     <div className="min-w-0">
-                                        <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-none">
+                                        <h2 className="text-lg font-bold tracking-tight text-stone-900 dark:text-zinc-100 leading-none">
                                             {accountDetails?.deletionRequestedAt
                                                 ? t('owner.account.restoreAccount')
                                                 : t('owner.account.dangerZone')}
                                         </h2>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                                        <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 line-clamp-2">
                                             {accountDetails?.deletionRequestedAt
                                                 ? t('owner.account.deletionScheduledHint')
                                                 : t('owner.account.dangerZoneHint')}
@@ -1515,7 +1510,7 @@ export function OwnerAccountManagementPage() {
 
                                 {!accountDetails?.deletionRequestedAt && (
                                     /* Indent to match title/subtitle text column (icon is w-10 + gap-3) */
-                                    <ul className="mb-4 space-y-2 text-xs font-medium text-gray-600 dark:text-gray-300 ps-[3.25rem]">
+                                    <ul className="mb-4 space-y-2 text-xs font-medium text-stone-600 dark:text-zinc-300 ps-[3.25rem]">
                                         {[
                                             t('owner.account.dangerZoneBullet1', {
                                                 defaultValue: 'All establishments and brands will be scheduled for removal',
@@ -1539,7 +1534,7 @@ export function OwnerAccountManagementPage() {
                                     {accountDetails?.deletionRequestedAt ? (
                                         <button
                                             onClick={handleRestoreAccount}
-                                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-lg text-sm font-semibold transition-colors"
+                                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-mintcom-green hover:bg-mintcom-green/90 active:bg-mintcom-green/80 text-black rounded-xl text-sm font-semibold transition-colors"
                                         >
                                             {t('owner.account.restoreMyAccount')}
                                         </button>
@@ -1565,15 +1560,15 @@ export function OwnerAccountManagementPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/[0.05] p-12 shadow-sm text-center"
+                    className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-12 shadow-sm text-center"
                 >
-                    <div className="w-20 h-20 rounded-2xl bg-gray-100 dark:bg-white/[0.05] flex items-center justify-center mx-auto mb-4">
-                        <Store className="w-10 h-10 text-gray-400" />
+                    <div className="w-20 h-20 rounded-2xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
+                        <Store className="w-10 h-10 text-stone-400" />
                     </div>
-                    <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-bold tracking-tight text-stone-900 dark:text-zinc-100 mb-2">
                         {t('owner.account.noLocationsOrBrands')}
                     </h3>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md mx-auto">
+                    <p className="text-stone-500 dark:text-zinc-400 text-sm max-w-md mx-auto">
                         {t('owner.account.noLocationsOrBrandsHint')}
                     </p>
                 </motion.div>
@@ -1604,7 +1599,7 @@ export function OwnerAccountManagementPage() {
                         {[1, 2, 3].map((step) => (
                             <div
                                 key={step}
-                                className={`w-2 h-2 rounded-full transition-colors ${deleteStep >= step ? 'bg-red-500' : 'bg-gray-200 dark:bg-white/10'
+                                className={`w-2 h-2 rounded-full transition-colors ${deleteStep >= step ? 'bg-red-500' : 'bg-stone-200 dark:bg-zinc-800'
                                     }`}
                             />
                         ))}
@@ -1613,8 +1608,8 @@ export function OwnerAccountManagementPage() {
                         {deleteStep === 1 && (
                             <div className="space-y-6">
                                 <div>
-                                    <p className="text-gray-900 dark:text-white font-bold mb-1">{t('owner.account.deleteAccountModal.whyLeaving')}</p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">{t('owner.account.deleteAccountModal.feedbackHint')}</p>
+                                    <p className="text-stone-900 dark:text-zinc-100 font-bold mb-1">{t('owner.account.deleteAccountModal.whyLeaving')}</p>
+                                    <p className="text-sm text-stone-500 dark:text-zinc-400">{t('owner.account.deleteAccountModal.feedbackHint')}</p>
                                 </div>
                                 <div className="grid grid-cols-1 gap-2">
                                     {DELETE_REASON_OPTIONS.map((reason) => (
@@ -1623,7 +1618,7 @@ export function OwnerAccountManagementPage() {
                                             onClick={() => setDeleteReasonKey(reason.key)}
                                             className={`w-full text-start px-4 py-3 rounded-xl border transition-all text-sm font-medium ${deleteReasonKey === reason.key
                                                 ? 'bg-mintcom-green/10 border-mintcom-green text-mintcom-green'
-                                                : 'bg-gray-50 dark:bg-white/[0.02] border-gray-100 dark:border-white/[0.05] text-gray-600 dark:text-gray-400 hover:border-gray-300'
+                                                : 'bg-white dark:bg-zinc-900/40 border-stone-100 dark:border-zinc-800 text-stone-600 dark:text-stone-400 hover:border-stone-300'
                                                 }`}
                                         >
                                             {t(`owner.account.deleteAccountModal.reasons.${reason.key}`, reason.value)}
@@ -1633,7 +1628,7 @@ export function OwnerAccountManagementPage() {
                                 <button
                                     onClick={() => setDeleteStep(2)}
                                     disabled={!deleteReasonKey}
-                                    className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black rounded-2xl text-sm font-black disabled:opacity-50 transition-all"
+                                    className="w-full rounded-xl bg-stone-900 dark:bg-white py-3 text-sm font-semibold text-white dark:text-black disabled:opacity-50 transition-colors"
                                 >
                                     {t('common.continue')}
                                 </button>
@@ -1649,38 +1644,38 @@ export function OwnerAccountManagementPage() {
                                 </div>
                                 {/* Option A: explicit preview of what gets locked so one
                                     click doesn't nuke a live business by surprise. */}
-                                <div className="bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/[0.05] rounded-2xl p-4">
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">
+                                <div className="bg-white dark:bg-zinc-900/40 border border-stone-100 dark:border-zinc-800 rounded-2xl p-4">
+                                    <p className="text-sm font-bold text-stone-900 dark:text-zinc-100 mb-1">
                                         {t('owner.account.deleteAccountModal.affectedLocationsTitle', 'This will lock {{count}} location(s)', { count: locationLoginEstablishments.length })}
                                     </p>
                                     {locationLoginEstablishments.length === 0 ? (
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        <p className="text-sm text-stone-500 dark:text-zinc-400">
                                             {t('owner.account.deleteAccountModal.noActiveLocations', 'No active locations on this account.')}
                                         </p>
                                     ) : (
                                         <ul className="space-y-1 max-h-32 overflow-y-auto">
                                             {locationLoginEstablishments.slice(0, 5).map((est: any) => (
-                                                <li key={est.id || est.establishmentLoginId || est.name} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
-                                                    <Store size={14} className="shrink-0 text-gray-400" />
+                                                <li key={est.id || est.establishmentLoginId || est.name} className="text-sm text-stone-600 dark:text-zinc-300 flex items-center gap-2">
+                                                    <Store size={14} className="shrink-0 text-stone-400" />
                                                     <span className="truncate">{est.name || est.establishmentLoginId || est.id}</span>
                                                     {est.subscriptionStatus === 'ACTIVE' && (
-                                                        <span className="text-xs text-gray-400">· {t('owner.account.deleteAccountModal.activeSubscription', 'active subscription')}</span>
+                                                        <span className="text-xs text-stone-400">· {t('owner.account.deleteAccountModal.activeSubscription', 'active subscription')}</span>
                                                     )}
                                                 </li>
                                             ))}
                                             {locationLoginEstablishments.length > 5 && (
-                                                <li className="text-sm text-gray-400">
+                                                <li className="text-sm text-stone-400">
                                                     {t('owner.account.deleteAccountModal.andMoreLocations', '+{{count}} more', { count: locationLoginEstablishments.length - 5 })}
                                                 </li>
                                             )}
                                         </ul>
                                     )}
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mt-2">
                                         {t('owner.account.deleteAccountModal.stopRenewalsNote', 'Staff access stops and subscription renewals are cancelled. You can restore everything during the grace period.')}
                                     </p>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-sm font-normal text-gray-700 dark:text-gray-300">
+                                    <label className="text-sm font-normal text-stone-700 dark:text-zinc-200">
                                         {t('owner.account.deleteAccountModal.confirmDeletePrompt', { keyword: t('common.delete') })}
                                     </label>
                                     <input maxLength={255}
@@ -1688,13 +1683,13 @@ export function OwnerAccountManagementPage() {
                                         value={deleteConfirmationText}
                                         onChange={(e) => setDeleteConfirmationText(e.target.value)}
                                         placeholder={t('owner.account.deleteAccountModal.typeDeletePlaceholder', { keyword: t('common.delete') })}
-                                        className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0F172A] border border-gray-200 dark:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                                        className="w-full px-4 py-3 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-xl text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-red-500/50"
                                     />
                                 </div>
                                 <div className="flex gap-3">
                                     <button
                                         onClick={() => setDeleteStep(1)}
-                                        className="flex-1 py-4 bg-gray-100 dark:bg-white/[0.05] text-gray-600 dark:text-gray-300 rounded-2xl text-sm font-bold"
+                                        className="flex-1 py-4 bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 rounded-2xl text-sm font-bold"
                                     >
                                         {t('common.back')}
                                     </button>
@@ -1712,7 +1707,7 @@ export function OwnerAccountManagementPage() {
                         {deleteStep === 3 && (
                             <div className="space-y-6">
                                 <div className="space-y-3">
-                                    <label className="text-sm font-normal text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                    <label className="text-sm font-normal text-stone-700 dark:text-zinc-200 flex items-center gap-2">
                                         <Lock size={14} />
                                         {t('owner.account.deleteAccountModal.confirmPassword')}
                                     </label>
@@ -1730,7 +1725,7 @@ export function OwnerAccountManagementPage() {
                                     <button
                                         onClick={() => setDeleteStep(2)}
                                         disabled={isDeletingAccount}
-                                        className="w-full px-6 py-4 bg-gray-100 dark:bg-white/[0.05] hover:bg-gray-200 dark:hover:bg-white/[0.1] text-gray-600 dark:text-gray-300 rounded-2xl text-sm font-bold transition-all"
+                                        className="w-full px-6 py-4 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 text-stone-600 dark:text-zinc-300 rounded-2xl text-sm font-bold transition-all"
                                     >
                                         {t('common.back')}
                                     </button>

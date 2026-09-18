@@ -30,7 +30,7 @@ import type { DatePeriod } from '../../utils/datePeriods';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { formatCurrencyCode } from '../../utils/currency';
 import { StatValue } from '../../components/ui/StatValue';
-import { PageHeader, FilterBar, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
+import { PageHeader, FilterBar, StatCard, StatCardGrid, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
 import { QuickInfo } from '../../components/QuickInfo';
 import { biIcon } from '../../components/ui/BiIcon';
 
@@ -219,7 +219,7 @@ export function OwnerOverviewPage() {
                                                 buttonClassName="justify-center md:justify-start"
                                                 showIcon={true}
                                             />
-                                            <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${(startTime !== '00:00' || endTime !== '23:59') ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                            <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${(startTime !== '00:00' || endTime !== '23:59') ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-stone-300 dark:text-zinc-700"}`}>-</span>
                                             <CustomTimePicker
                                                 value={endTime}
                                                 onChange={(val) => { setEndTime(val); }}
@@ -236,15 +236,13 @@ export function OwnerOverviewPage() {
                 }
             />
 
-            {/* KPI Grid — portfolio counts first, then money metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* KPI Grid — quiet support-style cards */}
+            <StatCardGrid columns={3}>
                 {[
                     {
                         label: t('owner.overview.activeLocations'),
                         value: stats.activeLocations,
                         icon: biIcon('bi-geo-alt'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: false,
                         sub: null as string | null,
                         info: t('owner.overview.activeLocationsInfo'),
@@ -254,8 +252,6 @@ export function OwnerOverviewPage() {
                         label: t('owner.overview.totalBrands'),
                         value: stats.totalBrands,
                         icon: biIcon('bi-collection'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: false,
                         sub: null as string | null,
                         info: null as string | null,
@@ -265,8 +261,6 @@ export function OwnerOverviewPage() {
                         label: t('owner.overview.totalStaff'),
                         value: stats.totalEmployees,
                         icon: biIcon('bi-people'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: false,
                         sub: null as string | null,
                         info: null as string | null,
@@ -276,125 +270,78 @@ export function OwnerOverviewPage() {
                         label: t('owner.overview.netSales'),
                         value: stats.netSales,
                         icon: biIcon('bi-cash-coin'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: true,
                         sub: t('owner.overview.netSalesSub'),
                         info: t('owner.overview.netSalesInfo'),
-                        route: null as string | null,
+                        route: undefined,
                     },
                     {
                         label: t('owner.overview.totalSales'),
                         value: stats.totalRevenue,
                         icon: biIcon('bi-wallet2'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: true,
                         sub: t('owner.overview.totalSalesSub'),
                         info: t('owner.overview.totalSalesInfo'),
-                        route: null as string | null,
+                        route: undefined,
                     },
                     {
                         label: t('owner.overview.totalProfit'),
                         value: stats.totalProfit,
                         icon: biIcon('bi-graph-up-arrow'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: true,
                         sub: null as string | null,
                         info: t('owner.overview.totalProfitInfo'),
-                        route: null as string | null,
+                        route: undefined,
                     },
-                ].map((stat, i) => {
-                    const isClickable = !!stat.route;
-                    return (
-                    <motion.div
+                ].map((stat, i) => (
+                    <StatCard
                         key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        onClick={isClickable ? () => navigate(stat.route as string) : undefined}
-                        role={isClickable ? 'button' : undefined}
-                        tabIndex={isClickable ? 0 : undefined}
-                        onKeyDown={isClickable ? (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                navigate(stat.route as string);
-                            }
-                        } : undefined}
-                        className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden group relative ${isClickable ? 'cursor-pointer hover:border-mintcom-green/40 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-mintcom-green/40' : ''}`}
-                    >
-                        {!isClickable && (
-                            <div className={`absolute top-0 end-0 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        )}
-                        <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}>
-                                    <stat.icon size={24} />
-                                </div>
-                                {isClickable && (
-                                    <div className="w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green group-hover:bg-mintcom-green/10 transition-colors">
-                                        <ExternalLink size={16} />
-                                    </div>
-                                )}
-                            </div>
-                            <p className="dashboard-stat-title mb-1 flex items-center">
-                                {stat.label}
-                                {stat.info && (
-                                    <span onClick={(e) => e.stopPropagation()}>
-                                        <QuickInfo text={stat.info} />
-                                    </span>
-                                )}
-                            </p>
-                            <StatValue 
-                                value={stat.value} 
-                                currency={stat.isCurrency ? (establishments?.[0]?.currency || 'JOD') : null}
-                                className="text-2xl"
-                                isInteger={!stat.isCurrency}
-                            />
-                            {stat.sub && (
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
-                                    {stat.sub}
-                                </p>
-                            )}
-                        </div>
-                    </motion.div>
-                    );
-                })}
-            </div>
+                        label={stat.label}
+                        value={stat.value}
+                        currency={stat.isCurrency ? (establishments?.[0]?.currency || 'JOD') : null}
+                        isInteger={!stat.isCurrency}
+                        icon={stat.icon}
+                        iconTone="green"
+                        sub={stat.sub}
+                        info={stat.info}
+                        route={stat.route}
+                        delay={i * 0.05}
+                    />
+                ))}
+            </StatCardGrid>
 
-            <div className="flex flex-col lg:grid lg:grid-cols-3 lg:items-stretch gap-6">
+            <div className="flex flex-col lg:grid lg:grid-cols-3 lg:items-stretch gap-3">
                 {/* Revenue Trend */}
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="lg:col-span-2 p-5 sm:p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm flex flex-col h-full"
+                    className="lg:col-span-2 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 flex flex-col h-full"
                 >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 shrink-0">
-                        <div className="min-w-0">
-                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('owner.overview.netSalesTrend')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('owner.overview.consolidatedPerf')}</p>
+                    <div className="flex items-start justify-between gap-3 mb-4 shrink-0">
+                        <div>
+                            <h3 className="font-magilio text-xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('owner.overview.netSalesTrend')}</h3>
+                            <p className="mt-0.5 text-[13px] text-stone-500 dark:text-zinc-400">{t('owner.overview.consolidatedPerf')}</p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                            <div className="w-3 h-3 rounded-full bg-mintcom-green" />
-                            <span className="text-xs font-medium text-gray-500">
-                                {t('owner.overview.netSales')} ({currencyCode})
+                            <div className="w-2 h-2 rounded-full bg-mintcom-green" />
+                            <span className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
+                                {t('owner.overview.netSales')}
                             </span>
                         </div>
                     </div>
 
-                    <div className="h-[280px] lg:h-auto lg:flex-1 lg:min-h-[260px] w-full">
+                    <div className="h-[260px] lg:h-auto lg:flex-1 lg:min-h-[240px] w-full">
                         {chartData.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
                                 <ComposedChart data={chartData} margin={{ top: 12, right: 12, left: 4, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.2} />
+                                            <stop offset="5%" stopColor="#7dc6a2" stopOpacity={0.18} />
                                             <stop offset="95%" stopColor="#7dc6a2" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.5} />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.4} />
                                     <XAxis
                                         dataKey="name"
                                         axisLine={false}
@@ -412,11 +359,11 @@ export function OwnerOverviewPage() {
                                     />
                                     <Tooltip
                                         contentStyle={{
-                                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                            backgroundColor: 'white',
                                             borderColor: '#E5E7EB',
-                                            borderRadius: '12px',
+                                            borderRadius: '10px',
                                             fontSize: '12px',
-                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.1)'
+                                            boxShadow: '0 4px 16px -8px rgba(0,0,0,0.12)',
                                         }}
                                         formatter={(value) => [formatCurrency(value as number), t('owner.overview.netSales')]}
                                     />
@@ -424,83 +371,72 @@ export function OwnerOverviewPage() {
                                         type="monotone"
                                         dataKey="value"
                                         stroke="#7dc6a2"
-                                        strokeWidth={4}
+                                        strokeWidth={2}
                                         fillOpacity={1}
                                         fill="url(#colorRevenue)"
                                     />
                                 </ComposedChart>
                             </ResponsiveContainer>
                         ) : (
-                            <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                                <Activity size={48} strokeWidth={1} className="mb-4 opacity-20" />
+                            <div className="flex flex-col items-center justify-center h-full text-stone-400">
+                                <Activity size={36} strokeWidth={1} className="mb-3 opacity-30" />
                                 <p className="text-sm">{t('owner.overview.noData')}</p>
                             </div>
                         )}
                     </div>
                 </motion.div>
 
-                {/* Side column: Grow = content height; Quick = fills rest so bottoms align */}
+                {/* Side column */}
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
+                    transition={{ delay: 0.25 }}
                     className="flex flex-col gap-3 h-full min-h-0 w-full"
                 >
-                    <div className="shrink-0 p-4 bg-mintcom-green/10 rounded-2xl border border-mintcom-green/20 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-mintcom-green/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
-                        <div className="relative z-10">
-                            <div className="w-9 h-9 rounded-xl bg-mintcom-green flex items-center justify-center text-black mb-2">
-                                <Zap size={18} />
-                            </div>
-                            <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-1">{t('owner.overview.growBusiness')}</h3>
-                            <p className="text-xs font-normal text-gray-500 mb-3 leading-relaxed">{t('owner.overview.growBusinessDesc')}</p>
-                            <div className="space-y-2">
-                                <button
-                                    onClick={() => navigate('/onboarding?new=1')}
-                                    className="w-full py-2.5 bg-mintcom-green text-black font-semibold rounded-lg text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
-                                >
-                                    {t('owner.overview.addLocation')}
-                                </button>
-                                <button
-                                    onClick={() => navigate('/owner/brands')}
-                                    className="w-full py-2.5 bg-white dark:bg-white/10 text-gray-900 dark:text-white font-bold rounded-xl text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/20 transition-all"
-                                >
-                                    {t('owner.overview.manageBrands')}
-                                </button>
-                            </div>
+                    <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60">
+                        <div className="mb-3">
+                            <h3 className="font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('owner.overview.growBusiness')}</h3>
+                            <p className="text-[13px] leading-relaxed text-stone-500 dark:text-zinc-400">{t('owner.overview.growBusinessDesc')}</p>
+                        </div>
+                        <div className="space-y-2">
+                            <button
+                                onClick={() => navigate('/onboarding?new=1')}
+                                className="w-full rounded-xl bg-stone-900 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                            >
+                                {t('owner.overview.addLocation')}
+                            </button>
+                            <button
+                                onClick={() => navigate('/owner/brands')}
+                                className="w-full rounded-xl border border-stone-200 bg-white py-2.5 text-[13px] font-semibold text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 dark:border-zinc-800 dark:bg-transparent dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
+                            >
+                                {t('owner.overview.manageBrands')}
+                            </button>
                         </div>
                     </div>
 
-                    <div className="flex-1 min-h-0 p-4 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 group relative overflow-hidden flex flex-col">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-gray-100 dark:bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                        <div className="relative z-10 flex flex-col flex-1">
-                            <h4 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white mb-2 shrink-0">{t('owner.overview.quickManagement')}</h4>
-                            <div className="space-y-2 mt-auto">
-                                <button
-                                    onClick={() => navigate('/owner/employees')}
-                                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group/btn"
-                                >
-                                    <div className="flex items-center gap-2.5">
-                                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                                            <UserPlus size={16} />
-                                        </div>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.overview.staffManagement')}</span>
-                                    </div>
-                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-blue-500 transition-colors" />
-                                </button>
-                                <button
-                                    onClick={() => navigate('/owner/establishments')}
-                                    className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all group/btn"
-                                >
-                                    <div className="flex items-center gap-2.5">
-                                        <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
-                                            <Store size={16} />
-                                        </div>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{t('owner.overview.manageLocations')}</span>
-                                    </div>
-                                    <Activity size={14} className="text-gray-400 group-hover/btn:text-mintcom-green transition-colors" />
-                                </button>
-                            </div>
+                    <div className="flex-1 min-h-0 rounded-2xl border border-stone-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60 flex flex-col">
+                        <h4 className="font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100 mb-3 shrink-0">{t('owner.overview.quickManagement')}</h4>
+                        <div className="space-y-2 mt-auto">
+                            <button
+                                onClick={() => navigate('/owner/employees')}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors hover:bg-stone-50 dark:hover:bg-zinc-800/60"
+                            >
+                                <div className="h-8 w-8 rounded-lg bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-600 dark:text-zinc-300">
+                                    <UserPlus size={15} strokeWidth={1.75} />
+                                </div>
+                                <span className="font-semibold text-stone-700 dark:text-zinc-200">{t('owner.overview.staffManagement')}</span>
+                                <Activity size={13} className="ms-auto text-stone-300" />
+                            </button>
+                            <button
+                                onClick={() => navigate('/owner/establishments')}
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors hover:bg-stone-50 dark:hover:bg-zinc-800/60"
+                            >
+                                <div className="h-8 w-8 rounded-lg bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-600 dark:text-zinc-300">
+                                    <Store size={15} strokeWidth={1.75} />
+                                </div>
+                                <span className="font-semibold text-stone-700 dark:text-zinc-200">{t('owner.overview.manageLocations')}</span>
+                                <Activity size={13} className="ms-auto text-stone-300" />
+                            </button>
                         </div>
                     </div>
                 </motion.div>

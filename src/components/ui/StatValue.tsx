@@ -181,7 +181,7 @@ export const StatValue: React.FC<StatValueProps> = ({
   const finalDisplay = isTruncated ? `${valueString.slice(0, 19)}...` : valueString;
   const shouldShowTooltip = fullDisplay.length > 15;
   const valueClassName = stripTextSizeClasses(className);
-  const defaultColorClassName = hasTextColorClass(valueClassName) ? '' : 'text-gray-900 dark:text-white';
+  const defaultColorClassName = hasTextColorClass(valueClassName) ? '' : 'text-stone-900 dark:text-zinc-100';
 
   const updateTooltipPosition = React.useCallback(() => {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -235,7 +235,7 @@ export const StatValue: React.FC<StatValueProps> = ({
           transform: tooltipPosition.placement === 'top' ? 'translateY(-100%)' : undefined,
         }}
       >
-        <div className="max-w-full whitespace-normal break-words rounded-lg border border-white/10 bg-gray-900 px-3 py-1.5 text-[11px] font-bold text-white shadow-2xl dark:bg-slate-800">
+        <div className="max-w-full whitespace-normal break-words rounded-lg border border-stone-200 dark:border-zinc-800 bg-stone-900 dark:bg-zinc-800 px-3 py-1.5 text-[11px] font-semibold text-white dark:text-zinc-100 shadow-md">
           {fullDisplay}
         </div>
       </div>,
@@ -270,7 +270,7 @@ export const StatValue: React.FC<StatValueProps> = ({
       )}
 
       {suffix && (
-        <span className="min-w-0 truncate text-[11px] font-bold text-gray-400 dark:text-gray-500">
+        <span className="min-w-0 truncate text-[11px] font-bold text-stone-400 dark:text-zinc-500">
           {suffix}
         </span>
       )}

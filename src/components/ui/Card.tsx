@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { cardClass, insetPanelClass } from './theme';
 
 type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
@@ -17,15 +18,15 @@ interface CardProps {
 }
 
 /**
- * Shared content card (4/5 of the UI kit).
- * Unifies the `bg-white dark:bg-[#1E293B] rounded-2xl border` cards:
- * same surface, border, radius, shadow. Padding via prop, extras via className.
+ * Shared content card — surface comes from `theme.cardClass`.
+ * To restyle every card on the site, edit the token, not this file.
+ * Padding via prop, extras via className.
  */
 export function Card({ children, padding = 'md', className = '', onClick }: CardProps) {
   return (
     <div
       onClick={onClick}
-      className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm ${PADDING_CLASS[padding]} ${className}`.trim()}
+      className={`${cardClass} ${PADDING_CLASS[padding]} ${className}`.trim()}
     >
       {children}
     </div>
@@ -38,14 +39,12 @@ interface PanelProps {
 }
 
 /**
- * Shared muted inner panel (companion to Card).
- * The `bg-gray-50 dark:bg-black/20` inset surface used for toggles,
- * sub-sections and grouped controls.
+ * Shared muted inner panel — surface comes from `theme.insetPanelClass`.
  */
 export function Panel({ children, className = '' }: PanelProps) {
   return (
     <div
-      className={`bg-gray-50 dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-white/5 ${className}`.trim()}
+      className={`${insetPanelClass} ${className}`.trim()}
     >
       {children}
     </div>

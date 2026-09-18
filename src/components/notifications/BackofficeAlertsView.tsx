@@ -382,10 +382,10 @@ export function BackofficeAlertsView({
     <section className="w-full space-y-5 pb-10 sm:space-y-6">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+          <h1 className="font-magilio text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 sm:text-3xl">
             {t('notifications.title')}
           </h1>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 sm:text-base">
+          <p className="mt-2 text-sm text-stone-500 dark:text-zinc-400 sm:text-base">
             {feedTitle
               ? t(`notifications.subtitle.${scope}`, { name: feedTitle })
               : t(`notifications.subtitle.${scope}`)}
@@ -397,7 +397,7 @@ export function BackofficeAlertsView({
             type="button"
             onClick={() => void refresh()}
             disabled={isRefreshing}
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-gray-200 bg-white px-3 text-sm font-bold text-gray-600 transition hover:border-mintcom-green hover:text-emerald-700 disabled:cursor-wait disabled:opacity-60 dark:border-white/10 dark:bg-[#0D0D0D] dark:text-gray-300 dark:hover:text-mintcom-green"
+            className="inline-flex h-10 items-center justify-center rounded-xl border border-stone-200 bg-white px-3 text-sm font-bold text-stone-600 transition hover:border-mintcom-green hover:text-emerald-700 disabled:cursor-wait disabled:opacity-60 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-300 dark:hover:text-mintcom-green"
             aria-label={t('notifications.actions.refresh')}
           >
             <RefreshCw size={17} className={isRefreshing ? 'animate-spin' : ''} />
@@ -414,8 +414,8 @@ export function BackofficeAlertsView({
       </header>
 
       {trialAlertsPresent && (
-        <p className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-          <Info size={15} className="shrink-0 text-gray-400" aria-hidden="true" />
+        <p className="flex items-center gap-2 text-sm text-stone-500 dark:text-zinc-400">
+          <Info size={15} className="shrink-0 text-stone-400 dark:text-zinc-500" aria-hidden="true" />
           {t('notifications.trial.notice')}
         </p>
       )}
@@ -425,19 +425,19 @@ export function BackofficeAlertsView({
           <span className="sr-only">{t('notifications.filters.searchLabel')}</span>
           <Search
             size={17}
-            className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-stone-400 dark:text-zinc-500"
           />
           <input
             type="search"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder={t('notifications.filters.searchPlaceholder')}
-            className="h-10 w-full rounded-xl border border-gray-200 bg-white ps-9 pe-4 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 dark:border-white/10 dark:bg-black/20 dark:text-white"
+            className="h-10 w-full rounded-xl border border-stone-200 bg-white ps-9 pe-4 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-100"
           />
         </label>
 
         <div
-          className="flex items-center gap-1 overflow-x-auto border-b border-gray-200 pb-px scrollbar-none dark:border-white/10"
+          className="flex items-center gap-1 overflow-x-auto border-b border-stone-200 pb-px scrollbar-none dark:border-zinc-800"
           role="tablist"
         >
           {tabs.map((tab) => (
@@ -449,8 +449,8 @@ export function BackofficeAlertsView({
               onClick={() => setActiveTab(tab.id)}
               className={`-mb-px inline-flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
                 activeTab === tab.id
-                  ? 'border-mintcom-green text-gray-900 dark:text-white'
-                  : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200'
+                  ? 'border-mintcom-green text-stone-900 dark:text-zinc-100'
+                  : 'border-transparent text-stone-500 hover:text-stone-800 dark:text-zinc-400 dark:hover:text-zinc-200'
               }`}
             >
               {t(`notifications.tabs.${tab.id}`)}
@@ -458,7 +458,7 @@ export function BackofficeAlertsView({
                 className={`rounded-full px-1.5 text-[11px] font-bold ${
                   activeTab === tab.id
                     ? tintBubbleClass
-                    : 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400'
+                    : 'bg-stone-100 text-stone-500 dark:bg-zinc-800 dark:text-zinc-400'
                 }`}
               >
                 {tab.count}
@@ -474,8 +474,8 @@ export function BackofficeAlertsView({
               onClick={() => setSelectedLocationId('all')}
               className={`rounded-lg border px-3.5 py-1.5 text-sm font-semibold transition ${
                 selectedLocationId === 'all'
-                  ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
-                  : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400 dark:border-white/10 dark:bg-black/20 dark:text-gray-300 dark:hover:border-white/30'
+                  ? 'border-stone-900 bg-stone-900 text-white dark:border-mintcom-green dark:bg-mintcom-green dark:text-black'
+                  : 'border-stone-200 bg-white text-stone-600 hover:border-stone-400 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-300 dark:hover:border-zinc-700'
               }`}
             >
               {t('notifications.actions.allLocations')}
@@ -494,8 +494,8 @@ export function BackofficeAlertsView({
                   onClick={() => setSelectedLocationId(location.id)}
                   className={`max-w-full truncate rounded-lg border px-3.5 py-1.5 text-sm font-semibold transition ${
                     selectedLocationId === location.id
-                      ? 'border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900'
-                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400 dark:border-white/10 dark:bg-black/20 dark:text-gray-300 dark:hover:border-white/30'
+                      ? 'border-stone-900 bg-stone-900 text-white dark:border-mintcom-green dark:bg-mintcom-green dark:text-black'
+                      : 'border-stone-200 bg-white text-stone-600 hover:border-stone-400 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-300 dark:hover:border-zinc-700'
                   }`}
                 >
                   {location.name} · {locationCount}
@@ -520,7 +520,7 @@ export function BackofficeAlertsView({
           {[0, 1, 2].map((item) => (
             <div
               key={item}
-              className="h-28 animate-pulse rounded-2xl border border-gray-200 bg-white dark:border-white/5 dark:bg-[#0D0D0D]"
+              className="h-28 animate-pulse rounded-2xl border border-stone-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/60"
             />
           ))}
         </div>
@@ -552,13 +552,13 @@ export function BackofficeAlertsView({
               <div className="mb-2 flex items-center gap-3 px-1">
                 <h2
                   id={`alert-day-${group.key}`}
-                  className="shrink-0 text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400"
+                  className="shrink-0 text-xs font-black uppercase tracking-wider text-stone-500 dark:text-zinc-400"
                 >
                   {group.label}
                 </h2>
-                <span className="h-px flex-1 bg-gray-200 dark:bg-white/10" />
+                <span className="h-px flex-1 bg-stone-200 dark:bg-zinc-800" />
               </div>
-              <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-white/5 dark:bg-[#0D0D0D]">
+              <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/60">
                 {group.alerts.map((alert) => {
                   const deepLink = deepLinkFor(alert);
                   return (
@@ -581,7 +581,7 @@ export function BackofficeAlertsView({
       {(hasMore || showFilteredProgress) && !isLoading && (
         <div className="flex flex-col items-center justify-center gap-2 pt-2 sm:flex-row">
           {showFilteredProgress && (
-            <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+            <span className="text-sm font-semibold text-stone-500 dark:text-zinc-400">
               {t('notifications.showingOf', {
                 loaded: filteredAlerts.length,
                 total: filteredServerTotal,
@@ -593,7 +593,7 @@ export function BackofficeAlertsView({
               type="button"
               onClick={() => void loadMore()}
               disabled={isLoadingMore}
-              className="inline-flex min-w-32 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-black text-gray-700 transition hover:border-mintcom-green hover:text-emerald-700 disabled:cursor-wait disabled:opacity-60 dark:border-white/10 dark:bg-[#0D0D0D] dark:text-gray-200 dark:hover:text-mintcom-green"
+              className="inline-flex min-w-32 items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm font-black text-stone-700 transition hover:border-mintcom-green hover:text-emerald-700 disabled:cursor-wait disabled:opacity-60 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-200 dark:hover:text-mintcom-green"
             >
               {isLoadingMore && <Loader2 size={16} className="animate-spin" />}
               {t('notifications.actions.loadMore')}

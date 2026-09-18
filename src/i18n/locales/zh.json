@@ -2482,6 +2482,7 @@
       "titleHighlight": "（Mintcom 仪表盘）"
     },
     "contact": {
+      "badge": "联系",
       "businessName": "企业名称",
       "email": "邮箱地址",
       "emailAddress": "邮箱地址",
@@ -2551,19 +2552,19 @@
       "cards": {
         "complete": {
           "cardTitle": "全功能无隐藏费用",
-          "description": "Mintcom 不只是一个收银系统。您还将获得带高级筛选的强大报表引擎、员工与角色管理、顾客档案与会员计划、折扣、原料与库存追踪等诸多功能，全部包含在一个固定月费套餐中。",
+          "description": "所有功能，一个套餐：销售、库存、员工、会员、报表。",
           "title": "完整方案，无隐藏费用"
         },
         "multiBranch": {
-          "description": "无论经营一家店还是多家店，Mintcom 都支持在统一后台下管理多个合并分店或独立门店。通过单一控制面板管理所有门店的员工、商品、销售和业绩。",
+          "description": "一个后台管理所有门店的人、货、销与报表。",
           "title": "多分店管理"
         },
         "realUsers": {
-          "description": "Mintcom 为企业主、收银员和经理打造，而非技术专家。我们与真实用户密切合作，设计出直观的体验，最大限度缩短培训时间。从登录到完成首笔销售不到 10 分钟。",
+          "description": "为真实店主打造，从登录到首单不到 10 分钟。",
           "title": "为真实用户设计"
         },
         "security": {
-          "description": "您的数据经过完整加密、安全存储并自动归档。我们在顶级安全标准上投入巨大，确保您的业务信息时刻受到保护。",
+          "description": "完整加密、安全存储、自动归档，数据时刻受保护。",
           "title": "企业级安全"
         }
       },
@@ -2579,8 +2580,9 @@
       "videoTitle": "Mintcom 演示视频"
     },
     "hardware": {
-      "alreadyHave": "已有硬件？",
-      "alreadyHaveDesc": "只需下载应用，几秒钟即可连接您的设备。",
+      "alreadyHave": "已有硬件?",
+      "alreadyHaveDesc": "只需下载应用,几秒钟即可连接您的设备。",
+      "badge": "硬件",
       "nextPage": "下一步",
       "prevPage": "返回",
       "printers": {
@@ -2746,7 +2748,8 @@
         "reports": "高级报表与分析",
         "staffManagement": "员工管理",
         "support": "专属客户支持",
-        "unlimitedStaff": "多个员工账户"
+        "unlimitedStaff": "多个员工账户",
+        "offlineSync": "离线模式与自动同步"
       },
       "fullAccess": "完整权限",
       "getStarted": "免费试用 14 天",
@@ -3677,6 +3680,7 @@
     "owner": "业主后台",
     "pricing": "定价",
     "support": "支持",
+    "startTrial": "开始 14 天免费试用",
     "tryDesktop": "电脑端试用",
     "howItWorks": "使用流程",
     "industries": "适用行业",
@@ -6767,7 +6771,7 @@
       "technical": "设备、同步与故障排查",
       "technicalDesc": "打印机、网络、浏览器、数据同步、设备要求、安全和错误",
       "technicalDescShort": "设备与同步",
-      "title": "帮助中心"
+      "title": "按主题浏览"
     },
     "cta": {
       "stillNeedHelp": "仍需帮助？",
@@ -6982,7 +6986,17 @@
       "statusError": "无法更新工单。请重试。",
       "reopened": "工单已重新打开",
       "sendShortcutHint": "按 Ctrl+Enter 发送",
-      "attach": "Attach File"
+      "attach": "Attach File",
+      "clearAllFilters": "清除所有筛选",
+      "clearFilters": "清除筛选",
+      "backToTickets": "返回工单",
+      "messagesLabel": "消息",
+      "reopenHint": "此工单{{status}}。改变主意了？",
+      "resultCount_one": "{{count}} 张工单",
+      "resultCount_other": "{{count}} 张工单",
+      "messagesCount_one": "{{count}} 条消息",
+      "messagesCount_other": "{{count}} 条消息",
+      "ticketNotFoundDetail": "未找到工单 {{id}}。"
     }
   },
   "theme": {

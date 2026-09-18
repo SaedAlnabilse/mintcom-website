@@ -48,10 +48,10 @@ export const NewTicketPage = () => {
   ];
 
   const priorities = [
-    { id: 'low', label: t('support.tickets.priority.low'), description: t('support.tickets.priority.lowDesc'), color: 'bg-gray-100 dark:bg-gray-500/20 border-gray-200 dark:border-gray-500/30' },
-    { id: 'medium', label: t('support.tickets.priority.medium'), description: t('support.tickets.priority.mediumDesc'), color: 'bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/30' },
-    { id: 'high', label: t('support.tickets.priority.high'), description: t('support.tickets.priority.highDesc'), color: 'bg-orange-50 dark:bg-orange-500/10 border-orange-200 dark:border-orange-500/30' },
-    { id: 'urgent', label: t('support.tickets.priority.urgent'), description: t('support.tickets.priority.urgentDesc'), color: 'bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/30' }
+    { id: 'low', label: t('support.tickets.priority.low'), description: t('support.tickets.priority.lowDesc') },
+    { id: 'medium', label: t('support.tickets.priority.medium'), description: t('support.tickets.priority.mediumDesc') },
+    { id: 'high', label: t('support.tickets.priority.high'), description: t('support.tickets.priority.highDesc') },
+    { id: 'urgent', label: t('support.tickets.priority.urgent'), description: t('support.tickets.priority.urgentDesc') }
   ];
 
   const [formData, setFormData] = useState({
@@ -171,16 +171,12 @@ export const NewTicketPage = () => {
   // Redirect unauthenticated users to login before entering ticket screen
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+      <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Navbar hideCommercialLinks />
-        <main className="pt-28 pb-20">
-          <div className="w-full px-6 md:px-10 lg:px-16">
-            <div className="max-w-3xl mx-auto">
-              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-10 text-center">
-                <Loader2 size={28} className="animate-spin mx-auto mb-3 text-mintcom-green" />
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{t('support.newTicket.loadingAccount')}</p>
-              </div>
-            </div>
+        <main className="mx-auto w-full max-w-3xl px-6 pb-20 pt-28">
+          <div className="rounded-2xl border border-stone-200 bg-white p-10 text-center dark:border-zinc-800 dark:bg-zinc-900/60">
+            <Loader2 size={24} className="mx-auto mb-3 animate-spin text-mintcom-green" />
+            <p className="text-sm text-stone-500 dark:text-zinc-400">{t('support.newTicket.loadingAccount')}</p>
           </div>
         </main>
         <Footer hideCommercialLinks />
@@ -192,235 +188,239 @@ export const NewTicketPage = () => {
     return <Navigate to="/login" replace state={{ from: '/support/tickets/new' }} />;
   }
 
+  const inputClass = (hasError: boolean) =>
+    `w-full rounded-xl border bg-white p-3.5 text-[15px] transition-colors placeholder:text-stone-400 focus:border-mintcom-green focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:placeholder:text-zinc-500 ${
+      hasError ? 'border-red-400' : 'border-stone-200'
+    }`;
+
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+    <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Navbar hideCommercialLinks />
 
-      <main className="pt-28 pb-20">
-        <div className="w-full px-6 md:px-10 lg:px-16">
-          <div className="max-w-3xl mx-auto">
-            {/* Header */}
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-2">
-                <Link
-                  to="/support"
-                  className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <ArrowLeft size={20} />
-                </Link>
-                <h1 className="font-magilio text-3xl font-black tracking-tight">{t('support.newTicket.title')}</h1>
-              </div>
-              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors ml-11">
-                {t('support.newTicket.subtitle')}
-              </p>
+      <main className="mx-auto w-full max-w-3xl px-6 pb-20 pt-28">
+        <Link to="/support" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+          <ArrowLeft size={15} className="transition-transform group-hover:-translate-x-0.5" />
+          {t('support.articles.backToHelp')}
+        </Link>
+        <h1 className="font-magilio mt-4 text-3xl font-bold tracking-tight md:text-4xl">{t('support.newTicket.title')}</h1>
+        <p className="mt-2 text-[15px] text-stone-500 dark:text-zinc-400">
+          {t('support.newTicket.subtitle')}
+        </p>
+
+        <form onSubmit={handleSubmit} className="mt-8">
+          {/* Category */}
+          <fieldset className="rounded-2xl border border-stone-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/60 md:p-6">
+            <legend className="px-1 text-sm font-bold">
+              {t('support.newTicket.categoryLabel')} <span className="text-red-500">*</span>
+            </legend>
+
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2" role="radiogroup" aria-label={t('support.newTicket.categoryLabel')}>
+              {categories.map((category) => {
+                const selected = formData.category === category.id;
+                return (
+                  <button
+                    key={category.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => {
+                      setFormData({ ...formData, category: category.id });
+                      setErrors({ ...errors, category: '' });
+                    }}
+                    className={`flex items-start gap-3 rounded-xl border p-3.5 text-start transition-colors ${
+                      selected
+                        ? 'border-stone-900 bg-stone-50 dark:border-zinc-100 dark:bg-zinc-800/60'
+                        : 'border-stone-200 hover:border-stone-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                    }`}
+                  >
+                    <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                      selected ? 'bg-mintcom-green text-black' : 'bg-stone-100 text-stone-500 dark:bg-zinc-800 dark:text-zinc-400'
+                    }`}>
+                      <category.icon size={17} />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-bold">{category.label}</span>
+                      <span className="mt-0.5 block text-[13px] leading-snug text-stone-500 dark:text-zinc-400">{category.description}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
 
-            <form onSubmit={handleSubmit}>
-              {/* Category Selection */}
-              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-4">
-                  {t('support.newTicket.categoryLabel')} <span className="text-red-500">*</span>
-                </label>
+            {errors.category && (
+              <p className="mt-3 flex items-center gap-1.5 text-sm font-semibold text-red-600 dark:text-red-400">
+                <AlertCircle size={14} />
+                {errors.category}
+              </p>
+            )}
+          </fieldset>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      type="button"
-                      onClick={() => {
-                        setFormData({ ...formData, category: category.id });
-                        setErrors({ ...errors, category: '' });
-                      }}
-                      className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${formData.category === category.id
-                        ? 'border-mintcom-green bg-mintcom-green/5'
-                        : 'border-gray-100 dark:border-white/10 hover:border-gray-200 dark:hover:border-white/20'
-                        }`}
-                    >
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${formData.category === category.id
-                        ? 'bg-mintcom-green text-black'
-                        : 'bg-gray-100 dark:bg-white/10 text-gray-500'
-                        }`}>
-                        <category.icon size={20} />
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900 dark:text-white">{category.label}</p>
-                        <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{category.description}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+          {/* Priority */}
+          <fieldset className="mt-4 rounded-2xl border border-stone-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/60 md:p-6">
+            <legend className="px-1 text-sm font-bold">
+              {formatInputLabel(t('support.newTicket.priorityLabel'), t('common.locale'))}
+            </legend>
 
-                {errors.category && (
-                  <p className="mt-3 text-sm font-bold text-red-500 flex items-center gap-1">
-                    <AlertCircle size={14} />
-                    {errors.category}
-                  </p>
-                )}
-              </div>
-
-              {/* Priority Selection */}
-              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-4">
-                  {formatInputLabel(t('support.newTicket.priorityLabel'), t('common.locale'))}
-                </label>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {priorities.map((priority) => (
-                    <button
-                      key={priority.id}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, priority: priority.id })}
-                      className={`p-4 rounded-xl border-2 transition-all text-center ${formData.priority === priority.id
-                        ? 'border-mintcom-green bg-mintcom-green/5'
-                        : `${priority.color} border-transparent`
-                        }`}
-                    >
-                      <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">{priority.label}</p>
-                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors hidden md:block">{priority.description}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Subject */}
-              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-3">
-                  {t('support.newTicket.subjectLabel')} <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.subject}
-                  onChange={(e) => {
-                    setFormData({ ...formData, subject: e.target.value });
-                    setErrors({ ...errors, subject: '' });
-                  }}
-                  placeholder={formatInputPlaceholder(t('support.newTicket.subjectPlaceholder'), t('common.locale'))}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 ${errors.subject ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
-                    }`}
-                  maxLength={100}
-                />
-                <div className="flex justify-between mt-2">
-                  {errors.subject ? (
-                    <p className="text-sm font-bold text-red-500 flex items-center gap-1">
-                      <AlertCircle size={14} />
-                      {errors.subject}
-                    </p>
-                  ) : (
-                    <span />
-                  )}
-                  <span className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{formData.subject.length}/100</span>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
-                <label className="block text-sm font-normal text-gray-900 dark:text-white mb-3">
-                  {t('support.newTicket.descriptionLabel')} <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => {
-                    setFormData({ ...formData, description: e.target.value });
-                    setErrors({ ...errors, description: '' });
-                  }}
-                  placeholder={formatInputPlaceholder(t('support.newTicket.descriptionPlaceholder'), t('common.locale'))}
-                  rows={6}
-                  className={`w-full p-4 bg-gray-50 dark:bg-white/5 border rounded-xl text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 resize-none ${errors.description ? 'border-red-300' : 'border-gray-200 dark:border-white/10'
-                    }`}
-                  maxLength={2000}
-                />
-                {errors.description && (
-                  <p className="mt-2 text-sm font-bold text-red-500 flex items-center gap-1">
-                    <AlertCircle size={14} />
-                    {errors.description}
-                  </p>
-                )}
-
-                {/* Attachments */}
-                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-white/10">
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">{t('support.tickets.attachments')}</p>
-                    <label className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-white/10 rounded-lg text-sm font-normal cursor-pointer hover:bg-gray-200 dark:hover:bg-white/20 transition-colors">
-                      <Upload size={16} />
-                      {t('support.newTicket.addFiles')}
-                      <input
-                        type="file"
-                        multiple
-                        onChange={handleFileChange}
-                        className="hidden"
-                        accept="image/*,.pdf,.doc,.docx,.txt"
-                      />
-                    </label>
-                  </div>
-
-                  {attachments.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {attachments.map((attachment, index) => (
-                        <div
-                          key={index}
-                          className="inline-flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors"
-                        >
-                          <Paperclip size={14} className="text-gray-400" />
-                          <span>{attachment.name}</span>
-                          <span className="text-gray-400">({attachment.size})</span>
-                          <button
-                            type="button"
-                            onClick={() => removeAttachment(index)}
-                            className="p-1 hover:bg-gray-200 dark:hover:bg-white/10 rounded transition-colors"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mt-2">
-                    {t('support.newTicket.attachmentLimit')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
-                  {t('support.newTicket.privacyAgreement')}{' '}
-                  <a href="/legal/privacy" className="text-mintcom-green hover:underline">{t('common.privacyPolicy')}</a>
-                </p>
-
-                <div className="flex gap-3">
-                  <Link
-                    to="/support"
-                    className="px-6 py-3 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
-                  >
-                    {t('common.cancel')}
-                  </Link>
+            <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4" role="radiogroup" aria-label={t('support.newTicket.priorityLabel')}>
+              {priorities.map((priority) => {
+                const selected = formData.priority === priority.id;
+                return (
                   <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)] disabled:opacity-50 shadow-lg shadow-mintcom-green/20"
+                    key={priority.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setFormData({ ...formData, priority: priority.id })}
+                    className={`rounded-xl border p-3.5 text-center transition-colors ${
+                      selected
+                        ? 'border-stone-900 bg-stone-50 dark:border-zinc-100 dark:bg-zinc-800/60'
+                        : 'border-stone-200 hover:border-stone-300 dark:border-zinc-800 dark:hover:border-zinc-700'
+                    }`}
                   >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 size={18} className="animate-spin" />
-                        {t('common.submitting')}
-                      </>
-                    ) : (
-                      <>
-                        <Send size={18} />
-                        {t('support.newTicket.submit')}
-                      </>
-                    )}
+                    <span className="block text-sm font-bold">{priority.label}</span>
+                    <span className="mt-0.5 hidden text-xs leading-snug text-stone-500 dark:text-zinc-400 md:block">{priority.description}</span>
                   </button>
-                </div>
-              </div>
-            </form>
+                );
+              })}
+            </div>
+          </fieldset>
+
+          {/* Subject */}
+          <div className="mt-4 rounded-2xl border border-stone-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/60 md:p-6">
+            <label htmlFor="ticket-subject" className="mb-2.5 block text-sm font-bold">
+              {t('support.newTicket.subjectLabel')} <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="ticket-subject"
+              type="text"
+              value={formData.subject}
+              onChange={(e) => {
+                setFormData({ ...formData, subject: e.target.value });
+                setErrors({ ...errors, subject: '' });
+              }}
+              placeholder={formatInputPlaceholder(t('support.newTicket.subjectPlaceholder'), t('common.locale'))}
+              className={inputClass(!!errors.subject)}
+              maxLength={100}
+            />
+            <div className="mt-1.5 flex items-center justify-between">
+              {errors.subject ? (
+                <p className="flex items-center gap-1.5 text-sm font-semibold text-red-600 dark:text-red-400">
+                  <AlertCircle size={14} />
+                  {errors.subject}
+                </p>
+              ) : (
+                <span />
+              )}
+              <span className="text-xs tabular-nums text-stone-400">{formData.subject.length}/100</span>
+            </div>
           </div>
-        </div>
+
+          {/* Description + attachments */}
+          <div className="mt-4 rounded-2xl border border-stone-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/60 md:p-6">
+            <label htmlFor="ticket-description" className="mb-2.5 block text-sm font-bold">
+              {t('support.newTicket.descriptionLabel')} <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              id="ticket-description"
+              value={formData.description}
+              onChange={(e) => {
+                setFormData({ ...formData, description: e.target.value });
+                setErrors({ ...errors, description: '' });
+              }}
+              placeholder={formatInputPlaceholder(t('support.newTicket.descriptionPlaceholder'), t('common.locale'))}
+              rows={6}
+              className={`${inputClass(!!errors.description)} resize-none`}
+              maxLength={2000}
+            />
+            {errors.description && (
+              <p className="mt-1.5 flex items-center gap-1.5 text-sm font-semibold text-red-600 dark:text-red-400">
+                <AlertCircle size={14} />
+                {errors.description}
+              </p>
+            )}
+
+            <div className="mt-4 border-t border-stone-200 pt-4 dark:border-zinc-800">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="text-sm font-bold">{t('support.tickets.attachments')}</p>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-stone-200 px-3.5 py-2 text-sm font-semibold transition-colors hover:border-stone-300 dark:border-zinc-700">
+                  <Upload size={15} />
+                  {t('support.newTicket.addFiles')}
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept="image/*,.pdf,.doc,.docx,.txt"
+                  />
+                </label>
+              </div>
+
+              {attachments.length > 0 && (
+                <ul className="flex flex-wrap gap-2">
+                  {attachments.map((attachment, index) => (
+                    <li
+                      key={index}
+                      className="inline-flex items-center gap-2 rounded-lg border border-stone-200 px-3 py-1.5 text-[13px] dark:border-zinc-700"
+                    >
+                      <Paperclip size={13} className="text-stone-400" />
+                      <span className="font-medium">{attachment.name}</span>
+                      <span className="text-stone-400">({attachment.size})</span>
+                      <button
+                        type="button"
+                        onClick={() => removeAttachment(index)}
+                        aria-label={t('common.remove', { defaultValue: 'Remove' })}
+                        className="rounded p-0.5 text-stone-400 hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-zinc-800"
+                      >
+                        <X size={13} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <p className="mt-2 text-xs text-stone-400">
+                {t('support.newTicket.attachmentLimit')}
+              </p>
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className="mt-6 flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
+            <p className="text-[13px] text-stone-500 dark:text-zinc-400">
+              {t('support.newTicket.privacyAgreement')}{' '}
+              <a href="/legal/privacy" className="font-semibold text-mintcom-greenInk dark:text-mintcom-green hover:underline">{t('common.privacyPolicy')}</a>
+            </p>
+
+            <div className="flex gap-2.5">
+              <Link
+                to="/support"
+                className="rounded-xl border border-stone-200 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-stone-300 dark:border-zinc-700"
+              >
+                {t('common.cancel')}
+              </Link>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    {t('common.submitting')}
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    {t('support.newTicket.submit')}
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
       </main>
 
       <Footer hideCommercialLinks />
     </div>
   );
 };
-

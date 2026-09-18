@@ -12,7 +12,7 @@ import { SecurityVerificationModal } from '../../components/SecurityVerification
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalSubmitButton, PageHeader } from '../../components/ui';
+import { Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalSubmitButton, PageHeader, StatCard, StatCardGrid } from '../../components/ui';
 import { StatValue } from '../../components/ui/StatValue';
 import {
     isActivePendingCancellation,
@@ -356,7 +356,7 @@ export function OwnerBillingPage() {
             }
             default:
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-500/10 border border-gray-500/20 rounded-lg text-xs font-bold tracking-widest text-gray-500">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-stone-500/10 border border-stone-500/20 rounded-lg text-xs font-bold tracking-widest text-stone-500">
                         {est.subscriptionStatus ? est.subscriptionStatus.charAt(0).toUpperCase() + est.subscriptionStatus.slice(1).toLowerCase() : t('common.error')}
                     </span>
                 );
@@ -551,7 +551,7 @@ export function OwnerBillingPage() {
                 actions={
                     <>
                     <div className="text-right hidden sm:block">
-                        <p className="text-[10px] font-bold text-gray-400 tracking-widest capitalize mb-1">
+                        <p className="text-[10px] font-bold text-stone-400 tracking-widest capitalize mb-1">
                             {t('owner.billing.monthly')}
                         </p>
                         <StatValue
@@ -563,7 +563,7 @@ export function OwnerBillingPage() {
                     </div>
                     {hasYearlyPlan && (
                         <>
-                            <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
+                            <div className="w-px h-10 bg-stone-200 dark:bg-zinc-800 hidden sm:block" />
                             <div className="text-right hidden sm:block">
                                 <p className="text-[10px] font-bold text-mintcom-green tracking-widest capitalize mb-1">
                                     {t('owner.billing.yearly')}
@@ -577,12 +577,12 @@ export function OwnerBillingPage() {
                             </div>
                         </>
                     )}
-                    <div className="w-px h-10 bg-gray-200 dark:bg-white/10 hidden sm:block" />
+                    <div className="w-px h-10 bg-stone-200 dark:bg-zinc-800 hidden sm:block" />
                     <button
                         onClick={() => openAddCardModal()}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                     >
-                        <Plus size={18} strokeWidth={2.5} />
+                        <Plus size={15} strokeWidth={2} />
                         <span>{t('owner.billing.addPaymentMethod')}</span>
                     </button>
                     </>
@@ -590,53 +590,35 @@ export function OwnerBillingPage() {
             />
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[
-                    { label: t('owner.billing.cards'), value: billingData?.savedCards.length || 0, icon: biIcon('bi-credit-card'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.billing.plans'), value: billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0, icon: biIcon('bi-lightning-charge'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    {
-                        label: t('owner.billing.nextBill'),
-                        value: tableNextBillDate
-                            ? formatBillingDate(tableNextBillDate)
-                            : t('owner.billing.noBill'),
-                        icon: biIcon('bi-calendar-event'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10'
-                    },
-                ].map((stat, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 flex items-center gap-4 shadow-sm transition-all duration-300 overflow-hidden"
-                    >
-                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        <div className="relative z-10 flex items-center gap-4 w-full">
-                            <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center shrink-0 transition-transform duration-300`}>
-                                <stat.icon size={20} />
-                            </div>
-                            <div>
-                                <p className="dashboard-stat-title mb-0.5">{stat.label}</p>
-                                {typeof stat.value === 'number' ? (
-                                    <StatValue 
-                                        value={stat.value} 
-                                        className="text-xl"
-                                        isInteger={true}
-                                    />
-                                ) : (
-                                    <p className="dashboard-card-value text-xl">{stat.value}</p>
-                                )}
-                            </div>
-                        </div>
-                    </motion.div>
-                ))}
-            </div>
+            <StatCardGrid columns={3}>
+                <StatCard
+                    label={t('owner.billing.cards')}
+                    value={billingData?.savedCards.length || 0}
+                    icon={biIcon('bi-credit-card')}
+                    layout="horizontal"
+                />
+                <StatCard
+                    label={t('owner.billing.plans')}
+                    value={billingData?.establishments.filter(e => e.subscriptionStatus === 'ACTIVE' || e.subscriptionStatus === 'TRIAL').length || 0}
+                    icon={biIcon('bi-lightning-charge')}
+                    layout="horizontal"
+                />
+                <StatCard
+                    label={t('owner.billing.nextBill')}
+                    value={
+                        (tableNextBillDate && formatBillingDate(tableNextBillDate)) ||
+                        t('owner.billing.noBill')
+                    }
+                    isInteger={false}
+                    icon={biIcon('bi-calendar-event')}
+                    layout="horizontal"
+                />
+            </StatCardGrid>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Saved Cards Section */}
                 <div className="lg:col-span-1 space-y-6">
-                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 flex items-center gap-2">
                         <CreditCard size={18} className="text-mintcom-green" />
                         {t('owner.billing.cards')}
                     </h2>
@@ -644,7 +626,7 @@ export function OwnerBillingPage() {
                     {isLoading ? (
                         <div className="space-y-4">
                             {[1, 2].map(i => (
-                                <div key={i} className="h-40 bg-gray-100 dark:bg-white/5 rounded-2xl animate-pulse" />
+                                <div key={i} className="h-40 bg-stone-100 dark:bg-zinc-800 rounded-2xl animate-pulse" />
                             ))}
                         </div>
                     ) : billingData?.savedCards.length === 0 ? (
@@ -652,9 +634,9 @@ export function OwnerBillingPage() {
                             onClick={() => openAddCardModal()}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="w-full p-8 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 text-gray-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-all flex flex-col items-center gap-3 bg-gray-50 dark:bg-white/[0.02]"
+                            className="w-full p-8 rounded-2xl border-2 border-dashed border-stone-200 dark:border-zinc-800 text-stone-400 hover:text-mintcom-green hover:border-mintcom-green/30 transition-all flex flex-col items-center gap-3 bg-white dark:bg-zinc-900/40"
                         >
-                            <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center">
                                 <Plus size={24} />
                             </div>
                             <span className="text-xs font-bold tracking-wide">{t('owner.billing.addCard')}</span>
@@ -668,34 +650,33 @@ export function OwnerBillingPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.1 }}
                                     className={`group relative p-6 h-48 rounded-2xl flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-lg transition-all border ${card.isDefault
-                                        ? 'bg-white dark:bg-[#1E293B] border-mintcom-green/30 ring-1 ring-mintcom-green/10'
-                                        : 'bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/5 hover:border-mintcom-green/30'
+                                        ? 'bg-white dark:bg-zinc-900/60 border-mintcom-green/30 ring-1 ring-mintcom-green/10'
+                                        : 'bg-white dark:bg-zinc-900/60 border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/30'
                                         }`}
                                 >
                                     {/* Gradient Blob */}
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
+                                    
                                     <div className="relative z-10">
                                         <div className="flex justify-between items-start mb-1.5">
-                                            <p className="dashboard-card-label">{t('owner.billing.addCard')}</p>
-                                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-300 text-[8px] font-black rounded-[12px] tracking-widest">
+                                            <p className="text-[13px] font-semibold text-stone-500 dark:text-zinc-400">{t('owner.billing.addCard')}</p>
+                                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-stone-100 text-stone-500 dark:bg-zinc-800 dark:text-zinc-300 text-[8px] font-black rounded-xl tracking-widest">
                                                 {t('owner.billing.saved_card', { defaultValue: 'Saved' })}
                                             </div>
                                         </div>
                                         
-                                        <p className="text-xl font-bold tracking-[0.15em] text-gray-900 dark:text-white">
+                                        <p className="text-xl font-bold tracking-[0.15em] text-stone-900 dark:text-zinc-100">
                                             <span className="opacity-30">••••</span> {card.last4}
                                         </p>
                                     </div>
 
                                     <div className="relative z-10 flex justify-between items-end">
                                         <div className="space-y-1">
-                                            <p className="dashboard-card-label">{t('categories.form.nameLabel')}</p>
-                                            <p className="font-bold tracking-wider text-xs text-gray-800 dark:text-gray-200 truncate max-w-[120px]">{card.cardholderName || 'User'}</p>
+                                            <p className="text-[13px] font-semibold text-stone-500 dark:text-zinc-400">{t('categories.form.nameLabel')}</p>
+                                            <p className="font-bold tracking-wider text-xs text-stone-800 dark:text-zinc-200 truncate max-w-[120px]">{card.cardholderName || 'User'}</p>
                                         </div>
                                         <div className="text-right space-y-1">
-                                            <p className="dashboard-card-label">{t('owner.billing.expires')}</p>
-                                            <p className="font-bold text-xs text-gray-800 dark:text-gray-200">{card.expMonth}/{card.expYear.toString().slice(-2)}</p>
+                                            <p className="text-[13px] font-semibold text-stone-500 dark:text-zinc-400">{t('owner.billing.expires')}</p>
+                                            <p className="font-bold text-xs text-stone-800 dark:text-zinc-200">{card.expMonth}/{card.expYear.toString().slice(-2)}</p>
                                         </div>
                                     </div>
 
@@ -704,13 +685,13 @@ export function OwnerBillingPage() {
                                         {card.canDelete ? (
                                             <button
                                                 onClick={(e) => { e.stopPropagation(); handleDeleteCard(card.id, card.last4); }}
-                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 text-gray-400 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-xl hover:scale-110 active:scale-95 pointer-events-auto"
+                                                className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-400 hover:text-red-500 hover:border-red-500/50 flex items-center justify-center transition-all shadow-sm hover:bg-stone-50 dark:hover:bg-zinc-800 pointer-events-auto"
                                                 title={t('owner.billing.deleteCard')}
                                             >
                                                 <Trash2 size={20} />
                                             </button>
                                         ) : (
-                                            <div className="w-12 h-12 rounded-2xl bg-white/50 dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-300 dark:text-gray-600 flex items-center justify-center cursor-not-allowed" title={t('owner.billing.linkedNote')}>
+                                            <div className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-300 dark:text-stone-600 flex items-center justify-center cursor-not-allowed" title={t('owner.billing.linkedNote')}>
                                                 <Trash2 size={20} />
                                             </div>
                                         )}
@@ -723,14 +704,14 @@ export function OwnerBillingPage() {
 
                 {/* Subscriptions Section */}
                 <div className="lg:col-span-2 space-y-6">
-                    <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 flex items-center gap-2">
                         <DollarSign size={18} className="text-mintcom-green" />
                         {t('owner.billing.plans')}
                     </h2>
 
-                    <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-visible shadow-sm">
+                    <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-visible shadow-sm">
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-3 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row items-center">
+                        <div className="hidden md:grid grid-cols-12 gap-3 px-6 py-4 bg-white dark:bg-zinc-900/40 border-b border-stone-200 dark:border-zinc-800 table-header-row items-center">
                             <div className="col-span-4 flex items-center gap-3">
                                 <div className="w-10" />
                                 <span>{toHeaderCase(t('owner.billing.location'))}</span>
@@ -755,23 +736,23 @@ export function OwnerBillingPage() {
                         {isLoading ? (
                             <div className="p-8 space-y-4">
                                 {[1, 2, 3].map(i => (
-                                    <div key={i} className="h-16 bg-gray-100 dark:bg-white/5 rounded-xl animate-pulse" />
+                                    <div key={i} className="h-16 bg-stone-100 dark:bg-zinc-800 rounded-xl animate-pulse" />
                                 ))}
                             </div>
                         ) : billingData?.establishments.length === 0 ? (
                             <div className="text-center py-20">
-                                <p className="text-sm font-bold text-gray-500">{t('owner.billing.noSubscriptions')}</p>
+                                <p className="text-sm font-bold text-stone-500">{t('owner.billing.noSubscriptions')}</p>
                             </div>
                         ) : (
-                            <div className="divide-y divide-gray-100 dark:divide-white/5">
+                            <div className="divide-y divide-stone-100 dark:divide-zinc-800">
                                 {paginatedEstablishments.map((est) => (
                                     <div
                                         key={est.id}
-                                        className="grid grid-cols-1 md:grid-cols-12 gap-3 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors items-center group relative"
+                                        className="grid grid-cols-1 md:grid-cols-12 gap-3 px-6 py-5 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors items-center group relative"
                                     >
                                         {/* Location — full name, no ellipsis; split brand / branch when possible */}
                                         <div className="col-span-4 flex items-center gap-3 min-w-0">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-sm font-bold text-gray-400 group-hover:text-mintcom-green transition-colors shrink-0">
+                                            <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-sm font-bold text-stone-400 group-hover:text-mintcom-green transition-colors shrink-0">
                                                 {est.name.charAt(0)}
                                             </div>
                                             <div className="min-w-0 flex-1">
@@ -783,17 +764,17 @@ export function OwnerBillingPage() {
                                                     return (
                                                         <>
                                                             <h3
-                                                                className="text-sm font-bold tracking-tight text-gray-900 dark:text-white leading-snug break-words"
+                                                                className="text-sm font-bold tracking-tight text-stone-900 dark:text-zinc-100 leading-snug break-words"
                                                                 title={est.name}
                                                             >
                                                                 {primary}
                                                             </h3>
-                                                            <p className="dashboard-card-meta leading-snug break-words mt-0.5">
+                                                            <p className="text-xs text-stone-500 dark:text-zinc-400 leading-snug break-words mt-0.5">
                                                                 {[secondary, planLabel].filter(Boolean).join(' · ')}
                                                             </p>
                                                             {est.establishmentLoginId ? (
                                                                 <p
-                                                                    className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 tracking-wide mt-0.5 break-all"
+                                                                    className="text-[10px] font-semibold text-stone-400 dark:text-stone-500 tracking-wide mt-0.5 break-all"
                                                                     title={est.establishmentLoginId}
                                                                 >
                                                                     {est.establishmentLoginId}
@@ -848,16 +829,16 @@ export function OwnerBillingPage() {
                                                                 {t('owner.billing.trial', { defaultValue: 'Trial' })}
                                                             </span>
                                                             {/* Post-trial rate — always show the real amount under "Then" */}
-                                                            <span className="inline-flex items-baseline gap-1 text-[11px] font-bold tracking-tight text-gray-700 dark:text-gray-200">
-                                                                <span className="text-[10px] font-semibold text-gray-400 dark:text-gray-500">
+                                                            <span className="inline-flex items-baseline gap-1 text-[11px] font-bold tracking-tight text-stone-700 dark:text-zinc-200">
+                                                                <span className="text-[10px] font-semibold text-stone-400 dark:text-stone-500">
                                                                     {t('owner.billing.then', { defaultValue: 'Then' })}
                                                                 </span>
                                                                 <span>{formattedPrice}</span>
-                                                                <span className="text-[9px] font-black uppercase text-gray-400 dark:text-gray-500">
+                                                                <span className="text-[9px] font-black uppercase text-stone-400 dark:text-stone-500">
                                                                     {itemCurrency}
                                                                 </span>
                                                             </span>
-                                                            <span className="text-[10px] font-medium text-gray-400 dark:text-gray-500">
+                                                            <span className="text-[10px] font-medium text-stone-400 dark:text-stone-500">
                                                                 {periodLabel}
                                                             </span>
                                                         </div>
@@ -865,13 +846,13 @@ export function OwnerBillingPage() {
                                                 }
                                                 return (
                                                     <div className="flex flex-col items-center gap-0.5 whitespace-nowrap">
-                                                        <span className="inline-flex items-baseline gap-1 text-sm font-bold tracking-tight text-gray-900 dark:text-white">
+                                                        <span className="inline-flex items-baseline gap-1 text-sm font-bold tracking-tight text-stone-900 dark:text-zinc-100">
                                                             <span>{formattedPrice}</span>
-                                                            <span className="text-[10px] font-black uppercase text-gray-400 dark:text-gray-500">
+                                                            <span className="text-[10px] font-black uppercase text-stone-400 dark:text-stone-500">
                                                                 {itemCurrency}
                                                             </span>
                                                         </span>
-                                                        <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500">
+                                                        <span className="text-[11px] font-medium text-stone-400 dark:text-stone-500">
                                                             {isYearly ? t('common.yearly') : t('common.monthly')}
                                                         </span>
                                                     </div>
@@ -883,7 +864,7 @@ export function OwnerBillingPage() {
                                         <div className="col-span-2 text-center flex justify-center">
                                             {formatBillingDate(est.nextBillDate) ? (
                                                 <div className="flex flex-col items-center gap-0.5">
-                                                    <p className="dashboard-card-meta text-center">
+                                                    <p className="text-xs text-stone-500 dark:text-zinc-400 text-center">
                                                         {formatBillingDate(est.nextBillDate)}
                                                     </p>
                                                     {est.subscriptionStatus?.toUpperCase() === 'TRIAL' ? (
@@ -893,13 +874,13 @@ export function OwnerBillingPage() {
                                                     ) : null}
                                                 </div>
                                             ) : (
-                                                <p className="text-xs font-bold text-gray-400 text-center">-</p>
+                                                <p className="text-xs font-bold text-stone-400 text-center">-</p>
                                             )}
                                         </div>
 
                                         {/* Payment */}
                                         <div className="col-span-1 text-center flex justify-center items-center min-w-0">
-                                            <span className="dashboard-card-meta text-center break-words leading-snug" title={est.paymentCard ? `${est.paymentCard.brand} •••• ${est.paymentCard.last4}` : undefined}>
+                                            <span className="text-xs text-stone-500 dark:text-zinc-400 text-center break-words leading-snug" title={est.paymentCard ? `${est.paymentCard.brand} •••• ${est.paymentCard.last4}` : undefined}>
                                                 {est.paymentCard ? `${est.paymentCard.brand} •••• ${est.paymentCard.last4}` : t('owner.billing.noCard')}
                                             </span>
                                         </div>
@@ -911,7 +892,7 @@ export function OwnerBillingPage() {
                                                     e.stopPropagation();
                                                     setActiveMenu(activeMenu === est.id ? null : est.id);
                                                 }}
-                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                                className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                                             >
                                                 <MoreVertical size={16} />
                                             </button>
@@ -923,18 +904,18 @@ export function OwnerBillingPage() {
                                                         animate={{ opacity: 1, scale: 1, y: 0 }}
                                                         exit={{ opacity: 0, scale: 0.95, y: 5 }}
                                                         onClick={(e) => e.stopPropagation()}
-                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-xl z-50 overflow-hidden"
                                                     >
                                                         <button
                                                             onClick={() => openLocationDashboard(est)}
-                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
+                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-stone-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 tracking-wide transition-colors flex items-center gap-2"
                                                         >
                                                             <Eye size={14} />
                                                             {t('owner.billing.viewDashboard')}
                                                         </button>
                                                         <button
                                                             onClick={() => openInvoiceForEstablishment(est)}
-                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
+                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-stone-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 tracking-wide transition-colors flex items-center gap-2"
                                                         >
                                                             <FileText size={14} />
                                                             {t('owner.billing.invoice.action', { defaultValue: 'Invoices' })}
@@ -945,7 +926,7 @@ export function OwnerBillingPage() {
                                                                     setActiveMenu(null);
                                                                     openChangeCardForEstablishment(est);
                                                                 }}
-                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 tracking-wide transition-colors flex items-center gap-2"
+                                                                className="w-full px-4 py-3 text-left text-xs font-bold text-stone-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 tracking-wide transition-colors flex items-center gap-2"
                                                             >
                                                                 <CreditCard size={14} />
                                                                 {t('owner.billing.change_card', { defaultValue: 'Change Card' })}
@@ -1063,14 +1044,14 @@ export function OwnerBillingPage() {
                                             className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition ${
                                                 isCurrent
                                                     ? 'border-mintcom-green/40 bg-mintcom-green/10'
-                                                    : 'border-gray-200 hover:border-mintcom-green/40 hover:bg-gray-50 dark:border-white/10 dark:hover:bg-white/5'
+                                                    : 'border-stone-200 hover:border-mintcom-green/40 hover:bg-white dark:border-zinc-800 dark:hover:bg-zinc-800'
                                             } disabled:cursor-default`}
                                         >
                                             <span>
-                                                <span className="block text-sm font-bold text-gray-900 dark:text-white">
+                                                <span className="block text-sm font-bold text-stone-900 dark:text-zinc-100">
                                                     {card.brand} •••• {card.last4}
                                                 </span>
-                                                <span className="block text-xs font-medium text-gray-500 dark:text-gray-400">
+                                                <span className="block text-xs font-medium text-stone-500 dark:text-zinc-400">
                                                     {card.cardholderName ||
                                                         t('owner.billing.cardholder', {
                                                             defaultValue: 'Cardholder',

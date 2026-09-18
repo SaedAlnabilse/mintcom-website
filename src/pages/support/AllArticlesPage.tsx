@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
 import {
   ArrowLeft, Search, BookOpen, Clock, Eye, ChevronRight,
-  Zap, CreditCard, Settings, Filter, X,
+  Zap, CreditCard, Settings, X,
 } from 'lucide-react';
 import { Navbar } from '../../components/Navbar';
 import { Footer } from '../../components/Footer';
@@ -93,131 +92,117 @@ export const AllArticlesPage = () => {
   const hasArticleCategoryFilter = selectedCategory !== 'all';
 
   return (
-    <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+    <div dir={isRtl ? 'rtl' : 'ltr'} className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Navbar hideCommercialLinks />
-      <main className="pt-32 pb-24">
-        <div className="w-full px-6 md:px-10 lg:px-16">
+      <main className="mx-auto w-full max-w-5xl px-6 pb-20 pt-28">
+        <Link to="/support" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+          <ArrowLeft size={15} className={`transition-transform group-hover:-translate-x-0.5 ${isRtl ? 'rotate-180' : ''}`} />
+          {t('support.articles.backToHelp')}
+        </Link>
 
-          {/* Header */}
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
-            <Link to="/support" className="group mb-6 inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-              <ArrowLeft size={15} className={`transition-transform group-hover:-translate-x-0.5 ${isRtl ? 'rotate-180' : ''}`} />
-              {t('support.articles.backToHelp')}
-            </Link>
-            <h1 className="font-magilio mt-4 text-4xl font-bold tracking-tight md:text-5xl">{t('support.articles.allTitle')}</h1>
-            <p className="mt-3 text-lg font-light text-gray-500 dark:text-gray-400">
-              {t('support.articles.allSubtitle', { count: allArticles.length })}
-            </p>
-          </motion.div>
+        <h1 className="font-magilio mt-6 text-4xl font-bold tracking-tight md:text-5xl">{t('support.articles.allTitle')}</h1>
+        <p className="mt-3 text-[15px] text-stone-500 dark:text-zinc-400">
+          {t('support.articles.allSubtitle', { count: allArticles.length })}
+        </p>
 
-          <div className="flex flex-col gap-8 lg:flex-row">
-            {/* Sidebar */}
-            <div className="flex-shrink-0 lg:w-60">
-              <div className="sticky top-28 overflow-hidden rounded-3xl border border-gray-100 bg-white p-4 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
-                <p className="mb-3 px-2 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 dark:text-gray-500">
-                  {t('support.categories.sidebarTitle')}
-                </p>
-                <div className="space-y-1">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(cat.id)}
-                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all ${
-                        selectedCategory === cat.id
-                          ? 'bg-mintcom-green text-black'
-                          : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/10'
-                      }`}
-                    >
-                      <cat.icon size={15} />
-                      <span className="text-start">{cat.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Main */}
-            <div className="flex-1">
-              {/* Search + sort bar */}
-              <div className="mb-6 overflow-hidden rounded-3xl border border-gray-100 bg-white p-4 shadow-[0_4px_15px_-6px_rgba(0,0,0,0.06)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
-                <div className="flex flex-col gap-3 md:flex-row">
-                  <div className="relative flex-1">
-                    <Search size={16} className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input maxLength={255}
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={formatInputPlaceholder(t('common.searchArticles'), t('common.locale'))}
-                      className="w-full rounded-2xl border border-gray-200/80 bg-gray-50/70 py-3 pe-11 ps-11 text-sm transition-all focus:border-mintcom-green/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:bg-white/10"
-                    />
-                    {searchQuery && (
-                      <button type="button" onClick={() => setSearchQuery('')} className="absolute end-3 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-xl border border-gray-200 bg-gray-50 text-gray-400 transition-colors hover:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10">
-                        <X size={12} strokeWidth={2.5} />
-                      </button>
-                    )}
-                  </div>
+        <div className="mt-8 flex flex-col gap-8 lg:flex-row">
+          {/* Category nav */}
+          <nav aria-label={t('support.categories.sidebarTitle')} className="shrink-0 lg:w-56">
+            <div className="flex gap-1.5 overflow-x-auto pb-1 lg:sticky lg:top-24 lg:flex-col lg:overflow-visible lg:pb-0">
+              {categories.map((cat) => {
+                const active = selectedCategory === cat.id;
+                return (
                   <button
-                    onClick={() => setSortBy(sortBy === 'views' ? 'recent' : 'views')}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-gray-200/80 bg-gray-50/70 px-4 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:text-gray-300 dark:hover:bg-white/10"
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    aria-current={active ? 'true' : undefined}
+                    className={`flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-colors ${
+                      active
+                        ? 'bg-stone-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                        : 'text-stone-500 hover:bg-stone-200/60 hover:text-stone-800 dark:text-zinc-400 dark:hover:bg-zinc-800/70 dark:hover:text-zinc-100'
+                    }`}
                   >
-                    <Filter size={15} />
-                    {t('support.articles.sortBy')}: {sortBy === 'views' ? t('support.articles.sortPopular') : t('support.articles.sortRecent')}
+                    <cat.icon size={15} />
+                    <span className="whitespace-nowrap">{cat.label}</span>
                   </button>
-                </div>
-              </div>
+                );
+              })}
+            </div>
+          </nav>
 
-              <p className="mb-4 px-1 text-sm font-medium text-gray-500 dark:text-gray-400">
-                {t('support.articles.showing', { count: filteredArticles.length })}
-              </p>
-
-              <div className="space-y-3">
-                {filteredArticles.map((article, index) => (
-                  <motion.div key={article.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.03 }}>
-                    <Link to={`/support/article/${article.id}`} className="group flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-mintcom-green/30 hover:shadow-[0_6px_20px_-8px_rgba(124,195,159,0.2)] dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none">
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 transition-all group-hover:bg-mintcom-green/20">
-                          <BookOpen size={17} className="text-mintcom-green" />
-                        </div>
-                        <div>
-                          <p className="font-bold transition-colors group-hover:text-mintcom-green">{article.title}</p>
-                          <p className="mt-0.5 text-xs font-medium text-gray-500 dark:text-gray-400">{article.category}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <div className="hidden items-center gap-4 text-xs font-medium text-gray-400 md:flex">
-                          <span className="flex items-center gap-1.5"><Clock size={12} /> {article.readTime}</span>
-                          <span className="flex items-center gap-1.5"><Eye size={12} /> {getArticleViews(metrics, article.id, article.views)}</span>
-                        </div>
-                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gray-100 text-gray-400 transition-all group-hover:bg-mintcom-green group-hover:text-black dark:bg-white/5 dark:group-hover:bg-mintcom-green">
-                          <ChevronRight size={14} className={isRtl ? 'rotate-180' : ''} />
-                        </span>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-
-                {filteredArticles.length === 0 && (
-                  <div className="rounded-3xl border border-gray-100 bg-white p-16 text-center dark:border-white/10 dark:bg-white/[0.03]">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/10">
-                      <BookOpen size={28} className="text-gray-400" />
-                    </div>
-                    <h3 className="font-barlow mb-2 text-xl font-bold">
-                      {hasArticleSearch ? t('common.noResults') : hasArticleCategoryFilter ? t('common.noFilteredResults') : t('common.noResults')}
-                    </h3>
-                    <p className="mb-6 text-sm font-light text-gray-500 dark:text-gray-400">
-                      {hasArticleSearch
-                        ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No articles matching "{{query}}"' })
-                        : hasArticleCategoryFilter
-                          ? t('common.noFilteredResultsDesc')
-                          : t('support.articles.emptySubtitle', { defaultValue: 'No articles are available yet.' })}
-                    </p>
-                    <button onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }} className="font-bold text-mintcom-green hover:underline">
-                      {t('support.articles.clearFilters')}
-                    </button>
-                  </div>
+          {/* List */}
+          <div className="min-w-0 flex-1">
+            <div className="mb-4 flex flex-col gap-2.5 sm:flex-row">
+              <div className="relative flex-1">
+                <Search size={16} className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input maxLength={255}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={formatInputPlaceholder(t('common.searchArticles'), t('common.locale'))}
+                  className="w-full rounded-xl border border-stone-200 bg-white py-2.5 pe-10 ps-10 text-sm shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-colors placeholder:text-stone-400 focus:border-mintcom-green focus:outline-none dark:border-zinc-800 dark:bg-zinc-900 dark:placeholder:text-zinc-500"
+                />
+                {searchQuery && (
+                  <button type="button" onClick={() => setSearchQuery('')} aria-label={t('common.clearSearch', 'Clear search')}
+                    className="absolute end-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800">
+                    <X size={12} strokeWidth={2.5} />
+                  </button>
                 )}
               </div>
+              <label className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3.5 py-2.5 text-sm font-semibold text-stone-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+                <span className="text-stone-400">{t('support.articles.sortBy')}</span>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'views' | 'recent')}
+                  className="cursor-pointer bg-transparent font-semibold focus:outline-none"
+                >
+                  <option value="views">{t('support.articles.sortPopular')}</option>
+                  <option value="recent">{t('support.articles.sortRecent')}</option>
+                </select>
+              </label>
             </div>
+
+            <p className="mb-1 text-[13px] text-stone-500 dark:text-zinc-400">
+              {t('support.articles.showing', { count: filteredArticles.length })}
+            </p>
+
+            {filteredArticles.length === 0 ? (
+              <div className="py-14 text-center">
+                <h3 className="font-barlow text-lg font-bold">
+                  {hasArticleSearch ? t('common.noResults') : hasArticleCategoryFilter ? t('common.noFilteredResults') : t('common.noResults')}
+                </h3>
+                <p className="mx-auto mt-1 max-w-sm text-sm text-stone-500 dark:text-zinc-400">
+                  {hasArticleSearch
+                    ? t('common.noMatchingResults', { entity: 'articles', query: searchQuery.trim(), defaultValue: 'No articles matching "{{query}}"' })
+                    : hasArticleCategoryFilter
+                      ? t('common.noFilteredResultsDesc')
+                      : t('support.articles.emptySubtitle', { defaultValue: 'No articles are available yet.' })}
+                </p>
+                <button onClick={() => { setSearchQuery(''); setSelectedCategory('all'); }} className="mt-4 text-sm font-semibold text-mintcom-greenInk dark:text-mintcom-green hover:underline">
+                  {t('support.articles.clearFilters')}
+                </button>
+              </div>
+            ) : (
+              <ol className="divide-y divide-stone-200 dark:divide-zinc-800">
+                {filteredArticles.map((article) => (
+                  <li key={article.id}>
+                    <Link to={`/support/article/${article.id}`} className="group flex items-baseline gap-3 py-4">
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[15px] font-semibold group-hover:underline group-hover:decoration-mintcom-green group-hover:decoration-2 group-hover:underline-offset-4">
+                          {article.title}
+                        </span>
+                        <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-stone-400">
+                          <span>{article.category}</span>
+                          <span className="inline-flex items-center gap-1"><Clock size={11} />{article.readTime}</span>
+                          <span className="inline-flex items-center gap-1"><Eye size={11} />{getArticleViews(metrics, article.id, article.views)}</span>
+                        </span>
+                      </span>
+                      <ChevronRight size={15} className={`shrink-0 self-center text-stone-300 transition-transform group-hover:translate-x-0.5 group-hover:text-stone-500 ${isRtl ? 'rotate-180' : ''}`} />
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            )}
           </div>
         </div>
       </main>

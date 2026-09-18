@@ -21,6 +21,7 @@
     "test:e2e:ui": "playwright test --ui",
     "deploy": "npm run build && npx wrangler deploy",
     "check:duplication": "node scripts/check-duplication.cjs",
+    "check:tokens": "node scripts/check-legacy-tokens.cjs",
     "typecheck": "tsc -b"
   },
   "dependencies": {

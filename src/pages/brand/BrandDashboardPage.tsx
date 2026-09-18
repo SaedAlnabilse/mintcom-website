@@ -16,7 +16,7 @@ import {
     Globe,
 } from 'lucide-react';
 import { biIcon } from '../../components/ui/BiIcon';
-import { PageHeader, FilterBar, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
+import { PageHeader, FilterBar, StatCard, StatCardGrid, chartTheme, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
 import {
     Area,
     ComposedChart,
@@ -167,6 +167,7 @@ export function BrandDashboardPage() {
     const { t } = useTranslation();
     const { resolvedTheme } = useTheme();
     const isDark = resolvedTheme === 'dark';
+    const chart = useMemo(() => chartTheme(isDark), [isDark]);
     const { brandId: paramBrandId } = useParams<{ brandId: string }>();
     const { brand } = useOutletContext<{ brand: any }>() || {};
     const brandId = brand?.id || paramBrandId;
@@ -319,14 +320,14 @@ export function BrandDashboardPage() {
                             <Store size={16} />
                             <span>{locations.length} {t('brand.dashboard.locations')}</span>
                         </span>
-                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                        <span className="w-1 h-1 rounded-full bg-stone-300 dark:bg-zinc-700" />
                         <span className="flex items-center gap-1.5">
                             <Clock size={16} />
                             <span>{t('brand.dashboard.updatedNow')}</span>
                         </span>
                         {hasMixedCurrencies && (
                             <>
-                                <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
+                                <span className="w-1 h-1 rounded-full bg-stone-300 dark:bg-zinc-700" />
                                 <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold">
                                     <Globe size={13} />
                                     <span>{t('brand.dashboard.standardizedIn', { currency: baseCurrency })}</span>
@@ -387,7 +388,7 @@ export function BrandDashboardPage() {
                                                         showIcon={true}
                                                         isActive={isTimeFiltered}
                                                     />
-                                                    <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-gray-300 dark:text-white/10"}`}>-</span>
+                                                    <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? "text-emerald-700/60 dark:text-mintcom-green/60" : "text-stone-300 dark:text-zinc-700"}`}>-</span>
                                                     <CustomTimePicker
                                                         value={endTime}
                                                         onChange={(val) => { setEndTime(val); }}
@@ -409,15 +410,16 @@ export function BrandDashboardPage() {
             />
 
             {/* Kpi Grid */}
-            <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+            <StatCardGrid
+                columns={4}
+                className={`transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
+            >
                 {[
                     {
                         label: t('brand.dashboard.totalRevenue'),
                         value: stats?.totalRevenue || 0,
                         change: stats?.revenueGrowth ?? null,
                         icon: biIcon('bi-wallet2'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: true
                     },
                     {
@@ -425,8 +427,6 @@ export function BrandDashboardPage() {
                         value: stats?.totalOrders || 0,
                         change: stats?.orderGrowth ?? null,
                         icon: biIcon('bi-receipt-cutoff'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: false
                     },
                     {
@@ -434,8 +434,6 @@ export function BrandDashboardPage() {
                         value: stats?.avgOrderValue || 0,
                         change: null,
                         icon: biIcon('bi-calculator'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: true
                     },
                     {
@@ -443,61 +441,44 @@ export function BrandDashboardPage() {
                         value: stats?.totalEmployees || 0,
                         change: null,
                         icon: biIcon('bi-people'),
-                        color: 'text-mintcom-green',
-                        bg: 'bg-mintcom-green/10',
                         isCurrency: false
                     },
                 ].map((stat, i) => (
-                    <motion.div
-                        key={i}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className={`relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border shadow-sm overflow-hidden ${isTopBrand
-                            ? 'border-mintcom-green/30 shadow-mintcom-green/5'
-                            : 'border-gray-200 dark:border-white/5'
-                            }`}
-                    >
-
-                        <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className={`w-12 h-12 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center ${isTopBrand ? 'shadow-lg shadow-current/10' : ''
+                    <StatCard
+                        key={stat.label}
+                        label={stat.label}
+                        value={stat.value}
+                        currency={stat.isCurrency ? baseCurrency : null}
+                        isInteger={!stat.isCurrency}
+                        icon={stat.icon}
+                        delay={i * 0.1}
+                        className={isTopBrand ? 'border-mintcom-green/30' : ''}
+                        badge={
+                            typeof stat.change === 'number' && Number.isFinite(stat.change) ? (
+                                <span className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
+                                    ? 'bg-mintcom-green/10 text-emerald-700 dark:text-mintcom-green'
+                                    : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
                                     }`}>
-                                    <stat.icon size={24} />
-                                </div>
-                                {typeof stat.change === 'number' && Number.isFinite(stat.change) && (
-                                    <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${stat.change >= 0
-                                        ? 'bg-mintcom-green/10 text-mintcom-green dark:bg-mintcom-green/ dark:text-mintcom-green'
-                                        : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-                                        }`}>
-                                        {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                                        {stat.change >= 0 ? '+' : ''}{stat.change}%
-                                    </div>
-                                )}
-                            </div>
-                            <p className="dashboard-stat-title mb-1">{stat.label}</p>
-                            <StatValue 
-                                value={stat.value} 
-                                currency={stat.isCurrency ? baseCurrency : null}
-                                className="text-2xl"
-                                isInteger={!stat.isCurrency}
-                            />
-                        </div>
-                    </motion.div>
+                                    {stat.change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                                    {stat.change >= 0 ? '+' : ''}{stat.change}%
+                                </span>
+                            ) : undefined
+                        }
+                    />
                 ))}
-            </div>
+            </StatCardGrid>
 
             {/* Location Performance */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm overflow-hidden transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
+                className={`bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm overflow-hidden transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
             >
-                <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-white/5">
+                <div className="flex items-center justify-between p-6 border-b border-stone-200 dark:border-zinc-800">
                     <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('brand.dashboard.locationPerformance')}</h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.rankedByRevenue')}</p>
+                        <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100">{t('brand.dashboard.locationPerformance')}</h3>
+                        <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1 leading-relaxed">{t('brand.dashboard.rankedByRevenue')}</p>
                     </div>
                     <button
                         onClick={() => navigate(`/brand/${brandId}/locations`)}
@@ -510,23 +491,23 @@ export function BrandDashboardPage() {
 
                 {locations.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
-                        <Store size={48} className="text-gray-300 dark:text-gray-700 mb-4" />
-                        <p className="text-xl font-bold text-gray-900 dark:text-white">{t('brand.dashboard.noLocations')}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('brand.dashboard.addLocationsDesc')}</p>
+                        <Store size={48} className="text-stone-300 dark:text-zinc-700 mb-4" />
+                        <p className="text-xl font-bold text-stone-900 dark:text-zinc-100">{t('brand.dashboard.noLocations')}</p>
+                        <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1">{t('brand.dashboard.addLocationsDesc')}</p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-100 dark:divide-white/5">
+                    <div className="divide-y divide-stone-100 dark:divide-zinc-800">
                         {locations.slice(0, 5).map((loc, i) => (
                             <div
                                 key={loc.id}
-                                className="flex items-center gap-3 sm:gap-6 px-4 sm:px-6 py-4 sm:py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                className="flex items-center gap-3 sm:gap-6 px-4 sm:px-6 py-4 sm:py-5 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group"
                                 onClick={() => window.open(`/dashboard/${loc.id}`, '_blank')}
                             >
                                 {/* Rank */}
                                 <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-sm font-black ${i === 0 ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400' :
-                                    i === 1 ? 'bg-gray-200 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400' :
+                                    i === 1 ? 'bg-stone-200 text-stone-600 dark:bg-zinc-700 dark:text-zinc-300' :
                                         i === 2 ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400' :
-                                            'bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400'
+                                            'bg-stone-100 text-stone-500 dark:bg-zinc-800 dark:text-zinc-400'
                                     }`}>
                                     {i === 0 ? <Award size={20} /> : `#${i + 1}`}
                                 </div>
@@ -534,11 +515,11 @@ export function BrandDashboardPage() {
                                 {/* Location Info */}
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-3">
-                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors truncate">
+                                        <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors truncate">
                                             {loc.name}
                                         </h4>
                                     </div>
-                                    <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
+                                    <div className="flex items-center gap-4 mt-1 text-xs text-stone-500 dark:text-zinc-400">
                                         <span className="flex items-center gap-1">
                                             <ShoppingBag size={12} />
                                             {loc.orders} {t('brand.dashboard.orders')}
@@ -562,14 +543,14 @@ export function BrandDashboardPage() {
                                             {t('brand.dashboard.localRevenue')}: {formatLocalCurrency(loc.originalRevenue, loc.currency)}
                                         </p>
                                     )}
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-stone-500 dark:text-zinc-400">
                                         {(loc.revenue / (stats?.totalRevenue || 1)).toLocaleString(t('common.locale'), { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })} {t('brand.dashboard.ofTotal')}
                                     </p>
                                 </div>
 
                                 {/* Progress Bar */}
                                 <div className="w-32 hidden lg:block">
-                                    <div className="h-2 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                    <div className="h-2 bg-stone-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: `${(loc.revenue / (locations[0]?.revenue || 1)) * 100}%` }}
@@ -579,7 +560,7 @@ export function BrandDashboardPage() {
                                     </div>
                                 </div>
 
-                                <ChevronRight size={20} className="text-gray-400 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all" />
+                                <ChevronRight size={20} className="text-stone-400 dark:text-zinc-500 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all" />
                             </div>
                         ))}
                     </div>
@@ -593,21 +574,21 @@ export function BrandDashboardPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className={`xl:col-span-2 p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
+                    className={`xl:col-span-2 p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
                         <div className="min-w-0">
-                            <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{t('brand.dashboard.revenueTrend')}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{t('brand.dashboard.consolidatedPerformance')}</p>
+                            <h3 className="text-xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('brand.dashboard.revenueTrend')}</h3>
+                            <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1 leading-relaxed">{t('brand.dashboard.consolidatedPerformance')}</p>
                         </div>
                         <div className="flex items-center gap-4 flex-wrap shrink-0">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-mintcom-green" />
-                                <span className="text-xs font-medium tracking-wider text-gray-500">{t('brand.dashboard.revenue')}</span>
+                                <span className="text-xs font-medium tracking-wider text-stone-500 dark:text-zinc-400">{t('brand.dashboard.revenue')}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-blue-500" />
-                                <span className="text-xs font-medium tracking-wider text-gray-500">{t('brand.dashboard.orders')}</span>
+                                <span className="text-xs font-medium tracking-wider text-stone-500 dark:text-zinc-400">{t('brand.dashboard.orders')}</span>
                             </div>
                         </div>
                     </div>
@@ -626,12 +607,12 @@ export function BrandDashboardPage() {
                                             <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" strokeOpacity={0.3} />
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chart.grid} />
                                     <XAxis
                                         dataKey="name"
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: '#9CA3AF', fontSize: 11 }}
+                                        tick={{ fill: chart.tick, fontSize: 11 }}
                                         dy={10}
                                         minTickGap={24}
                                         interval={
@@ -648,7 +629,7 @@ export function BrandDashboardPage() {
                                         yAxisId="revenue"
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: '#9CA3AF', fontSize: 11 }}
+                                        tick={{ fill: chart.tick, fontSize: 11 }}
                                         tickFormatter={(value) => formatAxisValue(Number(value))}
                                         width={56}
                                         dx={-4}
@@ -665,14 +646,7 @@ export function BrandDashboardPage() {
                                     />
                                     <Tooltip
                                         cursor={revenueData.length > 1 ? { stroke: '#7dc6a2', strokeWidth: 2, strokeDasharray: '6 6' } : false}
-                                        contentStyle={{
-                                            backgroundColor: isDark ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.95)',
-                                            borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#E5E7EB',
-                                            borderRadius: '12px',
-                                            fontSize: '12px',
-                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)',
-                                            color: isDark ? '#fff' : '#111',
-                                        }}
+                                        contentStyle={chart.tooltip}
                                         formatter={(value, name) => [
                                             name === 'value'
                                                 ? formatCurrency(Number(value) || 0)
@@ -711,8 +685,8 @@ export function BrandDashboardPage() {
                             </ResponsiveContainer>
                         ) : (
                             <div className="flex flex-col items-center justify-center h-full text-center">
-                                <BarChart3 size={48} className="text-gray-200 dark:text-gray-800 mb-4" />
-                                <p className="text-gray-500 dark:text-gray-400 font-medium">{t('brand.dashboard.noRevenueData')}</p>
+                                <BarChart3 size={48} className="text-stone-200 dark:text-zinc-800 mb-4" />
+                                <p className="text-stone-500 dark:text-zinc-400 font-medium">{t('brand.dashboard.noRevenueData')}</p>
                             </div>
                         )}
                     </div>
@@ -723,16 +697,16 @@ export function BrandDashboardPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className={`p-6 bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
+                    className={`p-6 bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
                 >
-                    <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-1">{t('brand.dashboard.revenueDistribution')}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">{t('brand.dashboard.salesByCategory')}</p>
+                    <h3 className="text-xl font-bold tracking-tight text-stone-900 dark:text-zinc-100 mb-1">{t('brand.dashboard.revenueDistribution')}</h3>
+                    <p className="text-sm text-stone-500 dark:text-zinc-400 mb-6 leading-relaxed">{t('brand.dashboard.salesByCategory')}</p>
 
                     {(() => {
                         const topCategories = categoryBreakdown.slice(0, 6);
                         const categoryTotal = topCategories.reduce((sum, c) => sum + Math.max(toFiniteNumber(c.value), 0), 0);
                         const hasCategoryData = categoryTotal > 0.005;
-                        const emptyFill = isDark ? '#334155' : '#e5e7eb';
+                        const emptyFill = chart.emptyFill;
                         const pieData = hasCategoryData
                             ? topCategories.map((c) => ({ ...c, value: Math.max(toFiniteNumber(c.value), 0) }))
                             : [{ name: '__empty__', value: 1, quantity: 0, color: emptyFill, share: 0 }];
@@ -765,14 +739,7 @@ export function BrandDashboardPage() {
                                                 </Pie>
                                                 {hasCategoryData && (
                                                     <Tooltip
-                                                        contentStyle={{
-                                                            backgroundColor: isDark ? 'rgba(15, 23, 42, 0.96)' : 'rgba(255, 255, 255, 0.95)',
-                                                            borderColor: isDark ? 'rgba(255,255,255,0.08)' : '#E5E7EB',
-                                                            borderRadius: '12px',
-                                                            fontSize: '12px',
-                                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.2)',
-                                                            color: isDark ? '#fff' : '#111',
-                                                        }}
+                                                        contentStyle={chart.tooltip}
                                                         formatter={(value, _name, item) => [
                                                             formatCurrency(toFiniteNumber(value)),
                                                             String((item?.payload as CategoryDataPoint | undefined)?.name ?? ''),
@@ -783,10 +750,10 @@ export function BrandDashboardPage() {
                                         </ResponsiveContainer>
                                     ) : (
                                         <div className="flex flex-col items-center justify-center h-full text-center">
-                                            <div className="w-32 h-32 rounded-full border-4 border-gray-100 dark:border-white/5 flex items-center justify-center mb-3">
-                                                <ShoppingBag size={32} className="text-gray-200 dark:text-gray-800" />
+                                            <div className="w-32 h-32 rounded-full border-4 border-stone-100 dark:border-zinc-800 flex items-center justify-center mb-3">
+                                                <ShoppingBag size={32} className="text-stone-200 dark:text-zinc-800" />
                                             </div>
-                                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                            <p className="text-sm font-medium text-stone-500 dark:text-zinc-400">
                                                 {t('brand.dashboard.noCategoryData', { defaultValue: 'No category sales yet' })}
                                             </p>
                                         </div>
@@ -812,12 +779,12 @@ export function BrandDashboardPage() {
                                                         }}
                                                     />
                                                     <div className="min-w-0">
-                                                        <p className="text-[11px] font-bold text-gray-900 dark:text-white truncate">
+                                                        <p className="text-[11px] font-bold text-stone-900 dark:text-zinc-100 truncate">
                                                             {entry.name}
                                                         </p>
-                                                        <p className="text-[10px] text-gray-500 font-medium tabular-nums">
+                                                        <p className="text-[10px] text-stone-500 dark:text-zinc-400 font-medium tabular-nums">
                                                             {(safePct * 100).toFixed(1)}%
-                                                            <span className="mx-1 text-gray-300 dark:text-gray-600">·</span>
+                                                            <span className="mx-1 text-stone-300 dark:text-zinc-600">·</span>
                                                             {formatCurrency(toFiniteNumber(entry.value))}
                                                         </p>
                                                     </div>

@@ -4,15 +4,12 @@ import { useTranslation } from 'react-i18next';
 
 import {
     Users,
-    Search,
     MapPin,
     UserPlus,
     Mail,
     AtSign,
     Edit2,
     Trash2,
-    Grid3X3,
-    List,
     X,
     MoreVertical,
     AlertTriangle
@@ -20,10 +17,9 @@ import {
 import { biIcon } from '../../components/ui/BiIcon';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
-import { CustomSelect } from '../../components/CustomSelect';
 import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { useAuth } from '../../context/AuthContext';
-import { EmptyState, Pagination, Modal, ModalBody, ModalFooter, ModalCancelButton, ModalCloseButton, PageHeader, Badge, Card } from '../../components/ui';
+import { EmptyState, Pagination, Modal, ModalBody, ModalFooter, ModalCancelButton, ModalCloseButton, PageHeader, Badge, ListFilterBar, SelectInput, StatCard, StatCardGrid } from '../../components/ui';
 import { AppStrings } from '../../constants/AppStrings';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -359,132 +355,87 @@ export default function BrandTeamPage() {
             />
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <StatCardGrid columns={3}>
                 {[
-                    { label: t('owner.staff.totalUsers'), value: stats.total, icon: biIcon('bi-people'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('staff.roles.user'), value: stats.users, icon: biIcon('bi-person-check'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.staff.admins'), value: stats.admins, icon: biIcon('bi-shield-check'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
+                    { label: t('owner.staff.totalUsers'), value: stats.total, icon: biIcon('bi-people') },
+                    { label: t('staff.roles.user'), value: stats.users, icon: biIcon('bi-person-check') },
+                    { label: t('owner.staff.admins'), value: stats.admins, icon: biIcon('bi-shield-check') },
                 ].map((stat, i) => (
-                    <div
-                        key={i}
-                        className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
-                    >
-                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                    <stat.icon size={20} />
-                                </div>
-                            </div>
-                            <p className="dashboard-stat-title mb-1">{stat.label}</p>
-                            <StatValue 
-                                 value={stat.value} 
-                                 className="text-2xl"
-                                 isInteger={true}
-                             />
-                        </div>
-                    </div>
+                    <StatCard
+                        key={stat.label}
+                        label={stat.label}
+                        value={stat.value}
+                        icon={stat.icon}
+                        delay={i * 0.05}
+                    />
                 ))}
-            </div>
+            </StatCardGrid>
 
             {/* Filters Bar */}
-            <Card padding="sm">
-                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                    {/* Search */}
-                    <div className="relative flex-1">
-                        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input maxLength={255}
-                            type="text"
-                            placeholder={formatInputPlaceholder(t('owner.staff.searchPlaceholder'), t('common.locale'))}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
+            <ListFilterBar
+                searchValue={searchQuery}
+                onSearchChange={(e) => setSearchQuery(e.target.value)}
+                onSearchClear={() => setSearchQuery('')}
+                searchPlaceholder={formatInputPlaceholder(t('owner.staff.searchPlaceholder'), t('common.locale'))}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+            >
+                {/* Role Filter */}
+                <div className="w-full sm:w-36">
+                    <SelectInput
+                        value={roleFilter === 'all' ? null : roleFilter}
+                        onChange={(val) => setRoleFilter((val as RoleFilter) || 'all')}
+                        options={[
+                            { label: t('staff.roles.admin'), value: 'ADMIN' },
+                            { label: t('staff.roles.user'), value: 'CASHIER' },
+                        ]}
+                        allOptionLabel={t('owner.staff.allRoles')}
+                        placeholder={t('owner.staff.allRoles')}
+                        searchable={false}
+                    />
+                </div>
+                {/* Location Filter */}
+                {locations.length > 1 && (
+                    <div className="w-full sm:w-44">
+                        <SelectInput
+                            value={locationFilter === 'all' ? null : locationFilter}
+                            onChange={(val) => setLocationFilter(val || 'all')}
+                            options={[
+                                ...locations.map(loc => ({ label: loc.name, value: loc.id }))
+                            ]}
+                            allOptionLabel={t('owner.staff.allLocations')}
+                            placeholder={t('owner.staff.allLocations')}
+                            searchable={false}
                         />
-                        {searchQuery && (
-                          <button
-                            type="button"
-                            onClick={() => setSearchQuery('')}
-                            aria-label={t('common.clearSearch', 'Clear search')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                          >
-                            <X size={12} strokeWidth={2.75} />
-                          </button>
-                        )}
                     </div>
+                )}
+                {/* Sort */}
+                <div className="w-full sm:w-52">
+                    <SelectInput
+                        value={sortBy}
+                        onChange={(val) => setSortBy((val as SortOption) || 'name')}
+                        options={[
+                            { label: t('common.sortByName'), value: 'name' },
+                            { label: t('common.sortByRole'), value: 'role' },
+                            { label: t('common.sortByLocations'), value: 'locations' },
+                        ]}
+                        showAllOption={false}
+                        searchable={false}
+                    />
+                </div>
+                {/* Clear Filters */}
+                {hasFilters && (
+                    <button
+                        onClick={clearFilters}
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-mintcom-red/10 text-mintcom-red text-xs font-bold tracking-wide hover:bg-mintcom-red/20 transition-all whitespace-nowrap"
+                    >
+                        <X size={14} />
+                        {t('attributes.filters.reset')}
+                    </button>
+                )}
+            </ListFilterBar>
 
-                    {/* Filter Controls */}
-                    <div className="flex items-center gap-3 flex-wrap">
-                        {/* Role Filter */}
-                        <div className="w-36">
-                            <CustomSelect
-                                value={roleFilter}
-                                onChange={(val) => setRoleFilter(val as RoleFilter)}
-                                options={[
-                                    { label: t('owner.staff.allRoles'), value: 'all' },
-                                    { label: t('staff.roles.admin'), value: 'ADMIN' },
-                                    { label: t('staff.roles.user'), value: 'CASHIER' },
-                                ]}
-                            />
-                        </div>
-
-                        {/* Location Filter */}
-                        {locations.length > 1 && (
-                            <div className="w-44">
-                                <CustomSelect
-                                    value={locationFilter}
-                                    onChange={(val) => setLocationFilter(val as string)}
-                                    options={[
-                                        { label: t('owner.staff.allLocations'), value: 'all' },
-                                        ...locations.map(loc => ({ label: loc.name, value: loc.id }))
-                                    ]}
-                                />
-                            </div>
-                        )}
-
-                        {/* Sort */}
-                        <div className="w-52">
-                            <CustomSelect
-                                value={sortBy}
-                                onChange={(val) => setSortBy(val as SortOption)}
-                                options={[
-                                    { label: t('common.sortByName'), value: 'name' },
-                                    { label: t('common.sortByRole'), value: 'role' },
-                                    { label: t('common.sortByLocations'), value: 'locations' },
-                                ]}
-                            />
-                        </div>
-
-                        {/* View Mode Toggle */}
-                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[52px]">
-                            <button
-                                onClick={() => setViewMode('grid')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                            >
-                                <Grid3X3 size={18} />
-                            </button>
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                            >
-                                <List size={18} />
-                            </button>
-                        </div>
-
-                        {/* Clear Filters */}
-                        {hasFilters && (
-                            <button
-                                onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-mintcom-red/10 text-mintcom-red text-xs font-bold tracking-wide hover:bg-mintcom-red/20 transition-all"
-                            >
-                                <X size={14} />
-                                {t('attributes.filters.reset')}
-                            </button>
-                        )}
-                        </div>
-                        </div>
-            </Card>
-
-                        {/* Team Display */}
+            {/* Team Display */}
                         {filteredEmployees.length === 0 ? (
                             <EmptyState
                                 icon={Users}
@@ -508,33 +459,33 @@ export default function BrandTeamPage() {
                                 }
                             />
                         ) : (
-                            <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                            <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                                 {viewMode === 'grid' ? (
                                     /* Grid View */
                                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6">
                                         {paginatedEmployees.map((emp) => (
                                             <div
                                                 key={emp.id}
-                                                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 hover:border-mintcom-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
+                                                className="group relative bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/50 p-6 transition-all shadow-sm hover:shadow-lg overflow-hidden"
                                             >
                                                 <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                                                 {/* Header */}
                                                 <div className="flex items-start justify-between mb-6">
                                                     <div className="flex items-center gap-4">
-                                                        <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0">
-                                                            <span className="text-gray-900 dark:text-white font-bold text-xl">
+                                                        <div className="w-14 h-14 rounded-full bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 flex items-center justify-center relative flex-shrink-0">
+                                                            <span className="text-stone-900 dark:text-zinc-100 font-bold text-xl">
                                                                 {getDisplayInitial(emp)}
                                                             </span>
                                                             {emp.isActive && (
-                                                                <div className="absolute bottom-0 right-0 w-4 h-4 bg-mintcom-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                                                <div className="absolute bottom-0 right-0 w-4 h-4 bg-mintcom-green rounded-full border-2 border-white dark:border-zinc-900" />
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                                                            <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 leading-tight">
                                                                 {getDisplayName(emp)}
                                                             </h3>
-                                                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                                                            <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 flex items-center gap-1">
                                                                 <AtSign size={12} />
                                                                 {emp.username}
                                                             </p>
@@ -547,17 +498,17 @@ export default function BrandTeamPage() {
                                                                 e.stopPropagation();
                                                                 setActiveMenu(activeMenu === emp.id ? null : emp.id);
                                                             }}
-                                                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                            className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 dark:text-zinc-500 transition-colors"
                                                         >
                                                             <MoreVertical size={18} />
                                                         </button>
 
                                                         {activeMenu === emp.id && (
-                                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-zinc-800 rounded-xl border border-stone-200 dark:border-zinc-700 shadow-xl z-50 overflow-hidden"
                                                             >
                                                                 <button
                                                                     onClick={() => handleEditEmployee(emp)}
-                                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                                    className="w-full px-4 py-3 text-left text-sm font-medium text-stone-700 dark:text-zinc-300 hover:bg-stone-50/80 dark:hover:bg-zinc-700 flex items-center gap-3 transition-colors"
                                                                 >
                                                                     <Edit2 size={16} />
                                                                     {t('common.edit')}
@@ -577,7 +528,7 @@ export default function BrandTeamPage() {
                                                 {/* Status Badge */}
                                                 <div className="mb-4">
                                                     <Badge tone={emp.isActive ? 'green' : 'gray'}>
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-mintcom-green' : 'bg-gray-400'}`} />
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-mintcom-green' : 'bg-stone-400 dark:bg-zinc-500'}`} />
                                                         {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
                                                     </Badge>
                                                 </div>
@@ -585,9 +536,9 @@ export default function BrandTeamPage() {
                                                 {/* Contact Info */}
                                                 <div className="space-y-3 mb-6">
                                                     {emp.email && (
-                                                        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl">
-                                                            <Mail size={16} className="text-gray-400" />
-                                                            <span className="text-xs font-bold text-gray-600 dark:text-gray-300 truncate">{emp.email}</span>
+                                                        <div className="flex items-center gap-3 p-3 bg-stone-100 dark:bg-zinc-800 rounded-xl">
+                                                            <Mail size={16} className="text-stone-400 dark:text-zinc-500" />
+                                                            <span className="text-xs font-bold text-stone-600 dark:text-zinc-300 truncate">{emp.email}</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -596,17 +547,17 @@ export default function BrandTeamPage() {
                                                 <div className="space-y-3">
                                                     <div className="flex items-center justify-between">
                                                         <p className="dashboard-card-label uppercase">{t('owner.staff.accessRights')}</p>
-                                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}</span>
+                                                        <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">{emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}</span>
                                                     </div>
                                                     <div className="space-y-2">
                                                         {emp.establishments.slice(0, 2).map((est, eIdx) => (
                                                             <div
                                                                 key={eIdx}
-                                                                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5"
+                                                                className="flex items-center justify-between p-3 bg-stone-100 dark:bg-zinc-800 rounded-xl border border-stone-200 dark:border-zinc-700"
                                                             >
                                                                 <div className="flex items-center gap-2 overflow-hidden">
-                                                                    <MapPin size={14} className="text-gray-400 flex-shrink-0" />
-                                                                    <span className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                                                                    <MapPin size={14} className="text-stone-400 dark:text-zinc-500 flex-shrink-0" />
+                                                                    <span className="text-xs font-bold text-stone-900 dark:text-zinc-100 truncate">
                                                                         {est.name}
                                                                     </span>
                                                                 </div>
@@ -624,10 +575,10 @@ export default function BrandTeamPage() {
                                                 </div>
 
                                                 {/* Action Buttons */}
-                                                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-white/5">
+                                                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-stone-200 dark:border-zinc-800">
                                                     <button
                                                         onClick={() => handleEditEmployee(emp)}
-                                                        className="flex-1 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong hover:bg-gray-100 dark:hover:bg-white/10 transition-colors flex items-center justify-center gap-2 border border-gray-200 dark:border-white/5"
+                                                        className="flex-1 py-2.5 rounded-xl bg-stone-50 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 label-strong hover:bg-stone-100 dark:hover:bg-zinc-700 transition-colors flex items-center justify-center gap-2 border border-stone-200 dark:border-zinc-700"
                                                     >
                                                         <Edit2 size={14} />
                                                         {t('common.edit')}
@@ -644,25 +595,25 @@ export default function BrandTeamPage() {
                                     </div>
                                 ) : (
                                     /* List View */
-                                    <div className="divide-y divide-gray-100 dark:divide-white/5">
+                                    <div className="divide-y divide-stone-100 dark:divide-zinc-800">
                                         {/* Mobile Card View */}
-                                        <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                                        <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
                                             {paginatedEmployees.map((emp) => (
                                                 <div
                                                     key={emp.id}
-                                                    className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                                                    className="p-4 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors"
                                                 >
                                                     <div className="flex items-center gap-3 mb-3">
-                                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
-                                                            <span className="text-gray-900 dark:text-white font-bold text-sm">
+                                                        <div className="w-10 h-10 rounded-full bg-stone-100 dark:bg-zinc-800 flex items-center justify-center relative">
+                                                            <span className="text-stone-900 dark:text-zinc-100 font-bold text-sm">
                                                                 {getDisplayInitial(emp)}
                                                             </span>
                                                             {emp.isActive && (
-                                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-mintcom-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-mintcom-green rounded-full border-2 border-white dark:border-zinc-900" />
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                                                            <h3 className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                                                                 {getDisplayName(emp)}
                                                             </h3>
                                                             <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
@@ -670,7 +621,7 @@ export default function BrandTeamPage() {
                                                         <div className="ml-auto flex gap-2">
                                                             <button
                                                                 onClick={() => handleEditEmployee(emp)}
-                                                                className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                                                                className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                                                             >
                                                                 <Edit2 size={16} />
                                                             </button>
@@ -684,15 +635,15 @@ export default function BrandTeamPage() {
                                                     </div>
 
                                                     <div className="grid grid-cols-2 gap-3 text-xs">
-                                                        <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                                            <p className="text-gray-500 mb-1">{t('common.role')}</p>
+                                                        <div className="p-2 rounded-lg bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700">
+                                                            <p className="text-stone-500 dark:text-zinc-400 mb-1">{t('common.role')}</p>
                                                             <Badge tone={getRoleBadgeTone(emp.establishments[0]?.role || 'USER')}>
                                                                 {getRoleDisplay(emp.establishments[0]?.role || 'USER')}
                                                             </Badge>
                                                         </div>
-                                                        <div className="p-2 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
-                                                            <p className="text-gray-500 mb-1">{t('brand.dashboard.locations')}</p>
-                                                            <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                                        <div className="p-2 rounded-lg bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700">
+                                                            <p className="text-stone-500 dark:text-zinc-400 mb-1">{t('brand.dashboard.locations')}</p>
+                                                            <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                                                                 {emp.establishments.length} {t('brand.dashboard.locations')}
                                                             </span>
                                                         </div>
@@ -702,7 +653,7 @@ export default function BrandTeamPage() {
                                         </div>
 
                                         {/* Desktop Table Header */}
-                                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row">
+                                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-stone-50/60 dark:bg-zinc-800/40 border-b border-stone-200 dark:border-zinc-5 table-header-row">
                                             <div className="col-span-4">{t('common.name')}</div>
                                             <div className="col-span-2 text-center">{t('common.status.label')}</div>
                                             <div className="col-span-2 text-center">{t('common.role')}</div>
@@ -711,26 +662,26 @@ export default function BrandTeamPage() {
                                         </div>
 
                                         {/* Table Body */}
-                                        <div className="divide-y divide-gray-100 dark:divide-white/5">
+                                        <div className="divide-y divide-stone-100 dark:divide-zinc-800">
                                             {paginatedEmployees.map((emp) => (
                                                 <div
                                                     key={emp.id}
-                                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                                    className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group"
                                                     onClick={() => handleEditEmployee(emp)}
                                                 >
 
                                                     {/* Member Info */}
                                                     <div className="col-span-4 flex items-center gap-4">
-                                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center relative">
-                                                            <span className="text-gray-900 dark:text-white font-bold text-sm">
+                                                        <div className="w-10 h-10 rounded-full bg-stone-100 dark:bg-zinc-800 flex items-center justify-center relative">
+                                                            <span className="text-stone-900 dark:text-zinc-100 font-bold text-sm">
                                                                 {getDisplayInitial(emp)}
                                                             </span>
                                                             {emp.isActive && (
-                                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-mintcom-green rounded-full border-2 border-white dark:border-[#0A0A0A]" />
+                                                                <div className="absolute bottom-0 right-0 w-3 h-3 bg-mintcom-green rounded-full border-2 border-white dark:border-zinc-900" />
                                                             )}
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                                                            <h3 className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                                                                 {getDisplayName(emp)}
                                                             </h3>
                                                             <p className="dashboard-card-meta mt-0.5">@{emp.username}</p>
@@ -740,7 +691,7 @@ export default function BrandTeamPage() {
                                                     {/* Status */}
                                                     <div className="col-span-2 flex items-center justify-center">
                                                         <Badge tone={emp.isActive ? 'green' : 'gray'}>
-                                                            <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-mintcom-green' : 'bg-gray-400'}`} />
+                                                            <span className={`w-1.5 h-1.5 rounded-full ${emp.isActive ? 'bg-mintcom-green' : 'bg-stone-400 dark:bg-zinc-500'}`} />
                                                             {emp.isActive ? AppStrings.STATUS.ACTIVE : AppStrings.STATUS.INACTIVE}
                                                         </Badge>
                                                     </div>
@@ -756,7 +707,7 @@ export default function BrandTeamPage() {
 
                                                     {/* Locations Count */}
                                                     <div className="col-span-2 flex items-center justify-center">
-                                                        <span className="font-bold text-gray-900 dark:text-white">
+                                                        <span className="font-bold text-stone-900 dark:text-zinc-100">
                                                             {emp.establishments.length} {emp.establishments.length !== 1 ? t('common.locations') : t('common.location')}
                                                         </span>
                                                     </div>
@@ -765,7 +716,7 @@ export default function BrandTeamPage() {
                                                     <div className="col-span-2 flex items-center justify-center gap-2">
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); handleEditEmployee(emp); }}
-                                                            className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-gray-100 dark:hover:bg-white/10 transition-all flex items-center gap-2 border border-gray-200 dark:border-white/5"
+                                                            className="px-4 py-2 rounded-lg bg-stone-50 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 text-xs font-bold tracking-wide hover:bg-stone-100 dark:hover:bg-zinc-700 transition-all flex items-center gap-2 border border-stone-200 dark:border-zinc-700"
                                                         >
                                                             <Edit2 size={14} />
                                                             {t('common.edit')}
@@ -820,22 +771,22 @@ export default function BrandTeamPage() {
                         <ModalCloseButton onClose={closeDeleteModal} autoPositionAbsolute />
                         <ModalBody>
                             <div className="flex flex-col items-center text-center">
-                                <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
+                                <div className="w-20 h-20 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
                                     <AlertTriangle size={40} />
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
+                                <h3 className="text-2xl font-black text-stone-900 dark:text-zinc-100 tracking-tight mb-3 leading-tight">
                                     {t('brand.team.removeAccessTitle', 'Remove Brand Access')}
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[320px]">
+                                <p className="text-stone-500 dark:text-zinc-400 text-sm font-bold leading-relaxed max-w-[320px]">
                                     {t('brand.team.removeAccessPrefix', 'Remove brand-wide access for')}
-                                    <span className="text-gray-900 dark:text-white font-black mx-1">
+                                    <span className="text-stone-900 dark:text-zinc-100 font-black mx-1">
                                         {employeeToDelete.firstName} {employeeToDelete.lastName}
                                     </span>
                                     {t('brand.team.removeAccessFrom', 'from')}
-                                    <span className="text-gray-900 dark:text-white font-black mx-1">
+                                    <span className="text-stone-900 dark:text-zinc-100 font-black mx-1">
                                         {brandName}
                                     </span>
-                                    <span className="text-gray-900 dark:text-white font-black uppercase tracking-tighter text-[10px] bg-gray-100 dark:bg-white/10 px-2 py-0.5 rounded-md">
+                                    <span className="text-stone-900 dark:text-zinc-100 font-black uppercase tracking-tighter text-[10px] bg-stone-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md">
                                         {t('owner.staff.brandLabel')}
                                     </span>.
                                     <br /><br />

@@ -10,19 +10,18 @@ interface PageHeaderProps {
 }
 
 /**
- * Shared page header (1/3 of the header/badge/empty-state kit).
- * Matches the established site pattern: responsive title + subtitle on the
- * left, actions on the right (stacked on mobile, inline on lg).
+ * Shared page header — type comes from `theme` tokens.
+ * To restyle every page header on the site, edit the tokens, not this file.
  */
 export function PageHeader({ title, subtitle, actions, className = '' }: PageHeaderProps) {
   return (
     <div className={`flex flex-col lg:flex-row lg:items-end justify-between gap-6 ${className}`.trim()}>
       <div className="min-w-0">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+        <h1 className="font-magilio text-2xl sm:text-3xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2 flex-wrap">
+          <p className="text-sm sm:text-[15px] text-stone-500 dark:text-zinc-400 mt-2 flex items-center gap-2 flex-wrap">
             {subtitle}
           </p>
         )}

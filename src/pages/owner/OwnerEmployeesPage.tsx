@@ -10,8 +10,6 @@ import {
     UserPlus,
     MapPin,
     AlertTriangle,
-    Grid3X3,
-    List,
     MoreVertical,
     ArrowUpDown,
 } from 'lucide-react';
@@ -21,7 +19,7 @@ import { EmployeeFormModal } from '../../components/forms/EmployeeFormModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
-import { EmptyState, SearchInput, SelectInput, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader } from '../../components/ui';
+import { EmptyState, SelectInput, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, ListFilterBar, StatCard, StatCardGrid } from '../../components/ui';
 import { PortalDropdown } from '../../components/PortalDropdown';
 import { SectionLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -419,7 +417,7 @@ export function OwnerEmployeesPage() {
             case 'ACCOUNT_OWNER':
                 return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20';
             case 'ADMIN':
-                return 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20';
+                return 'bg-stone-500/10 text-stone-600 dark:text-zinc-300 border-stone-500/20';
             case 'MANAGER':
                 return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
             default:
@@ -444,7 +442,7 @@ export function OwnerEmployeesPage() {
     };
 
     const getAccountStatusContent = (hasActiveShift: boolean | undefined) => (
-        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${hasActiveShift ? 'text-mintcom-green' : 'text-gray-400'}`}>
+        <div className={`flex items-center justify-center gap-2 font-medium text-xs tracking-wide ${hasActiveShift ? 'text-mintcom-green' : 'text-stone-400'}`}>
             {hasActiveShift ? (
                 <>
                     <div className="relative flex h-2 w-2">
@@ -455,7 +453,7 @@ export function OwnerEmployeesPage() {
                 </>
             ) : (
                 <>
-                    <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+                    <div className="h-2 w-2 rounded-full bg-stone-300 dark:bg-zinc-600" />
                     <span>{t('staff.status.offline')}</span>
                 </>
             )}
@@ -490,9 +488,9 @@ export function OwnerEmployeesPage() {
                     <button
                         id="tour-add-employee-btn"
                         onClick={handleOpenAddEmployeeModal}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                     >
-                        <UserPlus size={18} strokeWidth={2.5} />
+                        <UserPlus size={15} strokeWidth={2} />
                         <span>{t('staff.newEmployee')}</span>
                     </button>
                     </>
@@ -500,94 +498,75 @@ export function OwnerEmployeesPage() {
             />
 
             {/* Stats Grid */}
-            <div id="tour-stats-grid" className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {[
-                    { label: t('owner.staff.totalUsers'), info: t('owner.staff.usersInfo'), value: stats.total, icon: biIcon('bi-people'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.staff.activeNow'), info: t('owner.staff.activeInfo'), value: stats.active, icon: biIcon('bi-person-check'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.staff.admins'), info: t('owner.staff.adminsInfo'), value: stats.admins, icon: biIcon('bi-shield-check'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.staff.standardUsers'), info: t('owner.staff.standardInfo'), value: stats.staff, icon: biIcon('bi-person-badge'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                ].map((stat, i) => (
-                    <div
-                        key={i}
-                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
-                    >
-                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-3 mb-2 sm:mb-3">
-                                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                    <stat.icon size={18} />
-                                </div>
-                            </div>
-                            <div>
-                                <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                                <StatValue 
-                                    value={stat.value} 
-                                    className="text-xl"
-                                    isInteger={true}
-                                />
-                                <p className="hidden sm:block text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">{stat.info}</p>
-                            </div>
-                        </div>
-                    </div>
-                ))
-                }
-            </div>
+            <StatCardGrid columns={4} id="tour-stats-grid">
+                <StatCard
+                    label={t('owner.staff.totalUsers')}
+                    info={t('owner.staff.usersInfo')}
+                    value={stats.total}
+                    icon={biIcon('bi-people')}
+                    layout="horizontal"
+                />
+                <StatCard
+                    label={t('owner.staff.activeNow')}
+                    info={t('owner.staff.activeInfo')}
+                    value={stats.active}
+                    icon={biIcon('bi-person-check')}
+                    layout="horizontal"
+                />
+                <StatCard
+                    label={t('owner.staff.admins')}
+                    info={t('owner.staff.adminsInfo')}
+                    value={stats.admins}
+                    icon={biIcon('bi-shield-check')}
+                    layout="horizontal"
+                />
+                <StatCard
+                    label={t('owner.staff.standardUsers')}
+                    info={t('owner.staff.standardInfo')}
+                    value={stats.staff}
+                    icon={biIcon('bi-person-badge')}
+                    layout="horizontal"
+                />
+            </StatCardGrid>
 
             {/* Filters Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
-                <div id="tour-search-input" className="relative flex-1 sm:max-w-md">
-                    <SearchInput
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onClear={() => setSearchQuery('')}
-                        placeholder={formatInputPlaceholder(t('owner.staff.searchPlaceholder'), t('common.locale'))}
-                        className="w-full"
+            <ListFilterBar
+                searchValue={searchQuery}
+                onSearchChange={(e) => setSearchQuery(e.target.value)}
+                onSearchClear={() => setSearchQuery('')}
+                searchPlaceholder={formatInputPlaceholder(t('owner.staff.searchPlaceholder'), t('common.locale'))}
+                searchId="tour-search-input"
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                viewToggleId="tour-view-toggle"
+            >
+                <div className="w-full sm:w-40">
+                    <SelectInput
+                        value={statusFilter === 'ALL' ? null : statusFilter}
+                        onChange={(val) => setStatusFilter((val as StatusFilterValue) || 'ALL')}
+                        options={[
+                            { label: t('common.active', 'Active'), value: 'ACTIVE' },
+                            { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
+                        ]}
+                        allOptionLabel={t('common.allStatuses', 'All Statuses')}
+                        placeholder={t('common.allStatuses', 'All Statuses')}
+                        searchable={false}
                     />
                 </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                    <div className="w-full sm:w-40">
-                        <SelectInput
-                            value={statusFilter === 'ALL' ? null : statusFilter}
-                            onChange={(val) => setStatusFilter((val as StatusFilterValue) || 'ALL')}
-                            options={[
-                                { label: t('common.active', 'Active'), value: 'ACTIVE' },
-                                { label: t('common.inactive', 'Inactive'), value: 'INACTIVE' },
-                            ]}
-                            allOptionLabel={t('common.allStatuses', 'All Statuses')}
-                            placeholder={t('common.allStatuses', 'All Statuses')}
-                            searchable={false}
-                        />
-                    </div>
-                    <div className="w-full sm:w-48">
-                        <SelectInput
-                            value={roleFilter === 'ALL' ? null : roleFilter}
-                            onChange={(val) => setRoleFilter((val as RoleFilterValue) || 'ALL')}
-                            options={[
-                                { label: t('staff.roles.admin'), value: 'ADMIN' },
-                                { label: t('staff.roles.user'), value: 'USER' },
-                            ]}
-                            allOptionLabel={t('owner.employees.allRoles')}
-                            placeholder={formatInputPlaceholder(t('owner.employees.allRoles'), t('common.locale'))}
-                            searchable={false}
-                        />
-                    </div>
-                    <div id="tour-view-toggle" className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-12">
-                        <button
-                            onClick={() => setViewMode('grid')}
-                            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                        >
-                            <Grid3X3 size={18} />
-                        </button>
-                        <button
-                            onClick={() => setViewMode('list')}
-                            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                        >
-                            <List size={18} />
-                        </button>
-                    </div>
+                <div className="w-full sm:w-48">
+                    <SelectInput
+                        value={roleFilter === 'ALL' ? null : roleFilter}
+                        onChange={(val) => setRoleFilter((val as RoleFilterValue) || 'ALL')}
+                        options={[
+                            { label: t('staff.roles.admin'), value: 'ADMIN' },
+                            { label: t('staff.roles.user'), value: 'USER' },
+                        ]}
+                        allOptionLabel={t('owner.employees.allRoles')}
+                        placeholder={formatInputPlaceholder(t('owner.employees.allRoles'), t('common.locale'))}
+                        searchable={false}
+                    />
                 </div>
-            </div>
+            </ListFilterBar>
 
             {/* Employee List */}
             {isLoading ? (
@@ -621,24 +600,23 @@ export function OwnerEmployeesPage() {
                                 return (
                                 <div
                                     key={emp.id}
-                                    className={`group relative min-w-0 h-full bg-white dark:bg-[#1E293B] rounded-2xl border shadow-sm hover:shadow-lg hover:border-indigo-500/30 p-6 transition-all duration-300 overflow-hidden ${isOwnerEmployee(emp) ? 'border-amber-300/60 dark:border-amber-500/30 bg-amber-50/40 dark:bg-amber-500/[0.04]' : 'border-gray-200 dark:border-white/5'}`}
+                                    className={`group relative min-w-0 h-full bg-white dark:bg-zinc-900/60 rounded-2xl border shadow-sm p-6 transition-all duration-300 overflow-hidden ${isOwnerEmployee(emp) ? 'border-amber-300/60 dark:border-amber-500/30 bg-amber-50/40 dark:bg-amber-500/[0.04]' : 'border-stone-200 dark:border-zinc-800'}`}
                                 >
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
+                                    
                                     <div className="relative z-10 flex h-full min-w-0 flex-col">
                                         <div className="flex items-start justify-between mb-6">
                                             <div className="flex min-w-0 items-center gap-4">
-                                                <div className="w-14 h-14 rounded-[12px] bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 flex items-center justify-center relative flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                                                    <span className="text-gray-900 dark:text-white font-bold text-xl">
+                                                <div className="w-14 h-14 rounded-xl bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 flex items-center justify-center relative flex-shrink-0">
+                                                    <span className="text-stone-900 dark:text-zinc-100 font-bold text-xl">
                                                         {getDisplayInitial(emp.firstName, emp.username)}
                                                     </span>
-                                                    <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-[#0A0A0A] ${emp.isActive ? 'bg-mintcom-green' : 'bg-mintcom-red'}`} />
+                                                    <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-zinc-900 ${emp.isActive ? 'bg-mintcom-green' : 'bg-mintcom-red'}`} />
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <h3 className="truncate text-lg font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
+                                                    <h3 className="truncate text-lg font-bold tracking-tight text-stone-900 dark:text-zinc-100 leading-tight">
                                                         {getDisplayName(emp)}
                                                     </h3>
-                                                    <p className="truncate text-xs text-gray-500 mt-1">
+                                                    <p className="truncate text-xs text-stone-500 mt-1">
                                                         {emp.username}
                                                     </p>
                                                 </div>
@@ -651,7 +629,7 @@ export function OwnerEmployeesPage() {
                                                         triggerRef.current = e.currentTarget;
                                                         setActiveMenu(activeMenu === emp.id ? null : emp.id);
                                                     }}
-                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                    className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 transition-colors"
                                                 >
                                                     <MoreVertical size={18} />
                                                 </button>
@@ -667,7 +645,7 @@ export function OwnerEmployeesPage() {
                                                             openEditEmployee(emp);
                                                             setActiveMenu(null);
                                                         }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-stone-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 flex items-center gap-3 transition-colors"
                                                     >
                                                         <Edit2 size={16} />
                                                         {t('common.edit')}
@@ -678,7 +656,7 @@ export function OwnerEmployeesPage() {
                                                             setActiveMenu(null);
                                                         }}
                                                         disabled={isOwnerEmployee(emp)}
-                                                        className={`w-full px-4 py-3 text-left text-sm font-medium flex items-center gap-3 transition-colors border-t border-gray-100 dark:border-white/5 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'}`}
+                                                        className={`w-full px-4 py-3 text-left text-sm font-medium flex items-center gap-3 transition-colors border-t border-stone-100 dark:border-zinc-800 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10'}`}
                                                     >
                                                         <Trash2 size={16} />
                                                         {isOwnerEmployee(emp)
@@ -696,36 +674,36 @@ export function OwnerEmployeesPage() {
                                             </span>
                                         </div>
 
-                                        <div className="mt-auto space-y-4 pt-4 border-t border-gray-100 dark:border-white/5">
+                                        <div className="mt-auto space-y-4 pt-4 border-t border-stone-100 dark:border-zinc-800">
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('common.status.label', 'Status')}</p>
+                                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mb-1">{t('common.status.label', 'Status')}</p>
                                                     {getStatusBadge(emp.isActive)}
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('staff.table.status')}</p>
+                                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mb-1">{t('staff.table.status')}</p>
                                                     {getAccountStatusContent(emp.hasActiveShift)}
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('staff.table.contact')}</p>
+                                                <p className="text-xs text-stone-500 dark:text-zinc-400 mb-1">{t('staff.table.contact')}</p>
                                                 <div className="space-y-1">
-                                                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                        <Mail size={12} className="text-gray-400" />
+                                                    <div className="flex items-center gap-2 text-xs text-stone-500">
+                                                        <Mail size={12} className="text-stone-400" />
                                                         <span className="font-medium">{emp.email || t('owner.staff.noEmail')}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                        <Phone size={12} className="text-gray-400" />
+                                                    <div className="flex items-center gap-2 text-xs text-stone-500">
+                                                        <Phone size={12} className="text-stone-400" />
                                                         <span className="font-medium">{emp.phone || t('owner.staff.noPhone')}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('owner.staff.access')}</p>
+                                                <p className="text-xs text-stone-500 dark:text-zinc-400 mb-1">{t('owner.staff.access')}</p>
                                                 <button
                                                     type="button"
                                                     onClick={() => setAccessModalEmployee(emp)}
-                                                    className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
+                                                    className="inline-flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100 hover:text-mintcom-green transition-colors"
                                                 >
                                                     <MapPin size={14} className="text-mintcom-green" />
                                                     {t('owner.staff.locationsCount', {
@@ -734,7 +712,7 @@ export function OwnerEmployeesPage() {
                                                     })}
                                                 </button>
                                                 {accessCount === 0 && (
-                                                    <p className="mt-2 text-xs text-gray-500">{t('owner.staff.noLocationsAssigned')}</p>
+                                                    <p className="mt-2 text-xs text-stone-500">{t('owner.staff.noLocationsAssigned')}</p>
                                                 )}
                                             </div>
                                         </div>
@@ -744,8 +722,8 @@ export function OwnerEmployeesPage() {
                             })}
                         </div>
                     ) : (
-                        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
-                            <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
+                            <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
                                 {paginatedEmployees.map((emp) => {
                                     const activeAssignments = getActiveAssignments(emp);
                                     const accessCount = activeAssignments.length;
@@ -753,7 +731,7 @@ export function OwnerEmployeesPage() {
                                     return (
                                         <div
                                             key={emp.id}
-                                            className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerEmployee(emp) ? 'bg-amber-50/50 dark:bg-amber-500/[0.04]' : ''}`}
+                                            className={`p-4 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors ${isOwnerEmployee(emp) ? 'bg-amber-50/50 dark:bg-amber-500/[0.04]' : ''}`}
                                         >
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex items-center gap-3">
@@ -761,10 +739,10 @@ export function OwnerEmployeesPage() {
                                                         {getDisplayInitial(emp.firstName, emp.username)}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                                                        <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm flex items-center gap-2">
                                                             <span>{getDisplayName(emp)}</span>
                                                         </p>
-                                                        <p className="text-xs text-gray-500">{emp.username}</p>
+                                                        <p className="text-xs text-stone-500">{emp.username}</p>
                                                     </div>
                                                 </div>
                                                 <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wide border ${getRoleStyle(emp.role)}`}>
@@ -773,34 +751,34 @@ export function OwnerEmployeesPage() {
                                                 </span>
                                             </div>
 
-                                            <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-gray-100 dark:border-white/5">
+                                            <div className="grid grid-cols-2 gap-3 mb-3 pt-3 border-t border-stone-100 dark:border-zinc-800">
                                                 <div>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.contact')}</p>
+                                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mb-0.5">{t('staff.table.contact')}</p>
                                                     <div className="space-y-1">
-                                                        <div className="flex items-center gap-1.5 text-sm font-medium text-gray-900 dark:text-white truncate">
-                                                            <Mail size={12} className="text-gray-400 flex-shrink-0" />
+                                                        <div className="flex items-center gap-1.5 text-sm font-medium text-stone-900 dark:text-zinc-100 truncate">
+                                                            <Mail size={12} className="text-stone-400 flex-shrink-0" />
                                                             <span className="truncate">{emp.email || t('owner.staff.noEmail')}</span>
                                                         </div>
-                                                        <div className="flex items-center gap-1.5 text-sm font-medium text-gray-900 dark:text-white truncate">
-                                                            <Phone size={12} className="text-gray-400 flex-shrink-0" />
+                                                        <div className="flex items-center gap-1.5 text-sm font-medium text-stone-900 dark:text-zinc-100 truncate">
+                                                            <Phone size={12} className="text-stone-400 flex-shrink-0" />
                                                             <span className="truncate">{emp.phone || t('owner.staff.noPhone')}</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('common.status.label', 'Status')}</p>
+                                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mb-0.5">{t('common.status.label', 'Status')}</p>
                                                     {getStatusBadge(emp.isActive)}
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('staff.table.status')}</p>
+                                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mb-0.5">{t('staff.table.status')}</p>
                                                     {getAccountStatusContent(emp.hasActiveShift)}
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">{t('owner.staff.access')}</p>
+                                                    <p className="text-xs text-stone-500 dark:text-zinc-400 mb-0.5">{t('owner.staff.access')}</p>
                                                     <button
                                                         type="button"
                                                         onClick={() => setAccessModalEmployee(emp)}
-                                                        className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
+                                                        className="inline-flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100 hover:text-mintcom-green transition-colors"
                                                     >
                                                         <MapPin size={14} className="text-mintcom-green" />
                                                         {t('owner.staff.locationsCount', {
@@ -811,12 +789,12 @@ export function OwnerEmployeesPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 dark:border-white/5">
+                                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-100 dark:border-zinc-800">
                                                 <button
                                                     onClick={() => {
                                                         openEditEmployee(emp);
                                                     }}
-                                                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all text-xs font-bold touch-target"
+                                                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all text-xs font-bold touch-target"
                                                 >
                                                     <Edit2 size={14} />
                                                     {t('common.edit')}
@@ -838,10 +816,10 @@ export function OwnerEmployeesPage() {
                             </div>
                             <div className="hidden md:block overflow-x-auto">
                                 <table className="w-full">
-                                    <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                                        <tr className="border-b border-gray-200 dark:border-white/5">
+                                    <thead className="bg-white dark:bg-zinc-900/40">
+                                        <tr className="border-b border-stone-200 dark:border-zinc-800">
                                             <th
-                                                className="px-6 py-4 text-start dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
+                                                className="px-6 py-4 text-start text-[13px] font-semibold text-stone-500 dark:text-zinc-400 cursor-pointer hover:text-stone-900 dark:hover:text-zinc-100 transition-colors whitespace-nowrap"
                                                 onClick={() => handleSort('name')}
                                             >
                                                 <div className="flex items-center gap-1">
@@ -850,7 +828,7 @@ export function OwnerEmployeesPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
+                                                className="px-6 py-4 text-center text-[13px] font-semibold text-stone-500 dark:text-zinc-400 cursor-pointer hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                                                 onClick={() => handleSort('role')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -858,9 +836,9 @@ export function OwnerEmployeesPage() {
                                                     {sortConfig?.key === 'role' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
-                                            <th className="px-6 py-4 text-center dashboard-card-label whitespace-nowrap">{t('staff.table.contact')}</th>
+                                            <th className="px-6 py-4 text-center text-[13px] font-semibold text-stone-500 dark:text-zinc-400 whitespace-nowrap">{t('staff.table.contact')}</th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
+                                                className="px-6 py-4 text-center text-[13px] font-semibold text-stone-500 dark:text-zinc-400 cursor-pointer hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                                                 onClick={() => handleSort('status')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -869,7 +847,7 @@ export function OwnerEmployeesPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
+                                                className="px-6 py-4 text-center text-[13px] font-semibold text-stone-500 dark:text-zinc-400 cursor-pointer hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                                                 onClick={() => handleSort('accountStatus')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -878,7 +856,7 @@ export function OwnerEmployeesPage() {
                                                 </div>
                                             </th>
                                             <th
-                                                className="px-6 py-4 text-center dashboard-card-label cursor-pointer hover:text-mintcom-green transition-colors"
+                                                className="px-6 py-4 text-center text-[13px] font-semibold text-stone-500 dark:text-zinc-400 cursor-pointer hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                                                 onClick={() => handleSort('access')}
                                             >
                                                 <div className="flex items-center justify-center gap-1">
@@ -886,10 +864,10 @@ export function OwnerEmployeesPage() {
                                                     {sortConfig?.key === 'access' && <ArrowUpDown size={12} className={sortConfig.direction === 'asc' ? 'rotate-0' : 'rotate-180'} />}
                                                 </div>
                                             </th>
-                                            <th className="px-6 py-4 text-end dashboard-card-label whitespace-nowrap">{t('owner.locations.actions')}</th>
+                                            <th className="px-6 py-4 text-end text-[13px] font-semibold text-stone-500 dark:text-zinc-400 whitespace-nowrap">{t('owner.locations.actions')}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                    <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                                         {paginatedEmployees.map((emp) => {
                                             const activeAssignments = getActiveAssignments(emp);
                                             const accessCount = activeAssignments.length;
@@ -897,18 +875,18 @@ export function OwnerEmployeesPage() {
                                             return (
                                                 <tr
                                                     key={emp.id}
-                                                    className={`group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors ${isOwnerEmployee(emp) ? 'bg-amber-50/40 dark:bg-amber-500/[0.04]' : ''}`}
+                                                    className={`group hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors ${isOwnerEmployee(emp) ? 'bg-amber-50/40 dark:bg-amber-500/[0.04]' : ''}`}
                                                 >
                                                     <td className="px-6 py-4 text-start">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-sm group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                                            <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center font-black text-sm shrink-0">
                                                                 {getDisplayInitial(emp.firstName, emp.username)}
                                                             </div>
                                                             <div>
-                                                                <p className="font-bold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                                                                <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm flex items-center gap-2">
                                                                     <span>{getDisplayName(emp)}</span>
                                                                 </p>
-                                                                <p className="text-xs text-gray-500">{emp.username}</p>
+                                                                <p className="text-xs text-stone-500">{emp.username}</p>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -920,12 +898,12 @@ export function OwnerEmployeesPage() {
                                                     </td>
                                                     <td className="px-6 py-4 text-center">
                                                         <div className="space-y-1 flex flex-col items-center justify-center">
-                                                            <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                                <Mail size={12} className="text-gray-400" />
+                                                            <div className="flex items-center gap-2 text-xs text-stone-500">
+                                                                <Mail size={12} className="text-stone-400" />
                                                                 <span className="font-medium">{emp.email || t('owner.staff.noEmail')}</span>
                                                             </div>
-                                                            <div className="flex items-center gap-2 text-xs text-gray-500">
-                                                                <Phone size={12} className="text-gray-400" />
+                                                            <div className="flex items-center gap-2 text-xs text-stone-500">
+                                                                <Phone size={12} className="text-stone-400" />
                                                                 <span className="font-medium">{emp.phone || t('owner.staff.noPhone')}</span>
                                                             </div>
                                                         </div>
@@ -940,7 +918,7 @@ export function OwnerEmployeesPage() {
                                                         <button
                                                             type="button"
                                                             onClick={() => setAccessModalEmployee(emp)}
-                                                            className="inline-flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white hover:text-mintcom-green transition-colors"
+                                                            className="inline-flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100 hover:text-mintcom-green transition-colors"
                                                         >
                                                             <MapPin size={14} className="text-mintcom-green" />
                                                             {t('owner.staff.locationsCount', {
@@ -956,7 +934,7 @@ export function OwnerEmployeesPage() {
                                                                     openEditEmployee(emp);
                                                                 }}
                                                                 aria-label={t('common.edit')}
-                                                                className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                                                                className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-90"
                                                             >
                                                                 <Edit2 size={18} />
                                                             </button>
@@ -969,7 +947,7 @@ export function OwnerEmployeesPage() {
                                                                     }}
                                                                     aria-label={t('common.actions')}
                                                                     aria-expanded={activeMenu === emp.id}
-                                                                    className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeMenu === emp.id ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-white dark:bg-white/5 border-gray-100 dark:border-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/10'}`}
+                                                                    className={`p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl border transition-all active:scale-90 shadow-sm ${activeMenu === emp.id ? 'bg-mintcom-green text-black border-mintcom-green' : 'bg-white dark:bg-zinc-800 border-stone-100 dark:border-zinc-800 text-stone-600 dark:text-stone-400 hover:bg-white dark:hover:bg-zinc-700'}`}
                                                                 >
                                                                     <MoreVertical size={18} />
                                                                 </button>
@@ -986,7 +964,7 @@ export function OwnerEmployeesPage() {
                                                                             setActiveMenu(null);
                                                                             openEditEmployee(emp);
                                                                         }}
-                                                                        className="w-full flex items-center gap-3 px-4 py-3 label-strong font-sans text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-left"
+                                                                        className="w-full flex items-center gap-3 px-4 py-3 label-strong font-sans text-stone-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 transition-colors text-left"
                                                                     >
                                                                         <Edit2 size={14} />
                                                                         <span>{t('common.edit')}</span>
@@ -997,7 +975,7 @@ export function OwnerEmployeesPage() {
                                                                             handleDeleteEmployee(emp.id);
                                                                         }}
                                                                         disabled={isOwnerEmployee(emp)}
-                                                                        className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-sans transition-colors text-left border-t border-gray-100 dark:border-white/5 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
+                                                                        className={`w-full flex items-center gap-3 px-4 py-3 label-strong font-sans transition-colors text-left border-t border-stone-100 dark:border-zinc-800 ${isOwnerEmployee(emp) ? 'text-amber-600 dark:text-amber-400 cursor-not-allowed opacity-75' : 'text-mintcom-red hover:bg-red-50 dark:hover:bg-red-900/10'}`}
                                                                     >
                                                                         <Trash2 size={14} />
                                                                         <span>
@@ -1072,10 +1050,10 @@ export function OwnerEmployeesPage() {
                         />
 
                         <ModalBody>
-                            <div className="flex items-center justify-between rounded-2xl bg-gray-50 dark:bg-white/5 px-4 py-3 border border-gray-200 dark:border-white/5">
+                            <div className="flex items-center justify-between rounded-2xl bg-white dark:bg-zinc-800 px-4 py-3 border border-stone-200 dark:border-zinc-800">
                                 <div className="flex items-center gap-3">
                                     <MapPin size={16} className="text-mintcom-green" />
-                                    <span className="text-sm font-bold text-gray-900 dark:text-white">
+                                    <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                                         {t('owner.staff.accessLocations', 'Accessible Establishments')}
                                     </span>
                                 </div>
@@ -1091,8 +1069,8 @@ export function OwnerEmployeesPage() {
                             </div>
 
                             {getActiveAssignments(accessModalEmployee).length === 0 ? (
-                                <div className="rounded-2xl border border-dashed border-gray-200 dark:border-white/10 px-4 py-8 text-center mt-4">
-                                    <p className="text-sm font-medium text-gray-500">
+                                <div className="rounded-2xl border border-dashed border-stone-200 dark:border-zinc-800 px-4 py-8 text-center mt-4">
+                                    <p className="text-sm font-medium text-stone-500">
                                         {t('owner.staff.noLocationsAssigned')}
                                     </p>
                                 </div>
@@ -1101,13 +1079,13 @@ export function OwnerEmployeesPage() {
                                     {getActiveAssignments(accessModalEmployee).map((assignment) => (
                                         <div
                                             key={assignment.assignmentsId}
-                                            className="flex items-center justify-between gap-4 rounded-2xl border border-gray-200 dark:border-white/5 px-4 py-3"
+                                            className="flex items-center justify-between gap-4 rounded-2xl border border-stone-200 dark:border-zinc-800 px-4 py-3"
                                         >
                                             <div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                                <p className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                                                     {assignment.establishmentName}
                                                 </p>
-                                                <p className="text-xs text-gray-500 mt-1">
+                                                <p className="text-xs text-stone-500 mt-1">
                                                     {t('staff.table.role')}: {getAssignmentRoleLabel(assignment, t)}
                                                 </p>
                                             </div>
@@ -1131,13 +1109,13 @@ export function OwnerEmployeesPage() {
                   <ModalCloseButton onClose={closeDeleteModal} autoPositionAbsolute />
                   <ModalBody className="pt-10">
                       <div className="p-10 pb-6 flex flex-col items-center text-center">
-                          <div className="w-20 h-20 rounded-3xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
+                          <div className="w-20 h-20 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center mb-8 shadow-sm">
                               <AlertTriangle size={40} />
                           </div>
-                          <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-3 leading-tight">
+                          <h3 className="text-2xl font-black text-stone-900 dark:text-zinc-100 tracking-tight mb-3 leading-tight">
                               {t('security.modes.deleteEmployee.title')}
                           </h3>
-                          <p className="text-gray-500 dark:text-gray-400 text-sm font-bold leading-relaxed max-w-[300px]">
+                          <p className="text-stone-500 dark:text-zinc-400 text-sm font-bold leading-relaxed max-w-[300px]">
                               {t('security.modes.deleteEmployee.warning', {
                                   name: `${employeeToDelete.firstName} ${employeeToDelete.lastName}`.trim(),
                               })}

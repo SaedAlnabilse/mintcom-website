@@ -2482,6 +2482,7 @@
       "titleHighlight": "(Mintcom Dashboards)"
     },
     "contact": {
+      "badge": "Contact",
       "businessName": "Business Name",
       "email": "Email Address",
       "emailAddress": "Email Address",
@@ -2551,19 +2552,19 @@
       "cards": {
         "complete": {
           "cardTitle": "Full with No Hidden Cost",
-          "description": "Mintcom is more than just a POS system. It brings together the features that other providers often lock behind complex plans and bundled packages into one simple tier that covers all your business needs. From staff management and inventory management to loyalty programs, advanced reporting, and much more, Mintcom gives you everything you need in a single, straightforward solution.",
+          "description": "Every feature in one simple plan: sales, inventory, staff, loyalty, and reports.",
           "title": "A Complete Solution with No Hidden Costs"
         },
         "multiBranch": {
-          "description": "Run one or multiple stores and POS points effortlessly through our centralized brand management service. Connect all your establishments and POS points within a single portal, giving you complete visibility and control. As your business grows, easily add new establishments or POS points and benefit from special discounts on additional connections.",
+          "description": "One portal for every store — staff, products, sales, and reports with complete visibility.",
           "title": "Multi-Branch Management"
         },
         "realUsers": {
-          "description": "Mintcom is built for business owners, cashiers, and managers, not tech experts. We worked closely with real users to design an intuitive experience that minimizes training time. From login to first sale in under 10 minutes.",
+          "description": "Designed with real shop owners and cashiers. From login to first sale in under 10 minutes.",
           "title": "Designed for Real Users"
         },
         "security": {
-          "description": "Your data is fully encrypted, securely stored, and automatically archived. We've invested heavily in top-tier security standards to ensure your business information is protected at all times.",
+          "description": "Fully encrypted, securely stored, automatically archived — your data stays protected.",
           "title": "Enterprise-Grade Security"
         }
       },
@@ -2581,6 +2582,7 @@
     "hardware": {
       "alreadyHave": "Already have hardware?",
       "alreadyHaveDesc": "Simply download the app and connect your devices in seconds.",
+      "badge": "Hardware",
       "nextPage": "Next",
       "prevPage": "Back",
       "printers": {
@@ -2746,7 +2748,8 @@
         "reports": "Advanced reports & analytics",
         "staffManagement": "Staff Management",
         "support": "Dedicated customer support",
-        "unlimitedStaff": "Multiple staff accounts"
+        "unlimitedStaff": "Multiple staff accounts",
+        "offlineSync": "Offline mode & auto-sync"
       },
       "fullAccess": "FULL ACCESS",
       "getStarted": "Start 14-Day Free Trial",
@@ -3677,6 +3680,7 @@
     "owner": "Owner Portal",
     "pricing": "Pricing",
     "support": "Support",
+    "startTrial": "Start 14-Day Free Trial",
     "industries": "Industries",
     "security": "Security",
     "howItWorks": "How it works",
@@ -6774,7 +6778,7 @@
       "technical": "Devices, Sync & Troubleshooting",
       "technicalDesc": "Printers, networks, browsers, data sync, device requirements, security, and errors",
       "technicalDescShort": "Devices & sync",
-      "title": "Help Center"
+      "title": "Browse by topic"
     },
     "cta": {
       "stillNeedHelp": "Still Need Help?",
@@ -6989,7 +6993,17 @@
       "replyError": "Your reply couldn't be sent. Please try again.",
       "statusError": "Couldn't update the ticket. Please try again.",
       "reopened": "Ticket reopened",
-      "sendShortcutHint": "Press Ctrl+Enter to send"
+      "sendShortcutHint": "Press Ctrl+Enter to send",
+      "clearAllFilters": "Clear all filters",
+      "clearFilters": "Clear filters",
+      "backToTickets": "Back to Tickets",
+      "messagesLabel": "Messages",
+      "reopenHint": "This ticket is {{status}}. Changed your mind?",
+      "resultCount_one": "{{count}} ticket",
+      "resultCount_other": "{{count}} tickets",
+      "messagesCount_one": "{{count}} message",
+      "messagesCount_other": "{{count}} messages",
+      "ticketNotFoundDetail": "Ticket {{id}} was not found."
     }
   },
   "theme": {

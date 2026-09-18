@@ -26,7 +26,7 @@ import api from '../../config/api';
 import { SurfaceLoader } from '../../components/LoadingState';
 import { formatInputPlaceholder } from '../../utils/textCase';
 
-// ─── Types ──────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 
@@ -59,7 +59,7 @@ export interface Ticket {
   needsCustomerReply?: boolean;
 }
 
-// ─── Storage helpers (fallback) ─────────────────────────────────────────────────────────────────────────────────────
+// ─── Storage helpers (fallback) ───────────────────────────────────────────────
 const TICKETS_STORAGE_KEY = 'mintcom_support_tickets';
 
 export function loadTickets(): Ticket[] {
@@ -95,7 +95,7 @@ export function addTicket(ticket: Ticket) {
   saveTickets(all);
 }
 
-// ─── Format helpers ────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Format helpers ───────────────────────────────────────────────────────────
 function formatDate(iso: string): string {
   try {
     const d = new Date(iso);
@@ -127,7 +127,7 @@ function timeAgo(iso: string): string {
   }
 }
 
-// ─── Component ──────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── Component ────────────────────────────────────────────────────────────────
 export const TicketsPage = () => {
   const { t } = useTranslation();
   const { isAuthenticated, isLoading } = useAuth();
@@ -181,17 +181,17 @@ export const TicketsPage = () => {
   }, [isAuthenticated, fetchTickets]);
 
   const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = useMemo(() => ({
-    open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: Inbox, dotColor: 'bg-blue-500' },
-    in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
-    resolved: { label: t('support.tickets.status.resolved'), color: 'text-mintcom-green dark:text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2, dotColor: 'bg-mintcom-green' },
-    closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' }
+    open: { label: t('support.tickets.status.open'), color: 'text-blue-700 dark:text-blue-300', bg: 'bg-blue-50 dark:bg-blue-500/10', icon: Inbox, dotColor: 'bg-blue-500' },
+    in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-700 dark:text-amber-300', bg: 'bg-amber-50 dark:bg-amber-500/10', icon: Loader2, dotColor: 'bg-amber-500' },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-500/10', icon: CheckCircle2, dotColor: 'bg-emerald-500' },
+    closed: { label: t('support.tickets.status.closed'), color: 'text-stone-500 dark:text-zinc-400', bg: 'bg-stone-100 dark:bg-zinc-800', icon: XCircle, dotColor: 'bg-stone-400' }
   }), [t]);
 
   const priorityConfig: Record<TicketPriority, { label: string; color: string; bg: string; weight: number }> = useMemo(() => ({
-    low: { label: t('support.tickets.priority.low'), color: 'text-gray-600 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', weight: 1 },
-    medium: { label: t('support.tickets.priority.medium'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', weight: 2 },
-    high: { label: t('support.tickets.priority.high'), color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-50 dark:bg-orange-500/15', weight: 3 },
-    urgent: { label: t('support.tickets.priority.urgent'), color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-500/15', weight: 4 }
+    low: { label: t('support.tickets.priority.low'), color: 'text-stone-500 dark:text-zinc-400', bg: 'bg-stone-100 dark:bg-zinc-800', weight: 1 },
+    medium: { label: t('support.tickets.priority.medium'), color: 'text-blue-700 dark:text-blue-300', bg: 'bg-blue-50 dark:bg-blue-500/10', weight: 2 },
+    high: { label: t('support.tickets.priority.high'), color: 'text-orange-700 dark:text-orange-300', bg: 'bg-orange-50 dark:bg-orange-500/10', weight: 3 },
+    urgent: { label: t('support.tickets.priority.urgent'), color: 'text-red-700 dark:text-red-300', bg: 'bg-red-50 dark:bg-red-500/10', weight: 4 }
   }), [t]);
 
   // Filtered + sorted tickets
@@ -236,15 +236,13 @@ export const TicketsPage = () => {
   const activeFilters = (statusFilter !== 'all' ? 1 : 0) + (priorityFilter !== 'all' ? 1 : 0);
   const hasTicketSearch = searchQuery.trim().length > 0;
 
-  // ─── Auth guard ──────────────────────────────────────────────────────────────────────────────────────────────────
+  // ─── Auth guard ─────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+      <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Navbar hideCommercialLinks />
-        <main className="pt-28 pb-20">
-          <div className="w-full px-6 md:px-10 lg:px-16">
-            <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
-          </div>
+        <main className="mx-auto w-full max-w-4xl px-6 pb-20 pt-28">
+          <SurfaceLoader message={t('common.loading')} />
         </main>
         <Footer hideCommercialLinks />
       </div>
@@ -255,365 +253,318 @@ export const TicketsPage = () => {
     return <Navigate to="/login" replace state={{ from: '/support/tickets' }} />;
   }
 
-  // ─── Render ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  // ─── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+    <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Navbar hideCommercialLinks />
 
-      <main className="pt-28 pb-20">
-        <div className="w-full px-6 md:px-10 lg:px-16">
-          {/* ──── Header ──── */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Link
-                  to="/support"
-                  className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors"
+      <main className="mx-auto w-full max-w-4xl px-6 pb-20 pt-28">
+        {/* ──── Header ──── */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <Link to="/support" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+              <ArrowLeft size={15} className="transition-transform group-hover:-translate-x-0.5" />
+              {t('support.articles.backToHelp')}
+            </Link>
+            <h1 className="font-magilio mt-4 text-3xl font-bold tracking-tight md:text-4xl">{t('support.tickets.myTickets')}</h1>
+            <p className="mt-2 text-[15px] text-stone-500 dark:text-zinc-400">
+              {t('support.tickets.subtitle')}
+            </p>
+          </div>
+          <Link
+            to="/support/tickets/new"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+          >
+            <Plus size={16} strokeWidth={2.5} />
+            {t('support.tickets.new')}
+          </Link>
+        </div>
+
+        {/* ──── Stats strip ──── */}
+        <dl className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[
+            { icon: Inbox, value: stats.open, label: t('support.tickets.stats.open') },
+            { icon: Clock, value: stats.inProgress, label: t('support.tickets.stats.inProgress') },
+            { icon: CheckCircle2, value: stats.resolved, label: t('support.tickets.stats.resolved') },
+            { icon: BarChart3, value: stats.total, label: t('support.tickets.stats.total') },
+          ].map(({ icon: Icon, value, label }) => (
+            <div key={label} className="rounded-2xl border border-stone-200 bg-white px-4 py-3.5 dark:border-zinc-800 dark:bg-zinc-900/60">
+              <dt className="flex items-center gap-1.5 text-[13px] font-medium text-stone-500 dark:text-zinc-400">
+                <Icon size={13} /> {label}
+              </dt>
+              <dd className="font-magilio mt-0.5 text-2xl font-bold tabular-nums">{value}</dd>
+            </div>
+          ))}
+        </dl>
+
+        {/* ──── Search + filters ──── */}
+        <div className="mb-5 rounded-2xl border border-stone-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900/60">
+          <div className="flex flex-col gap-2.5 md:flex-row">
+            <div className="relative flex-1">
+              <Search size={16} className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
+              <input maxLength={255}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={formatInputPlaceholder(t('support.tickets.searchPlaceholder'), t('common.locale'))}
+                className="w-full rounded-xl border border-stone-200 bg-white py-2.5 pe-10 ps-10 text-sm transition-colors placeholder:text-stone-400 focus:border-mintcom-green focus:outline-none dark:border-zinc-700 dark:bg-zinc-900 dark:placeholder:text-zinc-500"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  aria-label={t('common.clearSearch', 'Clear search')}
+                  className="absolute end-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-lg text-stone-400 hover:bg-stone-100 dark:hover:bg-zinc-800"
                 >
-                  <ArrowLeft size={20} />
-                </Link>
-                <h1 className="font-magilio text-3xl font-black tracking-tight">{t('support.tickets.myTickets')}</h1>
-              </div>
-              <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors ml-11">
-                {t('support.tickets.subtitle')}
-              </p>
+                  <X size={12} strokeWidth={2.5} />
+                </button>
+              )}
             </div>
 
-            <Link
-              to="/support/tickets/new"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
-            >
-              <Plus size={18} strokeWidth={2.5} />
-              {t('support.tickets.new')}
-            </Link>
-          </div>
-
-          {/* ──── Stats Cards ──── */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {[
-              { key: 'open' as const, icon: Inbox, value: stats.open, label: t('support.tickets.stats.open'), iconColor: 'text-blue-500', bgColor: 'bg-blue-50 dark:bg-blue-500/10' },
-              { key: 'inProgress' as const, icon: Clock, value: stats.inProgress, label: t('support.tickets.stats.inProgress'), iconColor: 'text-amber-500', bgColor: 'bg-amber-50 dark:bg-amber-500/10' },
-              { key: 'resolved' as const, icon: CheckCircle2, value: stats.resolved, label: t('support.tickets.stats.resolved'), iconColor: 'text-mintcom-green', bgColor: 'bg-mintcom-green/10 dark:bg-mintcom-green/' },
-              { key: 'total' as const, icon: BarChart3, value: stats.total, label: t('support.tickets.stats.total'), iconColor: 'text-slate-600 dark:text-slate-300', bgColor: 'bg-slate-50 dark:bg-slate-500/10' },
-            ].map((stat) => (
-              <motion.div
-                key={stat.key}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-5 hover:border-gray-200 dark:hover:border-white/20 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 ${stat.bgColor} rounded-xl flex items-center justify-center`}>
-                    <stat.icon size={20} className={stat.iconColor} />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-black leading-none">{stat.value}</p>
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mt-0.5">{stat.label}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* ──── Search + Filters bar ──── */}
-          <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-4 mb-6">
-            <div className="flex flex-col md:flex-row gap-3">
-              {/* Search */}
-              <div className="relative flex-1">
-                <Search className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                <input maxLength={255}
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={formatInputPlaceholder(t('support.tickets.searchPlaceholder'), t('common.locale'))}
-                  className="w-full ps-12 pe-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-mintcom-green/50"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    aria-label={t('common.clearSearch', 'Clear search')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                  >
-                    <X size={12} strokeWidth={2.75} />
-                  </button>
-                )}
-              </div>
-
-              {/* Sort dropdown */}
+            <label className="inline-flex items-center gap-2 rounded-xl border border-stone-200 px-3.5 py-2.5 text-sm font-semibold text-stone-600 dark:border-zinc-700 dark:text-zinc-300">
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 appearance-none"
+                onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'priority')}
+                className="cursor-pointer bg-transparent font-semibold focus:outline-none"
+                aria-label={t('common.sort.newestFirst')}
               >
                 <option value="newest">{t('common.sort.newestFirst')}</option>
                 <option value="oldest">{t('common.sort.oldestFirst')}</option>
                 <option value="priority">{t('common.sort.highestPriority')}</option>
               </select>
+            </label>
 
-              {/* Filter toggle */}
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className={`relative inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold transition-all ${showFilters || activeFilters > 0
-                  ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
-                  : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
-                  }`}
-              >
-                <Filter size={18} />
-                {t('common.filters')}
-                {activeFilters > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-mintcom-green text-black text-xs font-black rounded-full flex items-center justify-center">
-                    {activeFilters}
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {/* Filters panel */}
-            <AnimatePresence>
-              {showFilters && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="pt-4 mt-4 border-t border-gray-100 dark:border-white/10 space-y-4">
-                    {/* Status filter */}
-                    <div>
-                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-3 uppercase">
-                        {t('support.tickets.statusLabel')}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {(['all', 'open', 'in_progress', 'resolved', 'closed'] as const).map((status) => (
-                          <button
-                            key={status}
-                            onClick={() => setStatusFilter(status)}
-                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${statusFilter === status
-                              ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
-                              : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
-                              }`}
-                          >
-                            {status === 'all' ? t('common.all') : statusConfig[status].label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Priority filter */}
-                    <div>
-                      <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-3 uppercase">
-                        {t('support.tickets.priorityLabel')}
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {(['all', 'low', 'medium', 'high', 'urgent'] as const).map((pri) => (
-                          <button
-                            key={pri}
-                            onClick={() => setPriorityFilter(pri)}
-                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${priorityFilter === pri
-                              ? 'bg-gray-900 dark:bg-white text-white dark:text-black'
-                              : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20'
-                              }`}
-                          >
-                            {pri === 'all' ? t('common.all') : priorityConfig[pri].label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Clear all filters */}
-                    {activeFilters > 0 && (
-                      <button
-                        onClick={() => {
-                          setStatusFilter('all');
-                          setPriorityFilter('all');
-                        }}
-                        className="text-sm font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1"
-                      >
-                        <XCircle size={14} />
-                        Clear all filters
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              aria-expanded={showFilters}
+              className={`relative inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors ${
+                showFilters || activeFilters > 0
+                  ? 'border-stone-900 bg-stone-900 text-white dark:border-zinc-100 dark:bg-zinc-100 dark:text-zinc-900'
+                  : 'border-stone-200 text-stone-600 hover:border-stone-300 dark:border-zinc-700 dark:text-zinc-300'
+              }`}
+            >
+              <Filter size={15} />
+              {t('common.filters')}
+              {activeFilters > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-mintcom-green text-[11px] font-bold text-black">
+                  {activeFilters}
+                </span>
               )}
-            </AnimatePresence>
+            </button>
           </div>
 
-          {/* ──── Tickets List ──── */}
-          <div className="space-y-3">
-            {loadingTickets ? (
-              <SurfaceLoader
-                message={t('support.tickets.loading', { defaultValue: 'Loading tickets...' })}
-                paddingClassName="p-16"
-              />
-            ) : loadError ? (
+          <AnimatePresence>
+            {showFilters && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="rounded-3xl border border-red-100 bg-white dark:border-red-500/20 dark:bg-white/[0.03] p-16 text-center"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.18 }}
+                className="overflow-hidden"
               >
-                <div className="w-20 h-20 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <XCircle size={36} className="text-red-500" />
-                </div>
-                <h3 className="font-barlow text-xl font-bold mb-2">
-                  {t('support.tickets.loadListErrorTitle', { defaultValue: "Couldn't load your tickets" })}
-                </h3>
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8 max-w-sm mx-auto">
-                  {t('support.tickets.loadErrorDesc', {
-                    defaultValue:
-                      'We were unable to reach the support service. Please check your connection and try again.',
-                  })}
-                </p>
-                <button
-                  onClick={() => fetchTickets()}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
-                >
-                  <RefreshCw size={18} />
-                  {t('common.retry', { defaultValue: 'Try again' })}
-                </button>
-              </motion.div>
-            ) : filteredTickets.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-16 text-center"
-              >
-                <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Inbox size={36} className="text-gray-400" />
-                </div>
-                <h3 className="font-barlow text-xl font-bold mb-2">
-                  {hasTicketSearch
-                    ? t('common.noResults')
-                    : activeFilters > 0
-                      ? t('common.noFilteredResults')
-                      : t('support.tickets.notFound')}
-                </h3>
-                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-8 max-w-sm mx-auto">
-                  {hasTicketSearch
-                    ? t('common.noMatchingResults', {
-                        entity: 'tickets',
-                        query: searchQuery.trim(),
-                        defaultValue: 'No {{entity}} matching "{{query}}"',
-                      })
-                    : activeFilters > 0
-                      ? t('common.noFilteredResultsDesc')
-                      : t('support.tickets.noTicketsYet')}
-                </p>
-                {searchQuery || activeFilters > 0 ? (
-                  <button
-                    onClick={() => {
-                      setSearchQuery('');
-                      setStatusFilter('all');
-                      setPriorityFilter('all');
-                    }}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-white/10 rounded-xl text-base sm:text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
-                  >
-                    <RefreshCw size={18} />
-                    Clear filters
-                  </button>
-                ) : (
-                  <Link
-                    to="/support/tickets/new"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-mintcom-green font-bold text-black shadow-[0_4px_16px_-4px_rgba(124,195,159,0.5)] transition-all hover:shadow-[0_8px_24px_-6px_rgba(124,195,159,0.6)]"
-                  >
-                    <Plus size={18} strokeWidth={2.5} />
-                    {t('support.tickets.createFirst')}
-                  </Link>
-                )}
-              </motion.div>
-            ) : (
-              <>
-                {/* Results count */}
-                <div className="flex items-center justify-between px-1 mb-1">
-                  <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
-                    {filteredTickets.length} {filteredTickets.length === 1 ? 'ticket' : 'tickets'}
-                    {searchQuery && ` matching "${searchQuery}"`}
-                  </p>
-                </div>
+                <div className="mt-3 space-y-4 border-t border-stone-200 pt-4 dark:border-zinc-800">
+                  <div>
+                    <p className="mb-2 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+                      {t('support.tickets.statusLabel')}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(['all', 'open', 'in_progress', 'resolved', 'closed'] as const).map((status) => (
+                        <button
+                          key={status}
+                          onClick={() => setStatusFilter(status)}
+                          aria-pressed={statusFilter === status}
+                          className={`rounded-lg px-3.5 py-1.5 text-sm font-semibold transition-colors ${statusFilter === status
+                            ? 'bg-stone-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                            : 'text-stone-500 hover:bg-stone-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                            }`}
+                        >
+                          {status === 'all' ? t('common.all') : statusConfig[status].label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                {filteredTickets.map((ticket, index) => {
+                  <div>
+                    <p className="mb-2 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+                      {t('support.tickets.priorityLabel')}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(['all', 'low', 'medium', 'high', 'urgent'] as const).map((pri) => (
+                        <button
+                          key={pri}
+                          onClick={() => setPriorityFilter(pri)}
+                          aria-pressed={priorityFilter === pri}
+                          className={`rounded-lg px-3.5 py-1.5 text-sm font-semibold transition-colors ${priorityFilter === pri
+                            ? 'bg-stone-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                            : 'text-stone-500 hover:bg-stone-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                            }`}
+                        >
+                          {pri === 'all' ? t('common.all') : priorityConfig[pri].label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {activeFilters > 0 && (
+                    <button
+                      onClick={() => {
+                        setStatusFilter('all');
+                        setPriorityFilter('all');
+                      }}
+                      className="inline-flex items-center gap-1.5 text-sm font-semibold text-red-600 hover:underline dark:text-red-400"
+                    >
+                      <XCircle size={14} />
+                      {t('support.tickets.clearAllFilters')}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* ──── Tickets List ──── */}
+        <div>
+          {loadingTickets ? (
+            <SurfaceLoader
+              message={t('support.tickets.loading', { defaultValue: 'Loading tickets...' })}
+              paddingClassName="p-16"
+            />
+          ) : loadError ? (
+            <div className="rounded-2xl border border-red-200 bg-white p-14 text-center dark:border-red-900/50 dark:bg-zinc-900/60">
+              <h3 className="font-barlow text-lg font-bold">
+                {t('support.tickets.loadListErrorTitle', { defaultValue: "Couldn't load your tickets" })}
+              </h3>
+              <p className="mx-auto mb-6 mt-1 max-w-sm text-sm text-stone-500 dark:text-zinc-400">
+                {t('support.tickets.loadErrorDesc', {
+                  defaultValue:
+                    'We were unable to reach the support service. Please check your connection and try again.',
+                })}
+              </p>
+              <button
+                onClick={() => fetchTickets()}
+                className="inline-flex items-center gap-2 rounded-xl border border-stone-200 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-stone-300 dark:border-zinc-700"
+              >
+                <RefreshCw size={15} />
+                {t('common.retry', { defaultValue: 'Try again' })}
+              </button>
+            </div>
+          ) : filteredTickets.length === 0 ? (
+            <div className="rounded-2xl border border-stone-200 bg-white p-14 text-center dark:border-zinc-800 dark:bg-zinc-900/60">
+              <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-stone-100 dark:bg-zinc-800">
+                <Inbox size={22} className="text-stone-400" />
+              </span>
+              <h3 className="font-barlow text-lg font-bold">
+                {hasTicketSearch
+                  ? t('common.noResults')
+                  : activeFilters > 0
+                    ? t('common.noFilteredResults')
+                    : t('support.tickets.notFound')}
+              </h3>
+              <p className="mx-auto mb-6 mt-1 max-w-sm text-sm text-stone-500 dark:text-zinc-400">
+                {hasTicketSearch
+                  ? t('common.noMatchingResults', {
+                      entity: 'tickets',
+                      query: searchQuery.trim(),
+                      defaultValue: 'No {{entity}} matching "{{query}}"',
+                    })
+                  : activeFilters > 0
+                    ? t('common.noFilteredResultsDesc')
+                    : t('support.tickets.noTicketsYet')}
+              </p>
+              {searchQuery || activeFilters > 0 ? (
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setStatusFilter('all');
+                    setPriorityFilter('all');
+                  }}
+                  className="inline-flex items-center gap-2 rounded-xl border border-stone-200 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-stone-300 dark:border-zinc-700"
+                >
+                  <RefreshCw size={15} />
+                  {t('support.tickets.clearFilters')}
+                </button>
+              ) : (
+                <Link
+                  to="/support/tickets/new"
+                  className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                >
+                  <Plus size={16} strokeWidth={2.5} />
+                  {t('support.tickets.createFirst')}
+                </Link>
+              )}
+            </div>
+          ) : (
+            <>
+              <p className="mb-2 px-1 text-[13px] tabular-nums text-stone-500 dark:text-zinc-400">
+                {t('support.tickets.resultCount', { count: filteredTickets.length })}
+                {searchQuery && ` — “${searchQuery.trim()}”`}
+              </p>
+
+              <ol className="space-y-2.5">
+                {filteredTickets.map((ticket) => {
                   const status = statusConfig[ticket.status];
                   const priority = priorityConfig[ticket.priority];
                   const StatusIcon = status.icon;
                   const lastMsg = ticket.lastMessage || (ticket.messages.length > 0 ? ticket.messages[ticket.messages.length - 1] : null);
 
                   return (
-                    <motion.div
-                      key={ticket.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: Math.min(index * 0.04, 0.4) }}
-                    >
+                    <li key={ticket.id}>
                       <Link
                         to={`/support/tickets/${ticket.id}`}
-                        className="block rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-5 md:p-6 hover:border-mintcom-green/30 hover:shadow-lg hover:shadow-mintcom-green/5 transition-all group"
+                        className="group block rounded-2xl border border-stone-200 bg-white p-5 transition-colors hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700"
                       >
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                          <div className="flex-1 min-w-0">
-                            {/* Top row: id + badges */}
-                            <div className="flex items-center gap-2 mb-2 flex-wrap">
-                              <span className="text-xs font-bold text-gray-400 font-mono">{ticket.ticketNumber || ticket.id}</span>
-                              <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${status.bg} ${status.color}`}>
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                          <div className="min-w-0 flex-1">
+                            <div className="mb-1.5 flex flex-wrap items-center gap-1.5">
+                              <span className="font-mono text-xs text-stone-400">{ticket.ticketNumber || ticket.id}</span>
+                              <span className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold ${status.bg} ${status.color}`}>
                                 <StatusIcon size={12} className={ticket.status === 'in_progress' ? 'animate-spin' : ''} />
                                 {status.label}
                               </span>
-                              <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${priority.bg} ${priority.color}`}>
+                              <span className={`rounded-md px-2 py-0.5 text-xs font-semibold ${priority.bg} ${priority.color}`}>
                                 {priority.label}
                               </span>
                               {ticket.unreadReplies > 0 && (
-                                <span className="px-2 py-1 bg-mintcom-green text-black rounded-lg text-xs font-bold animate-pulse">
+                                <span className="rounded-md bg-mintcom-green px-2 py-0.5 text-xs font-bold text-black">
                                   {t('support.tickets.newLabel')}
                                 </span>
                               )}
                             </div>
 
-                            {/* Subject */}
-                            <h3 className="font-barlow text-base md:text-lg font-bold group-hover:text-mintcom-green transition-colors mb-1.5 truncate">
+                            <h3 className="font-barlow truncate text-[17px] font-bold tracking-tight group-hover:underline group-hover:decoration-mintcom-green group-hover:decoration-2 group-hover:underline-offset-4">
                               {ticket.subject}
                             </h3>
 
-                            {/* Last message preview */}
-                            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors line-clamp-1">
+                            <p className="mt-0.5 truncate text-sm text-stone-500 dark:text-zinc-400">
                               {lastMsg
                                 ? `${'senderType' in lastMsg ? (lastMsg.senderType === 'support' ? 'Support' : 'You') : (lastMsg.sender === 'support' ? 'Support' : 'You')}: ${lastMsg.content}`
                                 : ticket.description}
                             </p>
                           </div>
 
-                          {/* Right side: meta */}
-                          <div className="flex items-center gap-4 md:gap-6 flex-shrink-0">
-                            <div className="text-right hidden md:block">
-                              <div className="flex items-center gap-1.5 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors mb-1 justify-end">
-                                <Tag size={12} />
-                                <span className="capitalize">{ticket.category}</span>
-                              </div>
-                              <div className="flex items-center gap-1.5 text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors justify-end">
-                                <Calendar size={12} />
-                                {timeAgo(ticket.updatedAt)}
-                              </div>
-                            </div>
-
-                            {/* Mobile meta */}
-                            <div className="flex items-center gap-3 md:hidden text-sm font-bold text-gray-500 dark:text-gray-400 transition-colors">
+                          <div className="flex shrink-0 items-center gap-4 text-[13px] text-stone-400">
+                            <span className="hidden items-center gap-1.5 md:inline-flex">
+                              <Tag size={12} />
                               <span className="capitalize">{ticket.category}</span>
-                              <span>·</span>
-                              <span>{timeAgo(ticket.updatedAt)}</span>
-                            </div>
-
+                            </span>
+                            <span className="inline-flex items-center gap-1.5">
+                              <Calendar size={12} />
+                              {timeAgo(ticket.updatedAt)}
+                            </span>
                             <ChevronRight
-                              size={20}
-                              className="text-gray-400 group-hover:text-mintcom-green group-hover:translate-x-1 transition-all hidden md:block"
+                              size={17}
+                              className="text-stone-300 transition-transform group-hover:translate-x-0.5 group-hover:text-stone-500"
                             />
                           </div>
                         </div>
                       </Link>
-                    </motion.div>
+                    </li>
                   );
                 })}
-              </>
-            )}
-          </div>
+              </ol>
+            </>
+          )}
         </div>
       </main>
 
@@ -621,4 +572,3 @@ export const TicketsPage = () => {
     </div>
   );
 };
-

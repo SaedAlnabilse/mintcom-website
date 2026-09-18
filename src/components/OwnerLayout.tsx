@@ -123,7 +123,7 @@ export function OwnerLayout() {
     return (
         <div
             dir={isRtl ? 'rtl' : 'ltr'}
-            className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden selection:bg-mintcom-green selection:text-black transition-colors duration-500"
+            className="h-screen bg-cream-100 dark:bg-zinc-950 text-stone-900 dark:text-zinc-100 font-sans flex overflow-hidden selection:bg-mintcom-green selection:text-black transition-colors duration-500"
         >
             {/* Mobile backdrop is rendered by MobileNavigationDrawer itself */}
             {/* Sidebar Container */}
@@ -135,12 +135,10 @@ export function OwnerLayout() {
                     transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    relative z-[100] flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/[0.05] transition-colors duration-500 group/sidebar
+                    relative z-[100] flex-col h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar
                     hidden lg:flex
                 `}
             >
-                {/* Sidebar Glow Decor */}
-                <div className="absolute top-0 right-0 w-px h-full bg-gradient-to-b from-transparent via-mintcom-green/20 to-transparent opacity-50" />
 
                 {/* Brand Header & Toggle */}
                 <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
@@ -154,7 +152,7 @@ export function OwnerLayout() {
                                 className="flex items-center cursor-pointer group"
                                 onClick={() => navigate('/')}
                             >
-                                <ArrowLeft size={16} className="text-gray-400 mr-2 group-hover:-translate-x-1 transition-transform" />
+                                <ArrowLeft size={16} className="text-stone-400 dark:text-zinc-500 mr-2 group-hover:-translate-x-1 transition-transform" />
                                 <img
                                     src={MintcomLogoGreen}
                                     alt={t('brand.name')}
@@ -173,7 +171,7 @@ export function OwnerLayout() {
                                     decoding="async"
                                     className="h-10 w-auto object-contain hidden dark:block transition-transform"
                                 />
-                                <div className="absolute left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-gray-900/90 text-white text-xs px-2 py-1 rounded">
+                                <div className="absolute left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-stone-900 dark:bg-zinc-800 text-stone-100 dark:text-zinc-100 text-xs px-2.5 py-1 rounded-lg border border-stone-800 dark:border-zinc-700 shadow-md">
                                     {t('nav.home', 'Home')}
                                 </div>
                             </motion.div>
@@ -186,15 +184,15 @@ export function OwnerLayout() {
                                 className="mx-auto"
                             >
                                 <button
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 border border-mintcom-green/20 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
                                     <img src={MintcomLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
                                     <PanelLeft
                                         size={24}
-                                        className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
+                                        className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-stone-500 dark:text-zinc-400 group-hover/sidebar:text-stone-900 dark:group-hover/sidebar:text-zinc-100"
                                     />
-                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                         {t('owner.menu.openSidebar')}
                                     </div>
                                 </button>
@@ -205,7 +203,7 @@ export function OwnerLayout() {
                     {sidebarOpen && (
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="p-2 rounded-xl text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                            className="p-2 rounded-xl text-stone-400 hover:text-mintcom-green hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all"
                         >
                             <PanelLeftClose size={20} />
                         </button>
@@ -217,7 +215,7 @@ export function OwnerLayout() {
                     className="flex-1 min-h-0 overflow-y-auto overflow-x-visible px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10"
                     onScroll={hideCollapsedNavTooltip}
                 >
-                    {sidebarOpen && <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
+                    {sidebarOpen && <p className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
 
@@ -260,7 +258,7 @@ export function OwnerLayout() {
                             right: isRtl ? collapsedNavTooltip.offset : undefined,
                         }}
                     >
-                        <div className="px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-white/10 shadow-xl">
+                        <div className="px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md">
                             {collapsedNavTooltip.label}
                         </div>
                     </div>
@@ -279,21 +277,21 @@ export function OwnerLayout() {
 
             {/* Main Content Area */}
             <main
-                className="flex-1 relative overflow-hidden bg-gray-100 dark:bg-mintcom-dark transition-all duration-500 border-l border-gray-200 dark:border-white/[0.05] flex flex-col"
+                className="flex-1 relative overflow-hidden bg-cream-100 dark:bg-zinc-950 transition-all duration-500 border-l border-stone-200 dark:border-zinc-800 flex flex-col"
                 onClick={() => sidebarOpen && setSidebarOpen(false)}
             >
                 {/* Mobile Header */}
-                <div className="lg:hidden sticky top-0 z-30 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5 px-4 flex items-center justify-between gap-2" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))', paddingBottom: '0.75rem' }}>
+                <div                     className="lg:hidden sticky top-0 z-30 bg-white dark:bg-zinc-900/60 border-b border-stone-200 dark:border-zinc-800 px-4 flex items-center justify-between gap-2" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))', paddingBottom: '0.75rem' }}>
                     <button
                         onClick={() => setMobileMenuOpen(true)}
                         aria-label={t('common.aria.openMenu', { defaultValue: 'Open menu' })}
-                        className="min-h-[44px] min-w-[44px] p-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10 transition-all flex items-center justify-center shrink-0"
+                        className="min-h-[44px] min-w-[44px] p-2 rounded-xl bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 hover:bg-stone-200 dark:hover:bg-zinc-700 transition-all flex items-center justify-center shrink-0"
                     >
                         <Menu size={22} />
                     </button>
                     <div className="flex items-center gap-2 min-w-0 flex-1 justify-center">
                         <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name')} />
-                        <span className="font-bold text-gray-900 dark:text-white truncate text-[15px]">{t('brand.name')}</span>
+                        <span className="font-bold text-stone-900 dark:text-zinc-100 truncate text-[15px]">{t('brand.name')}</span>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                         <AlertsBell scope="owner" locations={ownerLocations} />

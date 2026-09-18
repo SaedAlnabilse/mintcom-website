@@ -9,8 +9,6 @@ import {
   UserCheck,
   Globe,
   ArrowUpDown,
-  Grid3X3,
-  List
 } from 'lucide-react';
 import api, { extractErrorMessage } from '../../config/api';
 import toast from 'react-hot-toast';
@@ -18,7 +16,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { CustomRoleFormModal } from '../../components/CustomRoleFormModal';
 import { RoleDeleteResolutionModal } from '../../components/RoleDeleteResolutionModal';
-import { Pagination, SearchInput, PageHeader } from '../../components/ui';
+import { Pagination, PageHeader, ListFilterBar } from '../../components/ui';
 import { getLocalizedRoleName } from '../../utils/roleNames';
 import { formatInputPlaceholder } from '../../utils/textCase';
 import { retryTransientRequest } from '../../utils/retryTransientRequest';
@@ -280,7 +278,7 @@ export function OwnerRolesPage() {
   const getBaseRoleStyle = (role: string) => {
     switch (role?.toUpperCase()) {
       case 'ADMIN':
-        return 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20';
+        return 'bg-stone-500/10 text-stone-600 dark:text-zinc-300 border-stone-500/20';
       case 'MANAGER':
         return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
       case 'CASHIER':
@@ -303,9 +301,9 @@ export function OwnerRolesPage() {
           <>
           <button
             onClick={openCreateModal}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
           >
-            <Plus size={18} strokeWidth={2.5} />
+            <Plus size={15} strokeWidth={2} />
             <span>{t('owner.roles.createNew')}</span>
           </button>
           </>
@@ -313,47 +311,28 @@ export function OwnerRolesPage() {
       />
 
       {/* Filters & Search */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="relative flex-1 max-w-md">
-          <SearchInput
-            value={searchQuery}
-            onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            onClear={() => { setSearchQuery(''); setCurrentPage(1); }}
-            placeholder={formatInputPlaceholder(t('owner.roles.searchPlaceholder'), t('common.locale'))}
-          />
-        </div>
-        {/* View Mode Toggle */}
-        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1 h-[44px]">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title={t('common.view')}
-          >
-            <Grid3X3 size={18} />
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`p-2 h-full px-3 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-            title={t('common.view')}
-          >
-            <List size={18} />
-          </button>
-        </div>
-      </div>
+      <ListFilterBar
+        searchValue={searchQuery}
+        onSearchChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+        onSearchClear={() => { setSearchQuery(''); setCurrentPage(1); }}
+        searchPlaceholder={formatInputPlaceholder(t('owner.roles.searchPlaceholder'), t('common.locale'))}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+      />
 
       {/* Main Content */}
       {isLoading ? (
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col items-center justify-center p-20 sm:p-32">
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col items-center justify-center p-20 sm:p-32">
           <div className="w-12 h-12 border-4 border-mintcom-green/30 border-t-mintcom-green rounded-full animate-spin mb-4" />
           <p className="label-strong font-sans">{t('owner.roles.loading')}</p>
         </div>
       ) : filteredRoles.length === 0 ? (
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm flex flex-col items-center justify-center p-16 sm:p-24 text-center bg-gray-50/30 dark:bg-black/10">
-          <div className="w-20 h-20 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center mb-6 border border-gray-200 dark:border-white/5 shadow-sm">
-            <Globe size={40} className="text-gray-300" />
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col items-center justify-center p-16 sm:p-24 text-center bg-white/30 dark:bg-zinc-900/60">
+          <div className="w-20 h-20 bg-white dark:bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 border border-stone-200 dark:border-zinc-800 shadow-sm">
+            <Globe size={40} className="text-stone-300" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">{t('owner.roles.noRoles')}</h3>
-          <p className="text-sm font-medium text-gray-500 max-w-xs mx-auto">{t('owner.roles.noRolesDesc')}</p>
+          <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2 tracking-tight">{t('owner.roles.noRoles')}</h3>
+          <p className="text-sm font-medium text-stone-500 max-w-xs mx-auto">{t('owner.roles.noRolesDesc')}</p>
         </div>
       ) : viewMode === 'grid' ? (
         /* Grid View */
@@ -362,18 +341,17 @@ export function OwnerRolesPage() {
             {currentItems.map((role) => (
               <div
                 key={role.id}
-                className="group relative bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-6 transition-all shadow-sm overflow-hidden"
+                className="group relative bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 p-6 transition-all shadow-sm overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-mintcom-green/5 rounded-full blur-3xl opacity-0 transition-opacity duration-500 pointer-events-none" />
-
+                
                 {/* Header */}
                 <div className="flex items-start justify-between mb-6 relative z-10">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center transition-transform duration-300">
+                    <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center">
                       <Shield size={24} />
                     </div>
                     <div>
-                      <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                      <h3 className="font-bold tracking-tight text-stone-900 dark:text-zinc-100 text-sm">{getRoleDisplayName(role.name)}</h3>
                       <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                         <UserCheck size={10} />
                         {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
@@ -383,7 +361,7 @@ export function OwnerRolesPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(role)}
-                      className="p-2 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all"
+                      className="p-2 rounded-xl bg-white dark:bg-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all"
                       title={t('owner.roles.editRole')}
                     >
                       <Edit2 size={16} />
@@ -400,7 +378,7 @@ export function OwnerRolesPage() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 gap-3 mb-6 relative z-10">
-                  <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
+                  <div className="bg-stone-100 dark:bg-zinc-800/80 p-3 rounded-xl">
                     <span className="label-strong block mb-2">{t('owner.roles.permissions')}</span>
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
@@ -413,13 +391,13 @@ export function OwnerRolesPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gray-50 dark:bg-white/5 p-3 rounded-xl">
+                  <div className="bg-stone-100 dark:bg-zinc-800/80 p-3 rounded-xl">
                     <span className="label-strong block mb-2">{t('owner.roles.scope')}</span>
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10 text-xs font-black tracking-wide">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 border border-stone-200 dark:border-zinc-800 text-xs font-black tracking-wide">
                       <Globe size={10} />
                       {t('owner.roles.global')}
                     </span>
-                    <p className="mt-2 text-xs font-medium text-gray-500">
+                    <p className="mt-2 text-xs font-medium text-stone-500">
                       {t('owner.roles.usageSummary', {
                         employees: role.employeeCount ?? 0,
                         locations: role.locationCount ?? 0,
@@ -429,8 +407,8 @@ export function OwnerRolesPage() {
                 </div>
 
                 {/* Date */}
-                <div className="pt-4 border-t border-gray-100 dark:border-white/5 relative z-10">
-                  <span className="text-xs text-gray-400 font-medium">
+                <div className="pt-4 border-t border-stone-100 dark:border-zinc-800 relative z-10">
+                  <span className="text-xs text-stone-400 font-medium">
                     {t('owner.roles.createdOn', { date: new Date(role.createdAt).toLocaleDateString() })}
                   </span>
                 </div>
@@ -447,13 +425,13 @@ export function OwnerRolesPage() {
         </div>
       ) : (
         /* List View */
-        <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
           {/* Mobile Card View */}
-          <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+          <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
             {currentItems.map((role) => (
               <div
                 key={role.id}
-                className="p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                className="p-4 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -461,7 +439,7 @@ export function OwnerRolesPage() {
                       <Shield size={20} />
                     </div>
                     <div>
-                      <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</h3>
+                      <h3 className="font-bold tracking-tight text-stone-900 dark:text-zinc-100 text-sm">{getRoleDisplayName(role.name)}</h3>
                       <span className={`inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide border ${getBaseRoleStyle(role.baseRole)}`}>
                         <UserCheck size={10} />
                         {role.baseRole ? (t(`staff.roles.${role.baseRole.toLowerCase()}`) !== `staff.roles.${role.baseRole.toLowerCase()}` ? t(`staff.roles.${role.baseRole.toLowerCase()}`) : role.baseRole.charAt(0) + role.baseRole.slice(1).toLowerCase()) : ''}
@@ -471,7 +449,7 @@ export function OwnerRolesPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(role)}
-                      className="p-2 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
+                      className="p-2 rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400"
                     >
                       <Edit2 size={16} />
                     </button>
@@ -485,19 +463,19 @@ export function OwnerRolesPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                    <span className="text-gray-500 block mb-1">{t('owner.roles.permissions')}</span>
+                  <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg">
+                    <span className="text-stone-500 block mb-1">{t('owner.roles.permissions')}</span>
                     <div className="flex gap-2">
                       <span className="font-bold text-mintcom-green">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                       <span className="font-bold text-blue-500">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                     </div>
                   </div>
-                  <div className="bg-gray-50 dark:bg-white/5 p-2 rounded-lg">
-                    <span className="text-gray-500 block mb-1">{t('owner.overview.period')}</span>
-                    <span className="font-bold text-gray-900 dark:text-white">
+                  <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg">
+                    <span className="text-stone-500 block mb-1">{t('owner.overview.period')}</span>
+                    <span className="font-bold text-stone-900 dark:text-zinc-100">
                       {new Date(role.createdAt).toLocaleDateString()}
                     </span>
-                    <span className="block mt-1 text-gray-500">
+                    <span className="block mt-1 text-stone-500">
                       {t('owner.roles.usageSummary', {
                         employees: role.employeeCount ?? 0,
                         locations: role.locationCount ?? 0,
@@ -512,8 +490,8 @@ export function OwnerRolesPage() {
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 dark:bg-white/[0.02]">
-                <tr className="border-b border-gray-200 dark:border-white/5">
+              <thead className="bg-white dark:bg-zinc-900/40">
+                <tr className="border-b border-stone-200 dark:border-zinc-800">
                   <th
                     className="px-6 py-4 text-start label-strong cursor-pointer hover:text-mintcom-green transition-colors whitespace-nowrap"
                     onClick={() => handleSort('name')}
@@ -546,19 +524,19 @@ export function OwnerRolesPage() {
                   <th className="px-6 py-4 text-end label-strong whitespace-nowrap">{t('common.actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+              <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                 {currentItems.map((role) => (
                   <tr
                     key={role.id}
-                    className="group hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
+                    className="group hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors"
                   >
                     <td className="px-6 py-4 text-start">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center shrink-0">
                           <Shield size={20} />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-900 dark:text-white text-sm">{getRoleDisplayName(role.name)}</p>
+                          <p className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{getRoleDisplayName(role.name)}</p>
                         </div>
                       </div>
                     </td>
@@ -574,16 +552,16 @@ export function OwnerRolesPage() {
                       <div className="flex flex-col items-center gap-1 justify-center">
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-mintcom-green"></span>
-                          <span className="text-xs text-gray-500 font-medium">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
+                          <span className="text-xs text-stone-500 font-medium">{t('owner.roles.posAccess')}: {role.permissions?.length || 0}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                          <span className="text-xs text-gray-500 font-medium">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
+                          <span className="text-xs text-stone-500 font-medium">{t('owner.roles.backofficeAccess')}: {getBackofficePermissionCount(role.backofficePermissions)}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <p className="text-xs text-gray-500 font-medium">
+                      <p className="text-xs text-stone-500 font-medium">
                         {t('owner.roles.usageSummary', {
                           employees: role.employeeCount ?? 0,
                           locations: role.locationCount ?? 0,
@@ -591,7 +569,7 @@ export function OwnerRolesPage() {
                       </p>
                     </td>
                     <td className="px-6 py-4 text-start">
-                      <p className="text-xs text-gray-500 font-medium">
+                      <p className="text-xs text-stone-500 font-medium">
                         {new Date(role.createdAt).toLocaleDateString()}
                       </p>
                     </td>
@@ -599,14 +577,14 @@ export function OwnerRolesPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(role)}
-                          className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-90"
+                          className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-90"
                           title={t('owner.roles.editRole')}
                         >
                           <Edit2 size={16} />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(role)}
-                          className="p-2.5 rounded-xl bg-white dark:bg-white/5 border border-gray-100 dark:border-white/5 text-mintcom-red/60 hover:text-mintcom-red hover:bg-mintcom-red/5 transition-all shadow-sm active:scale-90"
+                          className="p-2.5 rounded-xl bg-white dark:bg-zinc-800 border border-stone-100 dark:border-zinc-800 text-mintcom-red/60 hover:text-mintcom-red hover:bg-mintcom-red/5 transition-all shadow-sm active:scale-90"
                           title={t('owner.roles.deleteRole')}
                         >
                           <Trash2 size={16} />

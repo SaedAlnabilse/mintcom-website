@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, GitMerge, Store, Check, X, Loader2, Building2, Zap, ShieldCheck } from 'lucide-react';
-import MintcomLeafIcon from '../../assets/small-logo.svg';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { Button } from '../../components/ui/Button';
+import { PageHeader } from '../../components/ui/PageHeader';
 
 export function OwnerMergePage() {
     const { t } = useTranslation();
@@ -60,148 +60,141 @@ export function OwnerMergePage() {
     const firstSelectedEst = selectedEstInfo[0];
 
     return (
-        <div className="space-y-10 pb-20 max-w-5xl">
-            {/* Full-screen blocker while the merge request runs — creating a
-                brand is heavyweight and must not be double-submitted. */}
+        <div className="space-y-8 pb-20 max-w-5xl">
+            {/* Full-screen blocker while the merge request runs */}
             <BusyOverlay visible={isSubmitting} />
-            {/* Ultra Premium Header */}
-            <div className="relative overflow-hidden rounded-[4rem] bg-white dark:bg-[#1E293B] p-12 border border-gray-200 dark:border-white/5 shadow-2xl shadow-gray-200/50 dark:shadow-none">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-mintcom-green/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
 
-                <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-12">
-                    <div className="space-y-6">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-mintcom-green/10 border border-mintcom-green/20">
-                            <GitMerge size={14} className="text-mintcom-green" />
-                            <span className="text-xs font-black text-mintcom-green tracking-[0.2em]">{t('owner.merge.newBrandBadge')}</span>
-                        </div>
-
-                        <div>
-                            <h1 className="text-5xl xl:text-6xl font-black text-gray-900 dark:text-white tracking-tight leading-none mb-4">
-                                {t('owner.merge.create')} <span className="text-mintcom-green">{t('owner.merge.brand')}</span>
-                            </h1>
-                            <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mt-2 max-w-xl">
-                                {t('owner.merge.subtitle')}
-                            </p>
-                        </div>
-                    </div>
-
+            {/* Standard Page Header */}
+            <PageHeader
+                title={t('owner.merge.title')}
+                subtitle={
+                    <span className="flex items-center gap-2 flex-wrap">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-mintcom-green/10 border border-mintcom-green/20 text-mintcom-green text-xs font-bold">
+                            <GitMerge size={12} />
+                            {t('owner.merge.newBrandBadge')}
+                        </span>
+                        <span>{t('owner.merge.subtitle')}</span>
+                    </span>
+                }
+                actions={
                     <Button
                         variant="secondary"
-                        onClick={() => step === 'configure' ? setStep('select') : navigate('/owner/brands')}
-                        className="self-start xl:self-center"
+                        onClick={() => (step === 'configure' ? setStep('select') : navigate('/owner/brands'))}
                     >
-                        <ArrowLeft size={18} />
+                        <ArrowLeft size={16} />
                         {t('common.cancel')}
                     </Button>
-                </div>
-            </div>
+                }
+            />
 
-            {/* Step Landscape */}
-            <div className="flex items-center gap-8 px-6">
+            {/* Step Navigation */}
+            <div className="flex items-center gap-2 bg-white dark:bg-zinc-900/60 p-1.5 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-sm w-fit">
                 {[
                     { id: 'select', label: t('owner.merge.steps.select'), icon: Store },
-                    { id: 'configure', label: t('owner.merge.steps.details'), icon: Building2 }
-                ].map((s, idx) => (
-                    <div key={s.id} className="flex items-center gap-4 group">
-                        <div className={`
-                            w-12 h-12 rounded-2xl flex items-center justify-center font-black text-sm transition-all duration-500
-                            ${step === s.id
-                                ? 'bg-mintcom-green text-black shadow-lg shadow-mintcom-green/20 scale-110'
-                                : 'bg-white dark:bg-[#1E293B] text-gray-400 border border-gray-100 dark:border-white/5'}
-                        `}>
-                            {idx + 1}
-                        </div>
-                        <div className="flex flex-col">
-                            <span className={`text-xs tracking-[0.2em] font-black ${step === s.id ? 'text-mintcom-green' : 'text-gray-400'}`}>
-                                {s.label}
+                    { id: 'configure', label: t('owner.merge.steps.details'), icon: Building2 },
+                ].map((s, idx) => {
+                    const isActive = step === s.id;
+                    const StepIcon = s.icon;
+                    return (
+                        <div
+                            key={s.id}
+                            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-colors ${
+                                isActive
+                                    ? 'bg-stone-900 text-white dark:bg-mintcom-green dark:text-black shadow-sm'
+                                    : 'text-stone-500 dark:text-zinc-400'
+                            }`}
+                        >
+                            <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[11px] font-black ${
+                                isActive
+                                    ? 'bg-white/20 text-white dark:bg-black/15 dark:text-black'
+                                    : 'bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-400'
+                            }`}>
+                                {idx + 1}
                             </span>
+                            <StepIcon size={14} />
+                            <span>{s.label}</span>
                         </div>
-                        {idx === 0 && <div className="w-16 h-px bg-gray-200 dark:bg-white/10 mx-2" />}
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             <AnimatePresence mode="wait">
                 {step === 'select' ? (
                     <motion.div
                         key="select"
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="space-y-8"
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-6"
                     >
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                            <div className="lg:col-span-2 space-y-6">
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight px-2 flex items-center gap-3">
-                                    <Store className="text-mintcom-green" size={20} /> {t('owner.merge.availableLocations')}
-                                </h3>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                            <div className="lg:col-span-2 space-y-4">
+                                <h2 className="text-lg font-bold text-stone-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
+                                    <Store className="text-mintcom-green" size={18} /> {t('owner.merge.availableLocations')}
+                                </h2>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {establishments.map((est) => {
                                         const isSelected = selectedEstablishments.includes(est.id);
                                         return (
-                                            <motion.div
+                                            <div
                                                 key={est.id}
                                                 onClick={() => toggleEstablishment(est.id)}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
                                                 className={`
-                                                    p-6 rounded-[2.5rem] bg-white dark:bg-[#1E293B] border-2 cursor-pointer transition-all relative overflow-hidden group
+                                                    p-4 rounded-2xl bg-white dark:bg-zinc-900/60 border cursor-pointer transition-colors relative overflow-hidden shadow-sm
                                                     ${isSelected
-                                                        ? 'border-mintcom-green bg-mintcom-green/[0.02] shadow-xl shadow-mintcom-green/5'
-                                                        : 'border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10'}
+                                                        ? 'border-mintcom-green ring-1 ring-mintcom-green/20 bg-mintcom-green/[0.03]'
+                                                        : 'border-stone-200 dark:border-zinc-800 hover:border-stone-300 dark:hover:border-zinc-700'}
                                                 `}
                                             >
-                                                <div className="flex items-center gap-4 relative z-10">
+                                                <div className="flex items-center gap-3.5 relative z-10">
                                                     <div className={`
-                                                        w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500
-                                                        ${isSelected ? 'bg-mintcom-green text-black' : 'bg-gray-50 dark:bg-white/5 text-gray-400'}
+                                                        w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors
+                                                        ${isSelected ? 'bg-mintcom-green/15 text-emerald-700 dark:text-mintcom-green' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400 dark:text-zinc-500'}
                                                     `}>
-                                                        <Store size={24} />
+                                                        <Store size={20} />
                                                     </div>
-                                                    <div className="flex-1">
-                                                        <h4 className={`text-sm font-black tracking-tight ${isSelected ? 'text-gray-900 dark:text-white' : 'text-gray-500'}`}>
+                                                    <div className="min-w-0 flex-1">
+                                                        <h4 className={`text-sm font-bold tracking-tight truncate ${isSelected ? 'text-stone-900 dark:text-zinc-100' : 'text-stone-700 dark:text-zinc-300'}`}>
                                                             {est.name}
                                                         </h4>
-                                                        <p className="label-strong font-sans">{est.type}</p>
+                                                        <p className="text-xs text-stone-500 dark:text-zinc-400 mt-0.5">{est.type}</p>
                                                     </div>
                                                     <div className={`
-                                                        w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all
-                                                        ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-200 dark:border-white/10'}
+                                                        w-6 h-6 rounded-md border flex items-center justify-center shrink-0 transition-colors
+                                                        ${isSelected ? 'bg-mintcom-green border-mintcom-green text-black' : 'border-stone-300 dark:border-zinc-700 bg-white dark:bg-zinc-800'}
                                                     `}>
-                                                        {isSelected && <Check size={16} className="text-black" />}
+                                                        {isSelected && <Check size={14} strokeWidth={3} />}
                                                     </div>
                                                 </div>
-                                                {isSelected && (
-                                                    <div className="absolute top-[-20%] right-[-20%] w-[40%] h-[40%] bg-mintcom-green/10 rounded-full blur-2xl transition-all" />
-                                                )}
-                                            </motion.div>
+                                            </div>
                                         );
                                     })}
                                 </div>
                             </div>
 
-                            <div className="lg:col-span-1 space-y-6">
-                                <div className="p-8 rounded-[3rem] bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 sticky top-8">
-                                    <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white mb-6">{t('owner.merge.whyMerge')}</h3>
+                            <div className="lg:col-span-1">
+                                <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 shadow-sm sticky top-8 space-y-5">
+                                    <h3 className="text-base font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('owner.merge.whyMerge')}</h3>
 
-                                    <div className="space-y-6">
-                                        <div className="flex items-start gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shrink-0">
-                                                <Zap size={18} />
+                                    <div className="space-y-4">
+                                        <div className="flex items-start gap-3">
+                                            <div className="w-9 h-9 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shrink-0">
+                                                <Zap size={16} />
                                             </div>
-                                            <p className="text-xs font-bold text-gray-500 leading-relaxed">
+                                            <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 leading-relaxed">
                                                 {t('owner.merge.whyMergeDesc')}
                                             </p>
                                         </div>
 
-                                        <div className="h-px bg-gray-200 dark:bg-white/10" />
+                                        <div className="h-px bg-stone-100 dark:bg-zinc-800" />
 
                                         <div className="space-y-2">
-                                            <p className="label-strong font-sans leading-none">{t('common.status.title')}</p>
+                                            <p className="text-xs font-semibold text-stone-500 dark:text-zinc-400">{t('common.status.title')}</p>
                                             <div className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${selectedEstablishments.length >= 2 ? 'bg-mintcom-green' : 'bg-mintcom-red'} animate-pulse`} />
-                                                <span className="text-xs font-black text-gray-900 dark:text-white">
+                                                <div className={`w-2 h-2 rounded-full ${selectedEstablishments.length >= 2 ? 'bg-mintcom-green' : 'bg-mintcom-red'}`} />
+                                                <span className="text-xs font-bold text-stone-900 dark:text-zinc-100">
                                                     {selectedEstablishments.length < 2
                                                         ? t('owner.merge.selectMore', { count: 2 - selectedEstablishments.length })
                                                         : t('owner.merge.readyForNextStep')}
@@ -225,47 +218,51 @@ export function OwnerMergePage() {
                 ) : (
                     <motion.div
                         key="configure"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="max-w-3xl mx-auto space-y-10"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.2 }}
+                        className="max-w-2xl mx-auto space-y-6"
                     >
                         {/* Config Form */}
-                        <div className="p-10 rounded-[3rem] bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 shadow-2xl space-y-8">
+                        <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 shadow-sm space-y-6">
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">{t('owner.merge.brandDetails')}</h3>
-                                <p className="label-strong font-sans uppercase">{t('owner.merge.brandDetailsSubtitle')}</p>
+                                <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 tracking-tight">{t('owner.merge.brandDetails')}</h3>
+                                <p className="text-xs font-medium text-stone-500 dark:text-zinc-400 mt-1">{t('owner.merge.brandDetailsSubtitle')}</p>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-xs font-normal text-gray-400 tracking-[0.2em] px-2 block">{formatInputLabel(t('owner.merge.brandName'), t('common.locale'))}</label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-6 flex items-center text-gray-400 group-hover:text-mintcom-green transition-colors">
-                                        <Building2 size={20} />
+                                <label className="text-xs font-semibold text-stone-700 dark:text-zinc-300 block">
+                                    {formatInputLabel(t('owner.merge.brandName'), t('common.locale'))}
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-stone-400 dark:text-zinc-500">
+                                        <Building2 size={18} />
                                     </div>
-                                    <input maxLength={255}
+                                    <input
+                                        maxLength={255}
                                         type="text"
                                         value={brandName}
                                         onChange={(e) => setBrandName(e.target.value)}
                                         placeholder={formatInputPlaceholder(t('owner.merge.brandNamePlaceholder'), t('common.locale'))}
-                                        className="w-full pl-16 pr-8 py-6 bg-gray-50 dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-3xl font-black text-lg text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:ring-4 focus:ring-mintcom-green/10 focus:border-mintcom-green/30 transition-all tracking-tight"
+                                        className="w-full ps-11 pe-4 py-2.5 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 rounded-xl text-sm font-medium text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 transition-all"
                                     />
                                 </div>
                             </div>
 
-                            <div className="p-8 rounded-[2rem] bg-indigo-500/5 border border-indigo-500/10 space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-500">
-                                        <ShieldCheck size={18} />
+                            <div className="p-4 rounded-xl bg-stone-50 dark:bg-zinc-800/60 border border-stone-200 dark:border-zinc-800 space-y-2">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="w-7 h-7 rounded-lg bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shrink-0">
+                                        <ShieldCheck size={16} />
                                     </div>
-                                    <h4 className="text-xl font-bold tracking-tight text-indigo-900 dark:text-indigo-200">{t('common.security')}</h4>
+                                    <h4 className="text-sm font-bold tracking-tight text-stone-900 dark:text-zinc-100">{t('common.security')}</h4>
                                 </div>
-                                <p className="text-xs font-bold text-indigo-500 leading-relaxed px-1">
+                                <p className="text-xs text-stone-500 dark:text-zinc-400 leading-relaxed ps-9">
                                     {t('owner.merge.securityInfo', { name: firstSelectedEst?.name })}
                                 </p>
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className="flex items-center gap-3 pt-2">
                                 <Button
                                     variant="secondary"
                                     size="lg"
@@ -274,26 +271,33 @@ export function OwnerMergePage() {
                                 >
                                     {t('common.back')}
                                 </Button>
-                                <button
+                                <Button
+                                    variant="primary"
+                                    size="lg"
                                     onClick={handleMerge}
                                     disabled={isSubmitting || !brandName.trim()}
-                                    className="flex-[2] py-3.5 bg-black dark:bg-white text-white dark:text-black rounded-lg font-semibold text-base hover:bg-black/85 dark:hover:bg-white/85 transition-colors flex items-center justify-center gap-3 disabled:opacity-50"
+                                    className="flex-[2]"
                                 >
-                                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <img src={MintcomLeafIcon} alt="" style={{ width: 18, height: 18 }} className="scale-x-[-1] object-contain" />}
+                                    {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <GitMerge size={16} />}
                                     {t('owner.merge.createBrand')}
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
                         {/* Selected List */}
-                        <div className="px-10 space-y-4">
-                            <h4 className="label-strong font-sans px-2">{t('owner.merge.selectedLocations')}</h4>
+                        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 shadow-sm space-y-3">
+                            <h4 className="text-xs font-semibold text-stone-500 dark:text-zinc-400">{t('owner.merge.selectedLocations')}</h4>
                             <div className="flex flex-wrap gap-2">
                                 {selectedEstInfo.map((est) => (
-                                    <div key={est.id} className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/5 rounded-xl shadow-sm group">
-                                        <Store size={14} className="text-mintcom-green" />
-                                        <span className="text-xs font-black text-gray-900 dark:text-white tracking-tight">{est.name}</span>
-                                        <button onClick={() => toggleEstablishment(est.id)} className="text-gray-300 hover:text-mintcom-red transition-colors ml-2">
+                                    <div key={est.id} className="inline-flex items-center gap-2 px-3 py-1.5 bg-stone-50 dark:bg-zinc-800/80 border border-stone-200 dark:border-zinc-700 rounded-xl text-xs font-semibold text-stone-900 dark:text-zinc-100">
+                                        <Store size={13} className="text-mintcom-green" />
+                                        <span>{est.name}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleEstablishment(est.id)}
+                                            className="text-stone-400 hover:text-red-500 transition-colors ms-1"
+                                            aria-label={t('common.remove')}
+                                        >
                                             <X size={12} />
                                         </button>
                                     </div>
@@ -306,4 +310,3 @@ export function OwnerMergePage() {
         </div>
     );
 }
-

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import {
     Store,
-    Search,
     MoreVertical,
     Eye,
     X,
@@ -15,10 +14,9 @@ import {
 import { biIcon } from '../../components/ui/BiIcon';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
-import { CustomSelect } from '../../components/CustomSelect';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
-import { EmptyState, Pagination, PageHeader, Badge, FilterBar, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass } from '../../components/ui';
+import { EmptyState, Pagination, PageHeader, Badge, FilterBar, StatCard, StatCardGrid, filterSelectButtonClass, filterSelectActiveClass, filterSelectInactiveClass, filterBoxActiveClass, filterBoxInactiveClass, ListFilterBar, SelectInput } from '../../components/ui';
 import { SingleSelect } from '../../components/SingleSelect';
 import { DateRangePicker } from '../../components/DateRangePicker';
 import { CustomTimePicker } from '../../components/CustomTimePicker';
@@ -382,7 +380,7 @@ export function BrandLocationsPage() {
                                                         showIcon={true}
                                                         isActive={isTimeFiltered}
                                                     />
-                                                    <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? 'text-emerald-700/60 dark:text-mintcom-green/60' : 'text-gray-300 dark:text-white/10'}`}>-</span>
+                                                    <span className={`text-xs font-semibold transition-colors flex-shrink-0 ${isTimeFiltered ? 'text-emerald-700/60 dark:text-mintcom-green/60' : 'text-stone-300 dark:text-zinc-700'}`}>-</span>
                                                     <CustomTimePicker
                                                         value={endTime}
                                                         onChange={(val) => { setEndTime(val); }}
@@ -404,129 +402,99 @@ export function BrandLocationsPage() {
             />
 
             {/* Stats Grid */}
-            <div className={`grid grid-cols-2 lg:grid-cols-5 gap-4 transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+            <StatCardGrid
+                columns={5}
+                className={`transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}
+            >
                 {[
-                    { label: t('owner.locations.total'), value: stats.totalLocations, icon: biIcon('bi-geo-alt'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.locations.active'), value: stats.activeLocations, icon: biIcon('bi-check-circle'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('brand.dashboard.totalRevenue'), value: stats.totalRevenue, icon: biIcon('bi-wallet2'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.menu.employees'), value: stats.totalEmployees, icon: biIcon('bi-people'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('brand.dashboard.orders'), value: stats.totalOrders, icon: biIcon('bi-receipt-cutoff'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
+                    { label: t('owner.locations.total'), value: stats.totalLocations, icon: biIcon('bi-geo-alt'), isCurrency: false },
+                    { label: t('owner.locations.active'), value: stats.activeLocations, icon: biIcon('bi-check-circle'), isCurrency: false },
+                    { label: t('brand.dashboard.totalRevenue'), value: stats.totalRevenue, icon: biIcon('bi-wallet2'), isCurrency: true },
+                    { label: t('owner.menu.employees'), value: stats.totalEmployees, icon: biIcon('bi-people'), isCurrency: false },
+                    { label: t('brand.dashboard.orders'), value: stats.totalOrders, icon: biIcon('bi-receipt-cutoff'), isCurrency: false },
                 ].map((stat, i) => (
-                    <div
-                        key={i}
-                        className="group relative p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
-                    >
-                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        <div className="relative z-10">
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                    <stat.icon size={20} />
-                                </div>
-                            </div>
-                            <p className="dashboard-stat-title mb-1">{stat.label}</p>
-                            <StatValue 
-                                value={stat.value ?? '—'} 
-                                currency={stat.value != null && stat.label === t('brand.dashboard.totalRevenue') ? baseCurrency : null}
-                                className="text-2xl"
-                                isInteger={stat.label !== t('brand.dashboard.totalRevenue')}
-                            />
-                        </div>
-                    </div>
+                    <StatCard
+                        key={stat.label}
+                        label={stat.label}
+                        value={stat.value ?? '—'}
+                        currency={stat.isCurrency && stat.value != null ? baseCurrency : null}
+                        isInteger={!stat.isCurrency}
+                        icon={stat.icon}
+                        delay={i * 0.05}
+                    />
                 ))}
-            </div>
+            </StatCardGrid>
 
             {/* Filters Bar */}
-            <div className={`bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 p-4 shadow-sm transition-opacity duration-200 ${isRefreshing ? 'opacity-85' : 'opacity-100'}`}>
-                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                    {/* Add Location Button */}
-                    <button
-                        onClick={() => setIsLinkModalOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex-shrink-0 w-full lg:w-auto justify-center"
-                    >
-                        <Plus size={20} strokeWidth={3} />
-                        <span>{t('owner.overview.addLocation')}</span>
-                    </button>
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+                <button
+                    onClick={() => setIsLinkModalOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex-shrink-0 w-full sm:w-auto justify-center"
+                >
+                    <Plus size={16} strokeWidth={3} />
+                    <span>{t('owner.overview.addLocation')}</span>
+                </button>
 
-                    <div className="hidden lg:block w-px h-8 bg-gray-100 dark:bg-white/10 mx-2" />
-
-                    {/* Search */}
-                    <div className="relative flex-1">
-                        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input maxLength={255}
-                            type="text"
-                            placeholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
+                <ListFilterBar
+                    searchValue={searchQuery}
+                    onSearchChange={(e) => setSearchQuery(e.target.value)}
+                    onSearchClear={() => setSearchQuery('')}
+                    searchPlaceholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
+                >
+                    {/* Status Filter */}
+                    <div className="w-full sm:w-40">
+                        <SelectInput
+                            value={statusFilter === 'all' ? null : statusFilter}
+                            onChange={(val) => setStatusFilter((val as StatusFilter) || 'all')}
+                            options={[
+                                { label: t('common.active'), value: 'ACTIVE' },
+                                { label: t('paymentMethods.messages.notActive'), value: 'INACTIVE' },
+                                { label: t('owner.locations.trial'), value: 'TRIAL' },
+                            ]}
+                            allOptionLabel={t('owner.locations.allStatuses')}
+                            placeholder={t('owner.locations.allStatuses')}
+                            searchable={false}
                         />
-                        {searchQuery && (
-                          <button
-                            type="button"
-                            onClick={() => setSearchQuery('')}
-                            aria-label={t('common.clearSearch', 'Clear search')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                          >
-                            <X size={12} strokeWidth={2.75} />
-                          </button>
-                        )}
                     </div>
-
-                    {/* Filter Buttons */}
-                    <div className="flex items-center gap-3 flex-wrap lg:ml-auto">
-                        {/* Status Filter */}
-                        <div className="w-40">
-                            <CustomSelect
-                                value={statusFilter}
-                                onChange={(val) => setStatusFilter(val as StatusFilter)}
-                                options={[
-                                    { label: t('owner.locations.allStatuses'), value: 'all' },
-                                    { label: t('common.active'), value: 'ACTIVE' },
-                                    { label: t('paymentMethods.messages.notActive'), value: 'INACTIVE' },
-                                    { label: t('owner.locations.trial'), value: 'TRIAL' },
-                                ]}
+                    {/* Type Filter */}
+                    {locationTypes.length > 1 && (
+                        <div className="w-full sm:w-40">
+                            <SelectInput
+                                value={typeFilter === 'all' ? null : typeFilter}
+                                onChange={(val) => setTypeFilter(val || 'all')}
+                                options={locationTypes.map(type => ({ label: type, value: type }))}
+                                allOptionLabel={t('owner.locations.allTypes')}
+                                placeholder={t('owner.locations.allTypes')}
+                                searchable={false}
                             />
                         </div>
-
-                        {/* Type Filter */}
-                        {locationTypes.length > 1 && (
-                            <div className="w-40">
-                                <CustomSelect
-                                    value={typeFilter}
-                                    onChange={(val) => setTypeFilter(val as string)}
-                                    options={[
-                                        { label: t('owner.locations.allTypes'), value: 'all' },
-                                        ...locationTypes.map(type => ({ label: type, value: type }))
-                                    ]}
-                                />
-                            </div>
-                        )}
-
-                        {/* Sort */}
-                        <div className="w-52">
-                            <CustomSelect
-                                value={sortBy}
-                                onChange={(val) => setSortBy(val as SortOption)}
-                                options={[
-                                    { label: t('common.sortByName'), value: 'name' },
-                                    { label: t('common.sortByRevenue'), value: 'revenue' },
-                                    { label: t('common.sortByOrders'), value: 'orders' },
-                                    { label: t('common.sortByStaff'), value: 'employees' },
-                                ]}
-                            />
-                        </div>
-
-                        {/* Clear Filters */}
-                        {hasFilters && (
-                            <button
-                                onClick={clearFilters}
-                                className="flex items-center gap-2 px-4 py-3 rounded-xl bg-mintcom-red/10 text-mintcom-red text-xs font-bold tracking-wide hover:bg-mintcom-red/20 transition-all"
-                            >
-                                <X size={14} />
-                                {t('attributes.filters.reset')}
-                            </button>
-                        )}
+                    )}
+                    {/* Sort */}
+                    <div className="w-full sm:w-52">
+                        <SelectInput
+                            value={sortBy}
+                            onChange={(val) => setSortBy((val as SortOption) || 'name')}
+                            options={[
+                                { label: t('common.sortByName'), value: 'name' },
+                                { label: t('common.sortByRevenue'), value: 'revenue' },
+                                { label: t('common.sortByOrders'), value: 'orders' },
+                                { label: t('common.sortByStaff'), value: 'employees' },
+                            ]}
+                            showAllOption={false}
+                            searchable={false}
+                        />
                     </div>
-                </div>
+                    {/* Clear Filters */}
+                    {hasFilters && (
+                        <button
+                            onClick={clearFilters}
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-mintcom-red/10 text-mintcom-red text-xs font-bold tracking-wide hover:bg-mintcom-red/20 transition-all whitespace-nowrap"
+                        >
+                            <X size={14} />
+                            {t('attributes.filters.reset')}
+                        </button>
+                    )}
+                </ListFilterBar>
             </div>
 
             {/* Locations Display */}
@@ -551,7 +519,7 @@ export function BrandLocationsPage() {
                         hasActiveFilters ? (
                             <button
                                 onClick={clearFilters}
-                                className="px-6 py-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 text-sm font-bold hover:bg-gray-200 transition-all"
+                                className="px-6 py-2 rounded-xl bg-stone-100 dark:bg-zinc-800 text-stone-500 dark:text-zinc-400 text-sm font-bold hover:bg-stone-200 dark:hover:bg-zinc-700 transition-all"
                             >
                                 {t('attributes.filters.reset')}
                             </button>
@@ -567,11 +535,11 @@ export function BrandLocationsPage() {
                     }
                 />
             ) : (
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                     {/* List View */}
                     <div className={`transition-opacity duration-200 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
                         {/* Table Header */}
-                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row">
+                        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-stone-50/60 dark:bg-zinc-800/40 border-b border-stone-200 dark:border-zinc-800 table-header-row">
                             <div className="col-span-3">{t('common.location')}</div>
                             <div className="col-span-2 text-center">{t('common.status.label')}</div>
                             <div className="col-span-2 text-center">{t('brand.dashboard.revenue')}</div>
@@ -582,25 +550,25 @@ export function BrandLocationsPage() {
                         </div>
 
                         {/* Table Body */}
-                        <div className="divide-y divide-gray-100 dark:divide-white/5">
+                        <div className="divide-y divide-stone-100 dark:divide-zinc-800">
                             {paginatedLocations.map((loc) => {
                                 const Icon = getBusinessTypeIcon(loc.type);
                                 return (
                                     <div
                                         key={loc.id}
-                                        className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center"
+                                        className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-stone-50/80 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group items-center"
                                         onClick={() => handleLocationClick(loc)}
                                     >
                                         {/* Location Info */}
                                         <div className="col-span-3 flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green transition-colors">
+                                            <div className="w-10 h-10 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-400 dark:text-zinc-500 group-hover:text-mintcom-green transition-colors">
                                                 <Icon size={20} />
                                             </div>
                                             <div className="min-w-0">
-                                                <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors truncate" title={loc.name}>
+                                                <h3 className="text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors truncate" title={loc.name}>
                                                     {loc.name}
                                                 </h3>
-                                                <p className="text-xs text-gray-500 mt-0.5 truncate">{formatBusinessTypeLabel(loc.type) || t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
+                                                <p className="text-xs text-stone-500 dark:text-zinc-400 mt-0.5 truncate">{formatBusinessTypeLabel(loc.type) || t('onboarding.step1.businessTypes.restaurant')} - {loc.currency ? loc.currency.toUpperCase() : 'USD'}</p>
                                             </div>
                                         </div>
 
@@ -658,7 +626,7 @@ export function BrandLocationsPage() {
                                                     e.stopPropagation();
                                                     setActiveMenu(activeMenu === loc.id ? null : loc.id);
                                                 }}
-                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 hover:text-gray-600 transition-colors"
+                                                className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 dark:text-zinc-500 hover:text-stone-600 dark:hover:text-zinc-300 transition-colors"
                                             >
                                                 <MoreVertical size={18} />
                                             </button>
@@ -666,7 +634,7 @@ export function BrandLocationsPage() {
                                             {activeMenu === loc.id && (
                                                 <div 
                                                     ref={menuRef}
-                                                    className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                    className="absolute right-8 top-1/2 -translate-y-1/2 w-48 bg-white dark:bg-zinc-800 rounded-xl border border-stone-200 dark:border-zinc-700 shadow-md z-50 overflow-hidden"
                                                 >
                                                     <button
                                                         onClick={(e) => {
@@ -674,7 +642,7 @@ export function BrandLocationsPage() {
                                                             handleLocationClick(loc);
                                                             setActiveMenu(null);
                                                         }}
-                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                        className="w-full px-4 py-3 text-left text-sm font-medium text-stone-700 dark:text-zinc-300 hover:bg-stone-50/80 dark:hover:bg-zinc-700 flex items-center gap-3 transition-colors"
                                                     >
                                                         <Eye size={16} />
                                                         {t('brand.dashboard.viewDashboard')}

@@ -35,7 +35,7 @@ export function SelectInput({
     <SingleSelect
       {...props}
       className={`w-full ${className}`}
-      buttonClassName={`!h-12 !rounded-lg !bg-white dark:!bg-[#1E293B] !border-gray-200 dark:!border-white/10 !text-sm !font-normal hover:!border-mintcom-green/50 transition-colors ${buttonClassName}`}
+      buttonClassName={`!h-12 !rounded-lg !bg-white dark:!bg-[#1E293B] !border-gray-200 dark:!border-white/10 !text-sm hover:!border-mintcom-green/50 transition-colors ${buttonClassName}`}
     />
   );
 }

@@ -5,22 +5,16 @@ import { useTranslation } from 'react-i18next';
 import {
     Plus,
     Store,
-    Search,
     DollarSign,
     Zap,
     Building2,
-    Grid3X3,
     MoreVertical,
     ExternalLink,
     Settings,
     Eye,
-    List,
-  X
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { CustomSelect } from '../../components/CustomSelect';
-import { EmptyState, Pagination, PageHeader, Card } from '../../components/ui';
-import { StatValue } from '../../components/ui/StatValue';
+import { EmptyState, Pagination, PageHeader, ListFilterBar, SelectInput, StatCard, StatCardGrid } from '../../components/ui';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
 import { formatBusinessTypeLabel } from '../../utils/businessTypeLabel';
 import { formatInputPlaceholder } from '../../utils/textCase';
@@ -132,7 +126,7 @@ export function OwnerEstablishmentsPage() {
             case 'EXPIRED':
                 return 'bg-red-500/10 text-red-500 border-red-500/20';
             default:
-                return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+                return 'bg-stone-500/10 text-stone-500 border-stone-500/20';
         }
     };
 
@@ -167,136 +161,78 @@ export function OwnerEstablishmentsPage() {
                     <>
                     <button
                         onClick={() => navigate('/owner/brands')}
-                        className="px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all flex items-center gap-2"
+                        className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-[13px] font-semibold text-stone-700 transition-colors hover:border-stone-300 hover:bg-stone-50 dark:border-zinc-800 dark:bg-transparent dark:text-zinc-200 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
                     >
-                        <Building2 size={18} className="text-blue-500" />
+                        <Building2 size={15} className="text-stone-500 dark:text-zinc-400" />
                         <span>{t('owner.overview.brands')}</span>
                     </button>
 
                     <button
                         onClick={handleAddEstablishment}
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex-shrink-0 justify-center"
+                        className="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                     >
-                        <Plus size={20} strokeWidth={3} />
+                        <Plus size={15} strokeWidth={2} />
                         <span>{t('owner.overview.addLocation')}</span>
                     </button>
                     </>
                 }
             />
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div
-                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
-                >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-mintcom-green/10 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none" />
-                    <div className="relative z-10 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center transition-transform duration-300">
-                            <BiIcon icon="bi-geo-alt" />
-                        </div>
-                        <div>
-                            <p className="dashboard-stat-title">{t('owner.locations.total')}</p>
-                            <StatValue value={establishments.length} isInteger={true} className="text-xl" />
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
-                >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-mintcom-green/10 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none" />
-                    <div className="relative z-10 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center transition-transform duration-300">
-                            <BiIcon icon="bi-check-circle" />
-                        </div>
-                        <div>
-                            <p className="dashboard-stat-title">{t('owner.locations.active')}</p>
-                            <StatValue value={establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length} isInteger={true} className="text-xl" />
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    className="group relative p-6 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/5 shadow-sm transition-all duration-300 overflow-hidden"
-                >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-mintcom-green/10 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none" />
-                    <div className="relative z-10 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 text-mintcom-green flex items-center justify-center transition-transform duration-300">
-                            <BiIcon icon="bi-hourglass-split" />
-                        </div>
-                        <div>
-                            <p className="dashboard-stat-title">{t('owner.locations.trial')}</p>
-                            <StatValue value={establishments.filter(e => e.subscriptionStatus === 'TRIAL').length} isInteger={true} className="text-xl" />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/* Stats Grid — quiet support style */}
+            <StatCardGrid columns={3}>
+                <StatCard
+                    label={t('owner.locations.total')}
+                    value={establishments.length}
+                    isInteger={true}
+                    icon={<BiIcon icon="bi-geo-alt" />}
+                    iconTone="green"
+                />
+                <StatCard
+                    label={t('owner.locations.active')}
+                    value={establishments.filter(e => e.subscriptionStatus === 'ACTIVE').length}
+                    isInteger={true}
+                    icon={<BiIcon icon="bi-check-circle" />}
+                    iconTone="green"
+                />
+                <StatCard
+                    label={t('owner.locations.trial')}
+                    value={establishments.filter(e => e.subscriptionStatus === 'TRIAL').length}
+                    isInteger={true}
+                    icon={<BiIcon icon="bi-hourglass-split" />}
+                    iconTone="green"
+                />
+            </StatCardGrid>
 
             {/* Filters Bar */}
-            <Card padding="sm">
-                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                    {/* Search */}
-                    <div className="relative flex-1">
-                        <Search
-                            size={18}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                        />
-                        <input maxLength={255}
-                            type="text"
-                            placeholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
-                        />
-                        {searchQuery && (
-                          <button
-                            type="button"
-                            onClick={() => setSearchQuery('')}
-                            aria-label={t('common.clearSearch', 'Clear search')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                          >
-                            <X size={12} strokeWidth={2.75} />
-                          </button>
-                        )}
-                    </div>
-
-                    {/* Filter Controls */}
-                    <div className="flex items-center gap-3 flex-wrap lg:ml-auto">
-                        <div className="w-44">
-                            <CustomSelect
-                                value={statusFilter}
-                                onChange={(val) => setStatusFilter(String(val))}
-                                options={STATUS_OPTIONS}
-                            />
-                        </div>
-                        <div className="w-44">
-                            <CustomSelect
-                                value={typeFilter}
-                                onChange={(val) => setTypeFilter(String(val))}
-                                options={TYPE_OPTIONS}
-                            />
-                        </div>
-
-                        {/* View Mode Toggle */}
-                        <div className="flex items-center bg-gray-50 dark:bg-white/5 rounded-xl border border-gray-200 dark:border-white/10 p-1">
-                            <button
-                                onClick={() => setViewMode('grid')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                            >
-                                <Grid3X3 size={18} />
-                            </button>
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-white/10 text-mintcom-green shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                            >
-                                <List size={18} />
-                            </button>
-                        </div>
-                    </div>
+            <ListFilterBar
+                searchValue={searchQuery}
+                onSearchChange={(e) => setSearchQuery(e.target.value)}
+                onSearchClear={() => setSearchQuery('')}
+                searchPlaceholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+            >
+                <div className="w-full sm:w-44">
+                    <SelectInput
+                        value={statusFilter === 'all' ? null : statusFilter}
+                        onChange={(val) => setStatusFilter(val || 'all')}
+                        options={STATUS_OPTIONS.filter((opt) => opt.value !== 'all')}
+                        allOptionLabel={t('owner.locations.allStatuses')}
+                        placeholder={t('owner.locations.allStatuses')}
+                        searchable={false}
+                    />
                 </div>
-
-
-            </Card>
+                <div className="w-full sm:w-44">
+                    <SelectInput
+                        value={typeFilter === 'all' ? null : typeFilter}
+                        onChange={(val) => setTypeFilter(val || 'all')}
+                        options={TYPE_OPTIONS.filter((opt) => opt.value !== 'all')}
+                        allOptionLabel={t('owner.locations.allTypes')}
+                        placeholder={t('owner.locations.allTypes')}
+                        searchable={false}
+                    />
+                </div>
+            </ListFilterBar>
 
             {/* Establishments Grid */}
             {filteredEstablishments.length === 0 ? (
@@ -320,7 +256,7 @@ export function OwnerEstablishmentsPage() {
                         hasActiveFilters ? (
                             <button
                                 onClick={clearFilters}
-                                className="mt-6 px-6 py-2 rounded-xl bg-gray-100 dark:bg-white/5 text-gray-500 text-sm font-bold hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                                className="mt-6 px-6 py-2 rounded-xl bg-stone-100 dark:bg-zinc-800 text-stone-500 text-[13px] font-semibold hover:bg-stone-200 dark:hover:bg-zinc-700 transition-all"
                             >
                                 {t('attributes.filters.reset')}
                             </button>
@@ -330,22 +266,21 @@ export function OwnerEstablishmentsPage() {
             ) : viewMode === 'grid' ? (
                 /* Grid View */
                 <div className="space-y-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                         {paginatedEstablishments.map((est) => {
                             const Icon = getBusinessTypeIcon(est.type);
                             return (
                                 <div
                                     key={est.id}
                                     id={`establishment-${est.id}`}
-                                    className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer ${est.id === highlightId
-                                        ? 'border-mintcom-green ring-2 ring-mintcom-green/50 shadow-xl shadow-mintcom-green/20'
-                                        : 'border-gray-200 dark:border-white/5 hover:border-blue-500/30'
-                                        }`}
+                                     className={`group relative bg-white dark:bg-zinc-900/60 rounded-2xl border p-5 shadow-sm hover:border-stone-300 dark:hover:border-zinc-700 transition-colors cursor-pointer ${est.id === highlightId
+                                         ? 'border-mintcom-green ring-1 ring-mintcom-green/40'
+                                         : 'border-stone-200 dark:border-zinc-800'
+                                         }`}
                                     onClick={() => handleEstablishmentClick(est)}
                                 >
                                     {/* Hover gradient */}
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
+                                    
                                     {est.id === highlightId && (
                                         <div className="absolute top-0 right-0 p-2">
                                             <span className="bg-mintcom-green text-black text-xs font-black px-2 py-1 rounded-bl-xl rounded-tr-xl tracking-widest shadow-sm">{t('owner.locations.new')}</span>
@@ -357,16 +292,16 @@ export function OwnerEstablishmentsPage() {
                                         {/* Header */}
                                         <div className="flex items-start justify-between mb-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                                                <div className="w-14 h-14 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center transition-transform">
                                                     <Icon size={28} />
                                                 </div>
-                                                <div>                                                <h3 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors truncate max-w-[180px]">
+                                                <div>                                                                                                 <h3 className="font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100 truncate max-w-[180px]">
                                                     {est.name}
                                                 </h3>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <span className="text-xs font-bold text-gray-500">{formatBusinessTypeLabel(est.type) || t('owner.locations.standard')}</span>
-                                                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20" />
-                                                        <span className="text-xs font-bold text-gray-500">{est.currency?.toUpperCase() || 'JOD'}</span>
+                                                         <span className="text-xs font-semibold text-stone-500 dark:text-zinc-400">{formatBusinessTypeLabel(est.type) || t('owner.locations.standard')}</span>
+                                                         <span className="w-1 h-1 rounded-full bg-stone-300 dark:bg-zinc-600" />
+                                                         <span className="text-xs font-semibold text-stone-500 dark:text-zinc-400">{est.currency?.toUpperCase() || 'JOD'}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -377,33 +312,33 @@ export function OwnerEstablishmentsPage() {
                                                         e.stopPropagation();
                                                         setActiveMenu(activeMenu === est.id ? null : est.id);
                                                     }}
-                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                     className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 transition-colors"
                                                 >
                                                     <MoreVertical size={18} />
                                                 </button>
 
                                                 {activeMenu === est.id && (
-                                                    <div
-                                                        className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
-                                                    >
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    handleEstablishmentClick(est);
-                                                                }}
-                                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                            >
-                                                                <Eye size={16} />
-                                                                {t('owner.locations.enter')}
-                                                            </button>
-                                                            <button
-                                                                onClick={(e) => e.stopPropagation()}
-                                                                className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
-                                                            >
-                                                                <Settings size={16} />
-                                                                {t('common.settings')}
-                                                            </button>
-                                                    </div>
+                                                     <div
+                                                         className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-sm z-50 overflow-hidden"
+                                                     >
+                                                             <button
+                                                                 onClick={(e) => {
+                                                                     e.stopPropagation();
+                                                                     handleEstablishmentClick(est);
+                                                                 }}
+                                                                 className="w-full px-4 py-2.5 text-left text-sm font-semibold text-stone-700 dark:text-zinc-200 hover:bg-stone-50 dark:hover:bg-zinc-800/60 flex items-center gap-2.5 transition-colors"
+                                                             >
+                                                                 <Eye size={14} />
+                                                                 {t('owner.locations.enter')}
+                                                             </button>
+                                                             <button
+                                                                 onClick={(e) => e.stopPropagation()}
+                                                                 className="w-full px-4 py-2.5 text-left text-sm font-semibold text-stone-700 dark:text-zinc-200 hover:bg-stone-50 dark:hover:bg-zinc-800/60 flex items-center gap-2.5 transition-colors"
+                                                             >
+                                                                 <Settings size={14} />
+                                                                 {t('common.settings')}
+                                                             </button>
+                                                     </div>
                                                 )}
                                             </div>
                                         </div>
@@ -420,34 +355,34 @@ export function OwnerEstablishmentsPage() {
                                         </div>
 
                                         {/* Quick Stats */}
-                                        <div className="grid grid-cols-2 gap-3 mb-6">
-                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
-                                                <div className="flex items-center gap-2 mb-1 text-gray-400">
-                                                    <DollarSign size={12} />
-                                                    <p className="text-xs font-bold tracking-wide">{t('owner.locations.currency')}</p>
-                                                </div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white">{est.currency?.toUpperCase() || 'JOD'}</p>
-                                            </div>
-                                            <div className="p-3 bg-gray-50 dark:bg-white/[0.02] rounded-xl border border-gray-100 dark:border-white/5 group-hover:border-blue-500/10 transition-colors">
-                                                <div className="flex items-center gap-2 mb-1 text-gray-400">
-                                                    <Zap size={12} />
-                                                    <p className="text-xs font-bold tracking-wide">{t('owner.locations.status')}</p>
-                                                </div>
-                                                <p className="text-sm font-bold text-mintcom-green">{t('owner.locations.online')}</p>
-                                            </div>
-                                        </div>
+                                         <div className="grid grid-cols-2 gap-2 mb-5">
+                                             <div className="p-3 rounded-xl border border-stone-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/40">
+                                                 <div className="flex items-center gap-1.5 mb-1 text-stone-400">
+                                                     <DollarSign size={12} />
+                                                     <p className="text-[11px] font-semibold tracking-wide uppercase">{t('owner.locations.currency')}</p>
+                                                 </div>
+                                                 <p className="font-barlow text-[15px] font-bold text-stone-900 dark:text-zinc-100">{est.currency?.toUpperCase() || 'JOD'}</p>
+                                             </div>
+                                             <div className="p-3 rounded-xl border border-stone-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/40">
+                                                 <div className="flex items-center gap-1.5 mb-1 text-stone-400">
+                                                     <Zap size={12} />
+                                                     <p className="text-[11px] font-semibold tracking-wide uppercase">{t('owner.locations.status')}</p>
+                                                 </div>
+                                                 <p className="font-barlow text-[15px] font-bold text-stone-500 dark:text-zinc-400">{t('owner.locations.online')}</p>
+                                             </div>
+                                         </div>
 
-                                        {/* Action Button */}
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleEstablishmentClick(est);
-                                            }}
-                                            className="w-full py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 text-xs font-bold tracking-wide hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm"
-                                        >
-                                            <span>{t('owner.locations.open')}</span>
-                                            <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                        </button>
+                                         {/* Action Button */}
+                                         <button
+                                             onClick={(e) => {
+                                                 e.stopPropagation();
+                                                 handleEstablishmentClick(est);
+                                             }}
+                                             className="w-full rounded-xl bg-stone-900 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 flex items-center justify-center gap-2 group/btn dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                                         >
+                                             <span>{t('owner.locations.open')}</span>
+                                             <ExternalLink size={14} className="shrink-0" />
+                                         </button>
                                     </div>
                                 </div>
                             );
@@ -463,28 +398,28 @@ export function OwnerEstablishmentsPage() {
                 </div>
             ) : (
                 /* List View */
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                     {/* Mobile Card View */}
-                    <div className="md:hidden divide-y divide-gray-100 dark:divide-white/5">
+                    <div className="md:hidden divide-y divide-stone-100 dark:divide-zinc-800">
                         {paginatedEstablishments.map((est) => {
                             const Icon = getBusinessTypeIcon(est.type);
                             return (
                                 <div
                                     key={est.id}
-                                    className={`p-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer ${est.id === highlightId ? 'bg-mintcom-green/5' : ''}`}
+                                    className={`p-4 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer ${est.id === highlightId ? 'bg-mintcom-green/5' : ''}`}
                                     onClick={() => handleEstablishmentClick(est)}
                                 >
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400">
-                                                <Icon size={20} />
+                                            <div className="h-10 w-10 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-600 dark:text-zinc-300">
+                                                <Icon size={18} />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold tracking-tight text-gray-900 dark:text-white text-sm">{est.name}</h3>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs text-gray-500">{formatBusinessTypeLabel(est.type) || t('owner.locations.standard')}</span>
+                                                <h3 className="font-barlow font-bold text-stone-900 dark:text-zinc-100 text-[15px]">{est.name}</h3>
+                                                <div className="flex items-center gap-1.5 mt-0.5">
+                                                    <span className="text-[11px] font-semibold text-stone-500 dark:text-zinc-400">{formatBusinessTypeLabel(est.type) || t('owner.locations.standard')}</span>
                                                     {est.id === highlightId && (
-                                                        <span className="text-xs text-mintcom-green font-bold tracking-wider">{t('owner.locations.new')}</span>
+                                                        <span className="text-[11px] font-semibold text-mintcom-green">{t('owner.locations.new')}</span>
                                                     )}
                                                 </div>
                                             </div>
@@ -495,20 +430,20 @@ export function OwnerEstablishmentsPage() {
                                                     e.stopPropagation();
                                                     setActiveMenu(activeMenu === est.id ? null : est.id);
                                                 }}
-                                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 transition-colors"
                                             >
                                                 <MoreVertical size={16} />
                                             </button>
                                             {activeMenu === est.id && (
                                                 <div
-                                                    className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden"
+                                                    className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-sm z-50 overflow-hidden"
                                                 >
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 handleEstablishmentClick(est);
                                                             }}
-                                                            className="w-full px-4 py-3 text-left text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2"
+                                                            className="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-stone-700 dark:text-zinc-200 hover:bg-stone-50 dark:hover:bg-zinc-800/60 flex items-center gap-2 transition-colors"
                                                         >
                                                             <Eye size={14} /> {t('owner.locations.view')}
                                                         </button>
@@ -517,14 +452,14 @@ export function OwnerEstablishmentsPage() {
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${getStatusColor(est.subscriptionStatus)}`}>
                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' : est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' : 'bg-red-500'}`} />
                                             {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
                                         </span>
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white">{est.currency?.toUpperCase() || 'JOD'}</span>
+                                        <span className="text-[13px] font-bold text-stone-900 dark:text-zinc-100">{est.currency?.toUpperCase() || 'JOD'}</span>
                                     </div>
-                                    <div className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                                        {t('owner.brands.created')}: <span className="font-semibold text-gray-700 dark:text-gray-200">{formatCreatedDate(est.createdAt)}</span>
+                                    <div className="mt-3 text-[11px] text-stone-500 dark:text-zinc-400">
+                                        {t('owner.brands.created')}: <span className="font-semibold text-stone-700 dark:text-zinc-200">{formatCreatedDate(est.createdAt)}</span>
                                     </div>
                                 </div>
                             );
@@ -532,7 +467,7 @@ export function OwnerEstablishmentsPage() {
                     </div>
 
                     {/* Desktop Table Header */}
-                    <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-200 dark:border-white/5 table-header-row items-center">
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-5 py-3.5 bg-stone-50 dark:bg-zinc-900/40 border-b border-stone-200 dark:border-zinc-800 table-header-row items-center">
                         <div className="col-span-3 flex items-center gap-4">
                             <div className="w-10" />
                             <span>{t('owner.locations.title')}</span>
@@ -545,78 +480,78 @@ export function OwnerEstablishmentsPage() {
                     </div>
 
                     {/* Desktop Table Body */}
-                    <div className="hidden md:block divide-y divide-gray-100 dark:divide-white/5">
+                    <div className="hidden md:block divide-y divide-stone-100 dark:divide-zinc-800">
                         {paginatedEstablishments.map((est) => {
                             const Icon = getBusinessTypeIcon(est.type);
                             return (
                                 <div
                                     key={est.id}
                                     id={`establishment-${est.id}`}
-                                    className={`grid grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors cursor-pointer group items-center ${est.id === highlightId
-                                        ? 'bg-mintcom-green/5 ring-1 ring-mintcom-green inset-0 z-10'
+                                    className={`grid grid-cols-12 gap-4 px-5 py-4 hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors cursor-pointer group items-center ${est.id === highlightId
+                                        ? 'bg-mintcom-green/5 ring-1 ring-mintcom-green/30 inset-0 z-10'
                                         : ''
                                         }`}
                                     onClick={() => handleEstablishmentClick(est)}
                                 >
                                     {/* Info */}
-                                    <div className="col-span-3 flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-mintcom-green transition-colors">
-                                            <Icon size={20} />
+                                    <div className="col-span-3 flex items-center gap-3">
+                                        <div className="h-9 w-9 rounded-xl bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-600 dark:text-zinc-300 shrink-0">
+                                            <Icon size={17} />
                                         </div>
                                         <div className="min-w-0">
-                                            <h3 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors truncate" title={est.name}>
+                                            <h3 className="font-barlow text-[15px] font-bold tracking-tight text-stone-900 dark:text-zinc-100 truncate" title={est.name}>
                                                 {est.name}
                                             </h3>
                                             {est.id === highlightId && (
-                                                <span className="text-xs text-mintcom-green font-bold tracking-wider">{t('owner.locations.new')}</span>
+                                                <span className="text-[11px] font-semibold text-mintcom-green">{t('owner.locations.new')}</span>
                                             )}
                                         </div>
                                     </div>
 
-                                    {/* Type */}
-                                    <div className="col-span-2 flex items-center justify-center text-center">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white text-center">
-                                            {formatBusinessTypeLabel(est.type) || t('owner.locations.standard')}
-                                        </span>
-                                    </div>
+                                     {/* Type */}
+                                     <div className="col-span-2 flex items-center justify-center text-center">
+                                         <span className="text-[13px] font-semibold text-stone-700 dark:text-zinc-200 text-center">
+                                             {formatBusinessTypeLabel(est.type) || t('owner.locations.standard')}
+                                         </span>
+                                     </div>
 
-                                    {/* Status */}
-                                    <div className="col-span-2 flex items-center justify-center text-center">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-black tracking-wider border ${getStatusColor(est.subscriptionStatus)}`}>
-                                            <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' :
-                                                est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
-                                                    'bg-red-500'
-                                                }`} />
-                                            {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
-                                        </span>
-                                    </div>
+                                     {/* Status */}
+                                     <div className="col-span-2 flex items-center justify-center text-center">
+                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ${getStatusColor(est.subscriptionStatus)}`}>
+                                             <span className={`w-1.5 h-1.5 rounded-full ${est.subscriptionStatus === 'ACTIVE' ? 'bg-mintcom-green' :
+                                                 est.subscriptionStatus === 'TRIAL' ? 'bg-amber-500' :
+                                                     'bg-red-500'
+                                                 }`} />
+                                             {est.subscriptionStatus ? t(`owner.locations.${est.subscriptionStatus.toLowerCase()}`) : ''}
+                                         </span>
+                                     </div>
 
-                                    {/* Currency */}
-                                    <div className="col-span-1 flex items-center justify-center text-center">
-                                        <span className="text-sm font-bold text-gray-900 dark:text-white text-center">
-                                            {est.currency?.toUpperCase() || 'JOD'}
-                                        </span>
-                                    </div>
+                                     {/* Currency */}
+                                     <div className="col-span-1 flex items-center justify-center text-center">
+                                         <span className="text-[13px] font-bold text-stone-900 dark:text-zinc-100 text-center">
+                                             {est.currency?.toUpperCase() || 'JOD'}
+                                         </span>
+                                     </div>
 
 
-                                    {/* Created */}
-                                    <div className="col-span-2 flex items-center justify-center text-center">
-                                        <span className="text-sm text-gray-500 dark:text-gray-400 text-center">
-                                            {formatCreatedDate(est.createdAt)}
-                                        </span>
-                                    </div>
-                                    {/* Actions */}
-                                    <div className="col-span-2 flex items-center justify-center gap-2">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleEstablishmentClick(est);
-                                            }}
-                                            className="px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center gap-2"
-                                        >
-                                            {t('owner.locations.enter')}
-                                        </button>
-                                    </div>
+                                     {/* Created */}
+                                     <div className="col-span-2 flex items-center justify-center text-center">
+                                         <span className="text-[13px] text-stone-500 dark:text-zinc-400 text-center">
+                                             {formatCreatedDate(est.createdAt)}
+                                         </span>
+                                     </div>
+                                     {/* Actions */}
+                                     <div className="col-span-2 flex items-center justify-center gap-2">
+                                         <button
+                                             onClick={(e) => {
+                                                 e.stopPropagation();
+                                                 handleEstablishmentClick(est);
+                                             }}
+                                             className="rounded-xl bg-stone-900 px-4 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
+                                         >
+                                             {t('owner.locations.enter')}
+                                         </button>
+                                     </div>
                                 </div>
                             );
                         })}

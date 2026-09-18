@@ -322,7 +322,7 @@ export const TicketDetailPage = () => {
   const statusConfig: Record<TicketStatus, { label: string; color: string; bg: string; icon: React.ElementType; dotColor: string }> = {
     open: { label: t('support.tickets.status.open'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-500/15', icon: AlertCircle, dotColor: 'bg-blue-500' },
     in_progress: { label: t('support.tickets.status.inProgress'), color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-500/15', icon: Loader2, dotColor: 'bg-amber-500' },
-    resolved: { label: t('support.tickets.status.resolved'), color: 'text-mintcom-green dark:text-mintcom-green', bg: 'bg-mintcom-green/10 dark:bg-mintcom-green/', icon: CheckCircle2, dotColor: 'bg-mintcom-green' },
+    resolved: { label: t('support.tickets.status.resolved'), color: 'text-emerald-700 dark:text-emerald-300', bg: 'bg-emerald-50 dark:bg-emerald-500/10', icon: CheckCircle2, dotColor: 'bg-mintcom-green' },
     closed: { label: t('support.tickets.status.closed'), color: 'text-gray-500 dark:text-gray-400', bg: 'bg-gray-100 dark:bg-gray-500/15', icon: XCircle, dotColor: 'bg-gray-400' },
   };
 
@@ -336,10 +336,10 @@ export const TicketDetailPage = () => {
   // ─── Auth guard ────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+      <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
-          <div className="w-full px-6 md:px-10 lg:px-16">
+          <div className="mx-auto w-full max-w-4xl px-6">
             <SurfaceLoader message={t('common.loading')} className="max-w-4xl mx-auto" />
           </div>
         </main>
@@ -355,10 +355,10 @@ export const TicketDetailPage = () => {
   // ─── Loading ticket ────────────────────────────────────────────────────────
   if (loadingDetail) {
     return (
-      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+      <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
-          <div className="w-full px-6 md:px-10 lg:px-16">
+          <div className="mx-auto w-full max-w-4xl px-6">
             <SurfaceLoader
               message={t('support.tickets.loadingDetail', { defaultValue: 'Loading ticket...' })}
               className="max-w-4xl mx-auto"
@@ -373,10 +373,10 @@ export const TicketDetailPage = () => {
   // ─── Load error (transient) ──────────────────────────────────────────────────
   if (loadError && !ticket) {
     return (
-      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+      <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
-          <div className="w-full px-6 md:px-10 lg:px-16">
+          <div className="mx-auto w-full max-w-4xl px-6">
             <div className="max-w-4xl mx-auto rounded-3xl border border-red-100 bg-white dark:border-red-500/20 dark:bg-white/[0.03] p-16 text-center">
               <div className="w-20 h-20 bg-red-50 dark:bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <AlertCircle size={36} className="text-red-500" />
@@ -408,10 +408,10 @@ export const TicketDetailPage = () => {
   // ─── Not found ─────────────────────────────────────────────────────────────
   if (notFound || !ticket) {
     return (
-      <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+      <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
         <Navbar hideCommercialLinks />
         <main className="pt-28 pb-20">
-          <div className="w-full px-6 md:px-10 lg:px-16">
+          <div className="mx-auto w-full max-w-4xl px-6">
             <div className="max-w-4xl mx-auto rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-16 text-center">
               <div className="w-20 h-20 bg-gray-100 dark:bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Inbox size={36} className="text-gray-400" />
@@ -442,19 +442,20 @@ export const TicketDetailPage = () => {
 
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-[#050505] dark:text-white">
+    <div className="min-h-screen bg-cream-100 font-sans text-stone-900 dark:bg-zinc-950 dark:text-zinc-100">
       <Navbar hideCommercialLinks />
 
       <main className="pt-28 pb-20">
-        <div className="w-full px-6 md:px-10 lg:px-16">
+        <div className="mx-auto w-full max-w-4xl px-6">
           {/* ──── Header ──── */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Link
                 to="/support/tickets"
-                className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-xl transition-colors"
+                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               >
-                <ArrowLeft size={20} />
+                <ArrowLeft size={15} className="transition-transform group-hover:-translate-x-0.5" />
+                {t('support.tickets.backToTickets')}
               </Link>
               <button
                 onClick={handleCopyId}
@@ -467,7 +468,7 @@ export const TicketDetailPage = () => {
 
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="flex-1">
-                <h1 className="font-magilio text-2xl md:text-3xl font-black tracking-tight mb-3">
+                <h1 className="font-magilio mb-3 text-2xl font-bold tracking-tight md:text-3xl">
                   {ticket.subject}
                 </h1>
                 <div className="flex flex-wrap items-center gap-2">
@@ -493,23 +494,23 @@ export const TicketDetailPage = () => {
           </div>
 
           {/* ──── Info card ──── */}
-          <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] p-6 mb-6">
+          <div className="mb-6 rounded-2xl border border-stone-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900/60">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('support.tickets.created')}</p>
-                <p className="font-bold text-sm">{formatTimestamp(ticket.createdAt)}</p>
+                <p className="mb-1 text-xs font-semibold text-stone-400">{t('support.tickets.created')}</p>
+                <p className="text-sm font-semibold">{formatTimestamp(ticket.createdAt)}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('support.tickets.lastUpdated')}</p>
-                <p className="font-bold text-sm">{formatTimestamp(ticket.updatedAt)}</p>
+                <p className="mb-1 text-xs font-semibold text-stone-400">{t('support.tickets.lastUpdated')}</p>
+                <p className="text-sm font-semibold">{formatTimestamp(ticket.updatedAt)}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">{t('common.category')}</p>
+                <p className="mb-1 text-xs font-semibold text-stone-400">{t('common.category')}</p>
                 <p className="font-bold text-sm capitalize">{ticket.category}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Messages</p>
-                <p className="font-bold text-sm flex items-center gap-1.5">
+                <p className="mb-1 text-xs font-semibold text-stone-400">Messages</p>
+                <p className="flex items-center gap-1.5 text-sm font-semibold">
                   <MessageSquare size={14} className="text-gray-400" />
                   {ticket.messages.length}
                 </p>
@@ -518,39 +519,33 @@ export const TicketDetailPage = () => {
           </div>
 
           {/* ──── Conversation ──── */}
-          <div className="rounded-3xl border border-gray-100 bg-white dark:border-white/10 dark:bg-white/[0.03] overflow-hidden">
+          <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/60">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex items-center justify-between">
-              <h2 className="font-barlow font-bold flex items-center gap-2">
-                <MessageSquare size={18} className="text-gray-400" />
+            <div className="flex items-center justify-between border-b border-stone-200 px-5 py-3.5 dark:border-zinc-800">
+              <h2 className="font-barlow flex items-center gap-2 text-[15px] font-bold">
+                <MessageSquare size={16} className="text-stone-400" />
                 {t('support.tickets.conversation')}
               </h2>
-              <span className="text-xs font-bold text-gray-400">
-                {ticket.messages.length} message{ticket.messages.length !== 1 ? 's' : ''}
+              <span className="text-xs tabular-nums text-stone-400">
+                {t('support.tickets.messagesCount', { count: ticket.messages.length })}
               </span>
             </div>
 
             {/* Messages list */}
             <div className="p-6 space-y-5 max-h-[600px] overflow-y-auto">
-              {ticket.messages.map((message, index) => (
-                <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: Math.min(index * 0.08, 0.5) }}
-                  className="flex gap-3 md:gap-4"
-                >
+              {ticket.messages.map((message) => (
+                <div key={message.id} className="flex gap-3">
                   {/* Avatar */}
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${message.sender === 'user'
-                      ? 'bg-gray-200 dark:bg-white/10'
+                    className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full ${message.sender === 'user'
+                      ? 'bg-stone-200 dark:bg-zinc-700'
                       : 'bg-mintcom-green/20'
                       }`}
                   >
                     {message.sender === 'user' ? (
-                      <User size={18} className="text-gray-600 dark:text-gray-400" />
+                      <User size={16} className="text-stone-500 dark:text-zinc-400" />
                     ) : (
-                      <Headphones size={18} className="text-mintcom-green" />
+                      <Headphones size={16} className="text-mintcom-green" />
                     )}
                   </div>
 
@@ -566,12 +561,12 @@ export const TicketDetailPage = () => {
                     </div>
 
                     <div
-                      className={`p-4 rounded-2xl ${message.sender === 'user'
-                        ? 'bg-gray-50 dark:bg-white/5'
-                        : 'bg-mintcom-green/5 border border-mintcom-green/10'
+                      className={`rounded-2xl p-4 ${message.sender === 'user'
+                        ? 'bg-stone-100 dark:bg-zinc-800/70'
+                        : 'border border-mintcom-green/20 bg-mintcom-green/[0.04]'
                         }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                      <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed">{message.content}</p>
 
                       {message.attachments && message.attachments.length > 0 && (
                         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10">
@@ -600,7 +595,7 @@ export const TicketDetailPage = () => {
                       )}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
               <div ref={messagesEndRef} />
             </div>

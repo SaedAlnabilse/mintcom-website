@@ -221,11 +221,11 @@ export function AlertRow({
       onClick={interactive ? () => onActivate?.(alert) : undefined}
       onKeyDown={interactive ? handleKeyDown : undefined}
       aria-label={interactive ? t('notifications.accessibility.openAlert', { title }) : undefined}
-      className={`group relative flex gap-3 border-b border-gray-100 px-4 py-4 text-start last:border-b-0 dark:border-white/5 ${
+      className={`group relative flex gap-3 border-b border-stone-100 px-4 py-4 text-start last:border-b-0 dark:border-zinc-800 ${
         alert.isRead
-          ? 'bg-white dark:bg-[#0D0D0D]'
+          ? 'bg-white dark:bg-zinc-900/60'
           : 'bg-mintcom-green/[0.06] dark:bg-mintcom-green/[0.04]'
-      } ${interactive ? 'cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-mintcom-green dark:hover:bg-white/[0.04]' : ''} ${
+      } ${interactive ? 'cursor-pointer hover:bg-stone-50/80 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-mintcom-green dark:hover:bg-zinc-800/40' : ''} ${
         compact ? 'py-3' : ''
       }`}
     >
@@ -241,18 +241,18 @@ export function AlertRow({
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="line-clamp-2 text-sm font-bold text-gray-900 dark:text-white">
+            <p className="line-clamp-2 text-sm font-bold text-stone-900 dark:text-zinc-100">
               {title}
             </p>
             {!compact && (
-              <p className="mt-1 line-clamp-2 text-sm leading-5 text-gray-500 dark:text-gray-400">
+              <p className="mt-1 line-clamp-2 text-sm leading-5 text-stone-500 dark:text-zinc-400">
                 {description}
               </p>
             )}
           </div>
 
           <div className="flex shrink-0 items-start gap-2">
-            <time className="pt-0.5 text-xs font-medium text-gray-400 dark:text-gray-500">
+            <time className="pt-0.5 text-xs font-medium text-stone-400 dark:text-zinc-500">
               {relativeTime}
             </time>
             {dismissible && (
@@ -262,7 +262,7 @@ export function AlertRow({
                   event.stopPropagation();
                   onDismiss?.(alert);
                 }}
-                className="rounded-lg p-1 text-gray-400 opacity-100 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                className="rounded-lg p-1 text-stone-400 opacity-100 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 dark:hover:bg-red-500/10 dark:hover:text-red-400"
                 aria-label={t('notifications.actions.dismiss')}
               >
                 <X size={16} />

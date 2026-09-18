@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Building2,
-    Search,
     Link2,
     Loader2,
     Store,
@@ -19,7 +18,6 @@ import {
     Eye,
     EyeOff,
     Trash2,
-    X,
     AlertTriangle
 } from 'lucide-react';
 
@@ -31,11 +29,9 @@ import api from '../../config/api';
 import { SecurityVerificationModal } from '../../components/SecurityVerificationModal';
 import { BusyOverlay } from '../../components/BusyOverlay';
 import { useAuth } from '../../context/AuthContext';
-import { CustomSelect } from '../../components/CustomSelect';
 import { getBusinessTypeIcon } from '../../utils/businessTypeIcons';
-import { EmptyState, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, Card } from '../../components/ui';
+import { EmptyState, Pagination, Modal, ModalHeader, ModalBody, ModalFooter, ModalCancelButton, ModalSubmitButton, ModalCloseButton, PageHeader, ListFilterBar, SelectInput, StatCard, StatCardGrid } from '../../components/ui';
 import { SectionLoader } from '../../components/LoadingState';
-import { StatValue } from '../../components/ui/StatValue';
 import { formatInputPlaceholder, formatInputLabel } from '../../utils/textCase';
 import { getPersonInitials, getPersonDisplayName } from '../../utils/personName';
 import { getPasswordSchema } from '../../utils/validation';
@@ -364,7 +360,7 @@ export function OwnerBrandsPage() {
     const getRoleBadgeColor = (role: string) => {
         switch (role?.toUpperCase()) {
             case 'MANAGER':
-                return 'bg-slate-500/10 text-slate-600 dark:text-slate-300 border-slate-500/20';
+                return 'bg-stone-500/10 text-stone-600 dark:text-zinc-300 border-stone-500/20';
             case 'CASHIER':
                 return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
             case 'WAITER':
@@ -372,7 +368,7 @@ export function OwnerBrandsPage() {
             case 'ADMIN':
                 return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
             default:
-                return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+                return 'bg-stone-500/10 text-stone-500 border-stone-500/20';
         }
     };
 
@@ -493,9 +489,9 @@ export function OwnerBrandsPage() {
                                 setShowCreateModal(true);
                             }
                         }}
-                        className="flex w-full sm:w-auto items-center justify-center gap-2 px-4 py-2.5 min-h-[48px] rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors"
+                        className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                     >
-                        <Plus size={18} strokeWidth={2.5} className="shrink-0" />
+                        <Plus size={15} strokeWidth={2} className="shrink-0" />
                         <span className="truncate">{t('owner.brands.createBrand')}</span>
                     </button>
                     </>
@@ -503,77 +499,46 @@ export function OwnerBrandsPage() {
             />
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <StatCardGrid columns={3}>
                 {[
-                    { label: t('owner.brands.activeBrands'), value: brands.length, icon: biIcon('bi-collection'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.brands.linkedLocations'), value: brands.reduce((acc, b) => acc + b.establishmentCount, 0), icon: biIcon('bi-diagram-3'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
-                    { label: t('owner.brands.availableLocations'), value: availableEstablishments.length, icon: biIcon('bi-geo-alt'), color: 'text-mintcom-green', bg: 'bg-mintcom-green/10' },
+                    { label: t('owner.brands.activeBrands'), value: brands.length, icon: biIcon('bi-collection') },
+                    { label: t('owner.brands.linkedLocations'), value: brands.reduce((acc, b) => acc + b.establishmentCount, 0), icon: biIcon('bi-diagram-3') },
+                    { label: t('owner.brands.availableLocations'), value: availableEstablishments.length, icon: biIcon('bi-geo-alt') },
                 ].map((stat, i) => (
-                    <div
-                        key={i}
-                        className="group relative p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] transition-all duration-300 overflow-hidden"
-                    >
-                        <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-0 transition-opacity duration-500 pointer-events-none ${stat.bg}`} />
-                        <div className="relative z-10 flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} flex items-center justify-center transition-transform duration-300`}>
-                                <stat.icon size={20} />
-                            </div>
-                            <div>
-                                <p className="dashboard-stat-title mb-1 truncate">{stat.label}</p>
-                                <div className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">
-                                    <StatValue value={stat.value} isInteger={true} />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <StatCard
+                        key={stat.label}
+                        label={stat.label}
+                        value={stat.value}
+                        isInteger={true}
+                        icon={stat.icon}
+                        iconTone="green"
+                        delay={i * 0.05}
+                    />
                 ))}
-            </div>
+            </StatCardGrid>
 
             {/* Filters Bar */}
-            <Card padding="sm">
-                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                    {/* Search */}
-                    <div className="relative flex-1 min-w-0 w-full">
-                        <Search
-                            size={18}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                        />
-                        <input maxLength={255}
-                            type="text"
-                            placeholder={formatInputPlaceholder(t('owner.brands.searchPlaceholder'), t('common.locale'))}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-12 pr-11 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-medium focus:outline-none h-[52px] shadow-sm transition-all"
-                        />
-                        {searchQuery && (
-                          <button
-                            type="button"
-                            onClick={() => setSearchQuery('')}
-                            aria-label={t('common.clearSearch', 'Clear search')}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                          >
-                            <X size={12} strokeWidth={2.75} />
-                          </button>
-                        )}
-                    </div>
-
-                    {/* Filter Controls */}
-                    <div className="flex items-center gap-3 flex-wrap lg:ml-auto w-full lg:w-auto">
-                        {/* Sort */}
-                        <div className="w-full sm:w-52">
-                            <CustomSelect
-                                value={sortBy}
-                                onChange={(val) => setSortBy(val as SortOption)}
-                                options={[
-                                    { label: t('common.sortByName'), value: 'name' },
-                                    { label: t('common.sortByDate'), value: 'date' },
-                                    { label: t('common.sortByLocations'), value: 'locations' },
-                                ]}
-                            />
-                        </div>
-                    </div>
+            <ListFilterBar
+                searchValue={searchQuery}
+                onSearchChange={(e) => setSearchQuery(e.target.value)}
+                onSearchClear={() => setSearchQuery('')}
+                searchPlaceholder={formatInputPlaceholder(t('owner.brands.searchPlaceholder'), t('common.locale'))}
+            >
+                {/* Sort */}
+                <div className="w-full sm:w-52">
+                    <SelectInput
+                        value={sortBy}
+                        onChange={(val) => setSortBy((val as SortOption) || 'name')}
+                        options={[
+                            { label: t('common.sortByName'), value: 'name' },
+                            { label: t('common.sortByDate'), value: 'date' },
+                            { label: t('common.sortByLocations'), value: 'locations' },
+                        ]}
+                        showAllOption={false}
+                        searchable={false}
+                    />
                 </div>
-            </Card>
+            </ListFilterBar>
 
             {/* Brands Display */}
             {filteredBrands.length === 0 ? (
@@ -591,7 +556,7 @@ export function OwnerBrandsPage() {
                                         setShowCreateModal(true);
                                     }
                                 }}
-                                className="mt-6 px-4 py-2.5 bg-mintcom-green text-black font-semibold rounded-lg hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors flex items-center gap-2 mx-auto"
+                                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110 mx-auto"
                             >
                                 <Link2 size={18} />
                                 {t('owner.brands.createFirstBrand')}
@@ -600,30 +565,27 @@ export function OwnerBrandsPage() {
                     }
                 />
             ) : (
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-sm">
+                <div className="bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 overflow-hidden shadow-sm">
                     <div className="p-6">
                         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                             {paginatedBrands.map((brand) => (
                                 <div
                                     key={brand.id}
-                                    className={`group relative bg-white dark:bg-[#1E293B] rounded-2xl border p-6 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
+                                    className={`group relative bg-white dark:bg-zinc-900/60 rounded-2xl border p-5 shadow-sm transition-colors overflow-hidden ${brand.id === 'cmkek5eme0001vjjqvfm3wjwa'
                                         ? 'border-mintcom-green bg-mintcom-green/[0.02]'
-                                        : 'border-gray-200 dark:border-white/5 hover:border-blue-500/30'
+                                        : 'border-stone-200 dark:border-zinc-800 hover:border-stone-300 dark:hover:border-zinc-700'
                                         }`}
                                 >
-                                    {/* Hover gradient */}
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
                                     <div className="relative z-10">
                                         {/* Header */}
                                         <div className="flex items-start justify-between mb-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-14 h-14 rounded-xl bg-blue-500/10 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                                    <Building2 size={28} className="text-blue-500" />
-                                                </div>
+                                                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 text-mintcom-green">
+                                                    <Building2 size={19} strokeWidth={1.75} />
+                                                </span>
                                                 <div>
                                                     <div className="flex items-center gap-2 mb-1">
-                                                        <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-blue-500 transition-colors">
+                                                        <h3 className="font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100">
                                                             {brand.name}
                                                         </h3>
                                                     </div>
@@ -644,20 +606,20 @@ export function OwnerBrandsPage() {
                                                         e.stopPropagation();
                                                         setActiveMenu(brand.id === activeMenu ? null : brand.id);
                                                     }}
-                                                    className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-400 transition-colors"
+                                                    className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-400 transition-colors"
                                                 >
                                                     <MoreVertical size={18} />
                                                 </button>
 
                                                 {activeMenu === brand.id && (
-                                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-xl z-50 overflow-hidden">
+                                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-xl z-50 overflow-hidden">
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 const slug = brand.establishmentLoginId || brand.id;
                                                                 window.open(`/brand/${slug}`, '_blank');
                                                             }}
-                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-3 transition-colors"
+                                                            className="w-full px-4 py-3 text-left text-sm font-medium text-stone-700 dark:text-zinc-200 hover:bg-white dark:hover:bg-zinc-800 flex items-center gap-3 transition-colors"
                                                         >
                                                             <Eye size={16} />
                                                             {t('owner.brands.viewDashboard')}
@@ -686,21 +648,21 @@ export function OwnerBrandsPage() {
 
                                         {/* Details */}
                                         <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-4 mb-6 relative z-10">
-                                            <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-blue-500/10 transition-colors">
+                                            <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <Hash size={14} className="text-blue-500" />
+                                                    <Hash size={14} className="text-stone-400" />
                                                     <span className="dashboard-card-label">{t('owner.brands.loginId')}</span>
                                                 </div>
-                                                <p className="text-sm font-mono font-bold text-gray-900 dark:text-white truncate">
+                                                <p className="text-sm font-mono font-bold text-stone-900 dark:text-zinc-100 truncate">
                                                     {brand.establishmentLoginId}
                                                 </p>
                                             </div>
-                                            <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 rounded-xl group-hover:border-blue-500/10 transition-colors">
+                                            <div className="rounded-xl border border-stone-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900/40">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <Calendar size={14} className="text-blue-500" />
+                                                    <Calendar size={14} className="text-stone-400" />
                                                     <span className="dashboard-card-label">{t('owner.brands.created')}</span>
                                                 </div>
-                                                <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                                <p className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                                                     {formatDate(brand.createdAt)}
                                                 </p>
                                             </div>
@@ -715,14 +677,14 @@ export function OwnerBrandsPage() {
                                                 {brand.establishments.slice(0, 4).map((est) => {
                                                     const Icon = getBusinessTypeIcon(est.type);
                                                     return (
-                                                        <div key={est.id} className="px-3 py-2 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-white/5 rounded-lg flex items-center gap-2 hover:border-blue-500/30 transition-all">
-                                                            <Icon size={12} className="text-gray-400" />
-                                                            <span className="text-xs font-bold text-gray-600 dark:text-gray-400 truncate max-w-[100px]">{est.name}</span>
+                                                        <div key={est.id} className="px-3 py-2 bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-lg flex items-center gap-2 hover:border-stone-300 dark:hover:border-zinc-700 transition-colors">
+                                                            <Icon size={12} className="text-stone-400" />
+                                                            <span className="text-xs font-bold text-stone-600 dark:text-stone-400 truncate max-w-[100px]">{est.name}</span>
                                                         </div>
                                                     )
                                                 })}
                                                 {brand.establishments.length > 4 && (
-                                                    <div className="px-3 py-2 bg-gray-100 dark:bg-white/5 rounded-lg">
+                                                    <div className="px-3 py-2 bg-stone-100 dark:bg-zinc-800 rounded-lg">
                                                         <span className="dashboard-card-meta">
                                                             +{brand.establishments.length - 4} {t('common.more')}
                                                         </span>
@@ -732,13 +694,13 @@ export function OwnerBrandsPage() {
                                         </div>
 
                                         {/* Action */}
-                                        <div className="mt-6 pt-6 border-t border-gray-100 dark:border-white/5 flex items-center justify-between">
+                                        <div className="mt-6 pt-6 border-t border-stone-100 dark:border-zinc-800 flex items-center justify-between">
                                             <button
                                                 onClick={() => {
                                                     const slug = brand.establishmentLoginId || brand.id;
                                                     window.open(`/brand/${slug}`, '_blank');
                                                 }}
-                                                className="flex-1 py-3 rounded-xl bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 label-strong hover:bg-blue-500 hover:text-white transition-all flex items-center justify-center gap-2 group/btn border border-gray-200 dark:border-white/5 hover:border-blue-500 shadow-sm"
+                                                className="flex-1 rounded-xl bg-stone-900 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-stone-700 flex items-center justify-center gap-2 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110"
                                             >
                                                 <span>{t('owner.brands.openDashboard')}</span>
                                                 <ExternalLink size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
@@ -777,14 +739,14 @@ export function OwnerBrandsPage() {
                             {[1, 2, 3].map((step) => (
                                 <div
                                     key={step}
-                                    className={`h-1.5 rounded-full transition-all duration-500 ${wizardStep === step ? 'w-8 bg-mintcom-green' : 'w-2 bg-gray-200 dark:bg-white/10'}`}
+                                    className={`h-1.5 rounded-full transition-all duration-500 ${wizardStep === step ? 'w-8 bg-mintcom-green' : 'w-2 bg-stone-200 dark:bg-zinc-800'}`}
                                 />
                             ))}
                         </div>
                         {wizardStep > 1 && (
                             <button
                                 onClick={handlePrevStep}
-                                className="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg text-gray-400 transition-all"
+                                className="p-1.5 hover:bg-stone-100 dark:hover:bg-zinc-700 rounded-lg text-stone-400 transition-all"
                             >
                                 <ChevronLeft size={20} />
                             </button>
@@ -793,33 +755,33 @@ export function OwnerBrandsPage() {
                                         {wizardStep === 1 && (
                                         <div className="space-y-6 py-2">
                                             <div className="space-y-2">
-                                                <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.brandName'), t('common.locale'))}</label>
+                                                <label className="text-[15px] font-sans font-normal text-stone-500 ml-1">{formatInputLabel(t('owner.brands.brandName'), t('common.locale'))}</label>
                                                 <div className="relative group">
-                                                    <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                                                    <Building2 className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...register('name')}
-                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
+                                                        className="w-full pl-14 pr-5 py-4.5 bg-white dark:bg-zinc-900/60 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                                         placeholder={formatInputPlaceholder(t('owner.brands.brandNamePlaceholder'), t('common.locale'))}
                                                     />
                                                 </div>
-                                                {errors.name && <p className="text-[#ef4444] text-[12px] mt-1 font-bold ml-1">{errors.name.message}</p>}
+                                                {errors.name && <p className="text-red-500 text-[12px] mt-1 font-bold ml-1">{errors.name.message}</p>}
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.adminLoginId'), t('common.locale'))}</label>
+                                                <label className="text-[15px] font-sans font-normal text-stone-500 ml-1">{formatInputLabel(t('owner.brands.adminLoginId'), t('common.locale'))}</label>
                                                 <div className="relative group">
-                                                    <Hash className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                                                    <Hash className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...establishmentLoginIdField}
-                                                        className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
+                                                        className="w-full pl-14 pr-5 py-4.5 bg-white dark:bg-zinc-900/60 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                                         placeholder={formatInputPlaceholder(t('owner.brands.adminLoginIdPlaceholder'), t('common.locale'))}
                                                     />
                                                 </div>
-                                                <p className="text-[12px] font-sans font-medium text-gray-400 mt-2 ml-1 leading-relaxed opacity-80">
+                                                <p className="text-[12px] font-sans font-medium text-stone-400 mt-2 ml-1 leading-relaxed opacity-80">
                                                     {t('owner.brands.adminLoginIdHint')}
                                                 </p>
                                                 {loginIdCheckState === 'checking' && (
-                                                    <p className="mt-1 text-[12px] font-bold text-gray-500 flex items-center gap-1.5 ml-1">
+                                                    <p className="mt-1 text-[12px] font-bold text-stone-500 flex items-center gap-1.5 ml-1">
                                                         <Loader2 size={12} className="animate-spin" />
                                                         {t('owner.brands.validation.loginIdChecking', { defaultValue: 'Checking availability...' })}
                                                     </p>
@@ -830,28 +792,28 @@ export function OwnerBrandsPage() {
                                                         {loginIdCheckMessage}
                                                     </p>
                                                 )}
-                                                {errors.establishmentLoginId && <p className="text-[#ef4444] text-[12px] mt-1 font-bold ml-1">{errors.establishmentLoginId.message}</p>}
+                                                {errors.establishmentLoginId && <p className="text-red-500 text-[12px] mt-1 font-bold ml-1">{errors.establishmentLoginId.message}</p>}
                                             </div>
 
                                             <div className="space-y-2">
-                                                <label className="text-[15px] font-sans font-normal text-gray-500 ml-1">{formatInputLabel(t('owner.brands.adminPassword'), t('common.locale'))}</label>
+                                                <label className="text-[15px] font-sans font-normal text-stone-500 ml-1">{formatInputLabel(t('owner.brands.adminPassword'), t('common.locale'))}</label>
                                                 <div className="relative group">
-                                                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                                                    <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                                     <input maxLength={255}
                                                         {...register('establishmentPassword')}
                                                         type={showPassword ? "text" : "password"}
-                                                        className="w-full pl-14 pr-14 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
+                                                        className="w-full pl-14 pr-14 py-4.5 bg-white dark:bg-zinc-900/60 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                                         placeholder={formatInputPlaceholder("********", t('common.locale'))}
                                                     />
                                                     <button
                                                         type="button"
                                                         onClick={() => setShowPassword(!showPassword)}
-                                                        className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1"
+                                                        className="absolute right-5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors p-1"
                                                     >
                                                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                                     </button>
                                                 </div>
-                                                {errors.establishmentPassword && <p className="text-[#ef4444] text-[12px] mt-1 font-bold ml-1">{errors.establishmentPassword.message}</p>}
+                                                {errors.establishmentPassword && <p className="text-red-500 text-[12px] mt-1 font-bold ml-1">{errors.establishmentPassword.message}</p>}
                                             </div>
                                         </div>
                                     )}
@@ -860,10 +822,10 @@ export function OwnerBrandsPage() {
                                         <div className="space-y-6 py-2">
                                             <div className="flex items-center justify-between gap-4">
                                                 <div className="space-y-1">
-                                                    <h3 className="text-xl font-sans font-bold text-gray-900 dark:text-white leading-tight">
+                                                    <h3 className="text-xl font-sans font-bold text-stone-900 dark:text-zinc-100 leading-tight">
                                                         {t('owner.brands.selectLocationsToLink')}
                                                     </h3>
-                                                    <p className="text-sm text-gray-500 font-sans font-medium">
+                                                    <p className="text-sm text-stone-500 font-sans font-medium">
                                                         (These are the unlinked locations to add, any locations not listed here are already included in other brand groups)
                                                     </p>
                                                 </div>
@@ -881,19 +843,19 @@ export function OwnerBrandsPage() {
                                                             key={est.id}
                                                             type="button"
                                                             onClick={() => toggleEstablishment(est.id)}
-                                                            className={`w-full flex items-center gap-4 p-4 rounded-3xl border transition-all text-left group ${isSelected
+                                                            className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${isSelected
                                                                 ? 'border-mintcom-green bg-mintcom-green/5'
-                                                                : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10 hover:border-mintcom-green/20'
+                                                                : 'border-stone-100 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:border-mintcom-green/20'
                                                                 }`}
                                                         >
-                                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
+                                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-zinc-800 text-stone-400'}`}>
                                                                 <Icon size={24} />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <p className="text-[15px] font-sans font-bold text-gray-900 dark:text-white truncate">{est.name || est.establishmentName}</p>
-                                                                <p className="text-[11px] font-sans font-bold text-gray-400 tracking-wider uppercase mt-0.5">{est.type || t('owner.brands.location')}</p>
+                                                                <p className="text-[15px] font-sans font-bold text-stone-900 dark:text-zinc-100 truncate">{est.name || est.establishmentName}</p>
+                                                                <p className="text-[11px] font-sans font-bold text-stone-400 tracking-wider uppercase mt-0.5">{est.type || t('owner.brands.location')}</p>
                                                             </div>
-                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-300 dark:border-white/10'}`}>
+                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-stone-300 dark:border-zinc-800'}`}>
                                                                 {isSelected && <Check size={14} className="text-black" strokeWidth={4} />}
                                                             </div>
                                                         </button>
@@ -905,11 +867,11 @@ export function OwnerBrandsPage() {
 
                                     {wizardStep === 3 && (
                                         <div className="space-y-6 py-2">
-                                            <div className="bg-mintcom-green/5 border border-mintcom-green/10 rounded-[1.5rem] p-5 flex gap-4">
+                                            <div className="bg-mintcom-green/5 border border-mintcom-green/10 rounded-2xl p-5 flex gap-4">
                                                 <div className="w-10 h-10 rounded-xl bg-mintcom-green/10 flex items-center justify-center shrink-0">
                                                     <Shield className="text-mintcom-green" size={20} />
                                                 </div>
-                                                <p className="text-[13px] font-sans font-medium text-gray-500 leading-relaxed">
+                                                <p className="text-[13px] font-sans font-medium text-stone-500 leading-relaxed">
                                                     {t('owner.brands.wizard.finalStepDesc')}
                                                 </p>
                                             </div>
@@ -917,15 +879,15 @@ export function OwnerBrandsPage() {
                                             {loadingEmployees ? (
                                                 <div className="flex flex-col items-center justify-center py-12">
                                                     <Loader2 className="animate-spin text-mintcom-green mb-4" size={32} />
-                                                    <p className="text-[15px] font-sans font-bold text-gray-500">{t('owner.brands.wizard.scanningEmployees')}</p>
+                                                    <p className="text-[15px] font-sans font-bold text-stone-500">{t('owner.brands.wizard.scanningEmployees')}</p>
                                                 </div>
                                             ) : (
                                                 <div className="space-y-8">
                                                     {employeesForMerging.map((group) => (group.employees.length > 0 && (
                                                         <div key={group.establishmentId} className="space-y-4">
-                                                            <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-[#1E293B] z-10 py-2">
-                                                                <h4 className="text-[14px] font-sans font-bold text-gray-900 dark:text-white flex items-center gap-2.5">
-                                                                    <div className="w-8 h-8 rounded-lg bg-mintcom-green/10 flex items-center justify-center">
+                                                            <div className="flex items-center justify-between sticky top-0 bg-white dark:bg-zinc-900/60 z-10 py-2">
+                                                                <h4 className="text-[14px] font-sans font-bold text-stone-900 dark:text-zinc-100 flex items-center gap-2.5">
+                                                                    <div className="w-8 h-8 rounded-xl bg-mintcom-green/10 flex items-center justify-center">
                                                                         <Store size={16} className="text-mintcom-green" />
                                                                     </div>
                                                                     {group.establishmentName}
@@ -950,21 +912,21 @@ export function OwnerBrandsPage() {
                                                                             key={`${group.establishmentId}-${emp.employeeId}`}
                                                                             type="button"
                                                                             onClick={() => toggleEmployee(emp.employeeId)}
-                                                                            className={`w-full flex items-center gap-4 p-4 rounded-3xl border transition-all text-left ${isSelected
+                                                                            className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all text-left ${isSelected
                                                                                 ? 'border-mintcom-green bg-mintcom-green/5'
-                                                                                : 'border-gray-50 dark:border-white/5 bg-white dark:bg-black/10 hover:border-mintcom-green/20'
+                                                                                : 'border-stone-100 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 hover:border-mintcom-green/20'
                                                                                 }`}
                                                                         >
-                                                                            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-[14px] font-sans font-bold transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-500'}`}>
+                                                                            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center text-[14px] font-sans font-bold transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-stone-100 dark:bg-zinc-800 text-stone-500'}`}>
                                                                                 {getPersonInitials(emp)}
                                                                             </div>
                                                                             <div className="flex-1 min-w-0">
-                                                                                <p className="text-[15px] font-sans font-bold text-gray-900 dark:text-white truncate">{getPersonDisplayName(emp, t('common.unknown'))}</p>
+                                                                                <p className="text-[15px] font-sans font-bold text-stone-900 dark:text-zinc-100 truncate">{getPersonDisplayName(emp, t('common.unknown'))}</p>
                                                                                 <span className={`inline-block mt-1 px-2 py-0.5 rounded-lg text-[10px] font-sans font-bold uppercase border ${getRoleBadgeColor(emp.role)}`}>
                                                                                     {emp.role}
                                                                                 </span>
                                                                             </div>
-                                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-stone-200 dark:border-zinc-800'}`}>
                                                                                 {isSelected && <Check size={14} className="text-black" strokeWidth={4} />}
                                                                             </div>
                                                                         </button>
@@ -1027,15 +989,15 @@ export function OwnerBrandsPage() {
                 <ModalCloseButton onClose={() => setShowDisclaimerModal(false)} autoPositionAbsolute />
                 <ModalBody>
                     <div className="flex flex-col items-center text-center space-y-6">
-                        <div className="w-20 h-20 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
+                        <div className="w-20 h-20 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
                             <AlertTriangle size={40} />
                         </div>
 
                         <div className="space-y-2">
-                            <h2 className="text-2xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">
+                            <h2 className="text-2xl font-sans font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                                 {t('owner.brands.disclaimerTitle')}
                             </h2>
-                            <p className="text-[15px] font-sans font-medium text-gray-500">
+                            <p className="text-[15px] font-sans font-medium text-stone-500">
                                 {establishments.length < 2
                                     ? t('owner.brands.disclaimerNotEnoughLocations')
                                     : t('owner.brands.disclaimerSubtitle')
@@ -1043,8 +1005,8 @@ export function OwnerBrandsPage() {
                             </p>
                         </div>
 
-                        <div className="bg-gray-50 dark:bg-black/20 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
-                            <p className="text-[14px] font-sans font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
+                        <div className="bg-white dark:bg-zinc-900/60 rounded-2xl p-6 border border-stone-100 dark:border-zinc-800">
+                            <p className="text-[14px] font-sans font-medium text-stone-600 dark:text-stone-400 leading-relaxed">
                                 {establishments.length < 2
                                     ? t('owner.brands.disclaimerNoLocations')
                                     : t('owner.brands.disclaimerDesc')

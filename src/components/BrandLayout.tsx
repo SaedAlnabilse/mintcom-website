@@ -183,7 +183,7 @@ export function BrandLayout() {
     return (
         <div
             dir={isRtl ? 'rtl' : 'ltr'}
-            className="h-screen bg-gray-50 dark:bg-[#050505] text-gray-900 dark:text-gray-100 font-sans flex overflow-hidden transition-colors duration-500"
+            className="h-screen bg-cream-100 dark:bg-zinc-950 text-stone-900 dark:text-zinc-100 font-sans flex overflow-hidden selection:bg-mintcom-green selection:text-black transition-colors duration-500"
         >
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
@@ -207,7 +207,7 @@ export function BrandLayout() {
                     transition: { duration: 0.3, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    relative z-[100] flex flex-col h-screen py-4 bg-white dark:bg-[#1E293B] border-r border-gray-200 dark:border-white/5 shadow-lg group/sidebar
+                    relative z-[100] flex flex-col h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar
                     ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
                 `}
             >
@@ -251,15 +251,15 @@ export function BrandLayout() {
                                 className="mx-auto"
                             >
                                 <button
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 border border-mintcom-green/20 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
+                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
                                     <img src={MintcomLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} />
                                     <PanelLeft
                                         size={24}
-                                        className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-gray-500 dark:text-gray-400 group-hover/sidebar:text-gray-900 dark:group-hover/sidebar:text-white"
+                                        className="transition-all duration-300 opacity-0 -rotate-90 group-hover/sidebar:opacity-100 group-hover/sidebar:rotate-0 absolute text-stone-500 dark:text-zinc-400 group-hover/sidebar:text-stone-900 dark:group-hover/sidebar:text-zinc-100"
                                     />
-                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                                    <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                         {t('owner.menu.openSidebar')}
                                     </div>
                                 </button>
@@ -270,7 +270,7 @@ export function BrandLayout() {
                     {sidebarOpen && (
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="p-2 rounded-xl text-gray-400 hover:text-mintcom-green hover:bg-gray-100 dark:hover:bg-white/5 transition-all"
+                            className="p-2 rounded-xl text-stone-400 hover:text-mintcom-green hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all"
                         >
                             <PanelLeftClose size={20} />
                         </button>
@@ -282,14 +282,14 @@ export function BrandLayout() {
                     {sidebarOpen ? (
                         <button
                             onClick={goBackToOwner}
-                            className="w-full flex items-center gap-3 p-3.5 rounded-xl text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group border border-transparent hover:border-mintcom-green/20"
+                            className="w-full flex items-center gap-3 p-3.5 rounded-xl text-stone-500 dark:text-zinc-400 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group border border-transparent hover:border-mintcom-green/20"
                         >
                             <ArrowLeft size={18} className={`transition-transform ${isRtl ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`} />
                             <div className="flex-1 min-w-0 text-left rtl:text-right">
-                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 group-hover:text-mintcom-green/70 transition-colors leading-none mb-1.5">
+                                <p className="text-[10px] font-black uppercase tracking-[0.15em] text-stone-400 dark:text-zinc-500 group-hover:text-mintcom-green/70 transition-colors leading-none mb-1.5">
                                     {t('brand.menu.backToBrands')}
                                 </p>
-                                <h2 className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white truncate">
+                                <h2 className="text-sm font-bold text-stone-700 dark:text-zinc-300 group-hover:text-stone-900 dark:group-hover:text-zinc-100 truncate">
                                     {brand?.name || t('common.loading')}
                                 </h2>
                             </div>
@@ -297,10 +297,10 @@ export function BrandLayout() {
                     ) : (
                         <button
                             onClick={goBackToOwner}
-                            className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white transition-all group relative"
+                            className="w-12 h-12 flex items-center justify-center rounded-xl text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100 transition-all group relative"
                         >
                             <ArrowLeft size={24} className={isRtl ? 'rotate-180' : ''} />
-                            <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-white/10 shadow-xl translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
+                            <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
                                 {t('brand.menu.switchBrand')}
                             </div>
                         </button>
@@ -314,7 +314,7 @@ export function BrandLayout() {
                 >
 
                     {sidebarOpen && (
-                        <p className="px-3 py-2 text-xs font-semibold text-gray-500 tracking-normal">{t('brand.menu.mainMenu')}</p>
+                        <p className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal">{t('brand.menu.mainMenu')}</p>
                     )}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
@@ -359,7 +359,7 @@ export function BrandLayout() {
                             right: isRtl ? collapsedNavTooltip.offset : undefined,
                         }}
                     >
-                        <div className="px-3 py-1.5 bg-gray-900/90 backdrop-blur-md text-white text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-white/10 shadow-xl">
+                        <div className="px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md">
                             {collapsedNavTooltip.label}
                         </div>
                     </div>
@@ -384,18 +384,18 @@ export function BrandLayout() {
             >
                 <DeletionRestorationBanner />
                 {/* Top Bar (Mobile) */}
-                <div className="lg:hidden flex items-center justify-between gap-2 px-4 py-3 bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/5" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
+                <div className="lg:hidden flex items-center justify-between gap-2 px-4 py-3 bg-white dark:bg-zinc-900/60 border-b border-stone-200 dark:border-zinc-800" style={{ paddingTop: 'max(0.75rem, env(safe-area-inset-top))' }}>
                     <button
                         onClick={() => setMobileMenuOpen(true)}
                         aria-label={t('common.aria.openMenu', { defaultValue: 'Open menu' })}
-                        className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex items-center justify-center shrink-0"
+                        className="min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-center shrink-0"
                     >
-                        <Menu size={24} className="text-gray-600 dark:text-gray-400" />
+                        <Menu size={24} className="text-stone-600 dark:text-zinc-400" />
                     </button>
 
                     <div className="flex items-center gap-2 min-w-0 flex-1 justify-center">
                         <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name').charAt(0)} />
-                        <span className="text-base font-bold text-gray-900 dark:text-white truncate">{brand?.name}</span>
+                        <span className="text-base font-bold text-stone-900 dark:text-zinc-100 truncate">{brand?.name}</span>
                     </div>
 
                     <div className="flex items-center gap-1 shrink-0">
@@ -409,7 +409,7 @@ export function BrandLayout() {
                 </div>
 
                 {/* Content Landscape */}
-                <main className="flex-1 relative bg-gray-50 dark:bg-mintcom-dark overflow-hidden flex flex-col">
+                <main className="flex-1 relative bg-cream-100 dark:bg-zinc-950 overflow-hidden flex flex-col">
                     <div ref={mainContentRef} className="flex-1 overflow-y-auto relative z-10 custom-scrollbar p-4 lg:px-10 lg:pt-8 lg:pb-6 pb-24 w-full">
                         <Outlet context={{ brand }} />
                     </div>
@@ -426,13 +426,13 @@ export function BrandLayout() {
                         transition={{ type: "spring", damping: 28, stiffness: 260 }}
                         role="dialog"
                         aria-modal="true"
-                        className="fixed start-0 top-0 h-[100dvh] w-[85vw] max-w-[300px] min-w-[260px] bg-white dark:bg-[#1E293B] border-e border-gray-200 dark:border-white/5 shadow-2xl z-[100] flex flex-col lg:hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+                        className="fixed start-0 top-0 h-[100dvh] w-[85vw] max-w-[300px] min-w-[260px] bg-white dark:bg-zinc-900/60 border-e border-stone-200 dark:border-zinc-800 shadow-md z-[100] flex flex-col lg:hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
                     >
                         {/* Close Button */}
-                        <div className="flex items-center justify-between h-16 shrink-0 px-4 border-b border-gray-100 dark:border-white/5">
+                        <div className="flex items-center justify-between h-16 shrink-0 px-4 border-b border-stone-200 dark:border-zinc-800">
                             <div className="flex items-center gap-3 min-w-0">
                                 <img src={MintcomLeafIcon} className="w-8 h-8 object-contain shrink-0" alt={t('brand.name').charAt(0)} />
-                                <span className="font-bold text-gray-900 dark:text-white truncate">{t('brand.name')}</span>
+                                <span className="font-bold text-stone-900 dark:text-zinc-100 truncate">{t('brand.name')}</span>
                             </div>
                             <ModalCloseButton
                                 onClose={() => setMobileMenuOpen(false)}
@@ -442,14 +442,14 @@ export function BrandLayout() {
 
                         {/* Brand Card */}
                         <div className="p-4">
-                            <div className="p-4 bg-gradient-to-br from-gray-900 to-black rounded-xl">
+                            <div className="p-4 bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-700 rounded-xl">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-lg bg-mintcom-green/20 flex items-center justify-center">
                                         <Building2 size={20} className="text-mintcom-green" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-mintcom-green">{t('brand.menu.activeBrand')}</p>
-                                        <h2 className="text-sm font-bold text-white truncate">{brand?.name}</h2>
+                                        <p className="text-xs font-bold text-emerald-700 dark:text-mintcom-green">{t('brand.menu.activeBrand')}</p>
+                                        <h2 className="text-sm font-bold text-stone-900 dark:text-zinc-100 truncate">{brand?.name}</h2>
                                     </div>
                                 </div>
                             </div>
@@ -459,7 +459,7 @@ export function BrandLayout() {
                         <nav className="flex-1 px-3 space-y-1 overflow-y-auto overscroll-contain custom-scrollbar pb-4">
                             <button
                                 onClick={goBackToOwner}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl text-gray-500 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group mb-4"
+                                className="w-full flex items-center gap-3 p-3 rounded-xl text-stone-500 dark:text-zinc-400 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group mb-4"
                             >
                                 <ArrowLeft size={18} className={`transition-transform ${t('common.locale') === 'ar' ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`} />
                                 <span className="text-sm font-bold">{t('brand.menu.backToBrands')}</span>
@@ -487,7 +487,7 @@ export function BrandLayout() {
                         </nav>
 
                         {/* Footer */}
-                        <div className="p-4 border-t border-gray-100 dark:border-white/5 shrink-0">
+                        <div className="p-4 border-t border-stone-200 dark:border-zinc-800 shrink-0">
                             <div className="flex items-center gap-2 mb-3 flex-wrap">
                                 <LanguageSwitcher
                                     compact
@@ -507,7 +507,7 @@ export function BrandLayout() {
                                 </div>
                                 <button
                                     onClick={handleLogout}
-                                    className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-400 hover:text-red-500 transition-all"
+                                    className="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 text-stone-400 dark:text-zinc-500 hover:text-red-500 transition-all"
                                 >
                                     <LogOut size={18} />
                                 </button>

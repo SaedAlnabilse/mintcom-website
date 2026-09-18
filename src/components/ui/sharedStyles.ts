@@ -19,39 +19,39 @@
 
 /** Selected sidebar / drawer row (desktop + mobile). */
 export const activeRowClass =
-  'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold active-menu-item [&>svg]:text-mintcom-green';
+  'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 font-semibold active-menu-item [&>svg]:text-mintcom-green';
 
 /** Unselected sidebar / drawer row (desktop — gray-500 base). */
 export const inactiveRowClass =
-  'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white';
+  'text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100';
 
 /** Unselected drawer row (mobile — gray-600 base for contrast on white). */
 export const inactiveMobileRowClass =
-  'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5';
+  'text-stone-600 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800';
 
 /** Expanded group header that contains the active page. */
 export const activeGroupClass =
-  'bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white';
+  'bg-stone-100 dark:bg-zinc-800 text-stone-900 dark:text-zinc-100';
 
 /** Selected submenu row (e.g. Add-ons under Item's Menu). */
 export const activeSubRowClass =
-  'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold active-menu-item';
+  'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 font-semibold active-menu-item';
 
 /** Unselected submenu row. */
 export const inactiveSubRowClass =
-  'text-gray-500 dark:text-gray-400 font-medium hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5';
+  'text-stone-500 dark:text-zinc-400 font-medium hover:text-stone-900 dark:hover:text-zinc-100 hover:bg-stone-100 dark:hover:bg-zinc-800';
 
 /** Submenu bullet dot — selected / unselected. */
 export const subDotActiveClass = 'bg-mintcom-green';
-export const subDotInactiveClass = 'bg-gray-300 dark:bg-gray-600';
+export const subDotInactiveClass = 'bg-stone-300 dark:bg-zinc-600';
 
 /** Selected pagination number. Border keeps its size identical to siblings. */
 export const activePageClass =
-  'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold border border-mintcom-green/30';
+  'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 font-semibold border border-mintcom-green/30';
 
 /** Unselected pagination number. */
 export const inactivePageClass =
-  'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400 font-medium hover:text-gray-900 dark:hover:text-white';
+  'bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 text-stone-500 dark:text-zinc-400 font-medium hover:text-stone-900 dark:hover:text-zinc-100';
 
 /** Mint tint bubble (count badges, status chips). Shape/size stay local. */
 export const tintBubbleClass =
@@ -62,17 +62,17 @@ export const avatarClass = `${tintBubbleClass} font-bold`;
 
 /** User identity card (sidebar / drawer footer). Padding/layout stay local. */
 export const userCardClass =
-  'bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg';
+  'bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-xl';
 
 /** User card name + email lines. */
 export const userNameClass =
-  'text-sm font-semibold text-gray-900 dark:text-white truncate';
+  'text-sm font-semibold text-stone-900 dark:text-zinc-100 truncate';
 export const userEmailClass =
-  'text-xs text-gray-600 dark:text-gray-400 truncate';
+  'text-xs text-stone-600 dark:text-zinc-400 truncate';
 
 /** Tiny uppercase section label (e.g. "Active Establishment"). */
 export const eyebrowClass =
-  'text-[11px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400';
+  'text-[11px] font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400';
 
 /** Mint accent text on any background (icons + links that must stay vivid). */
 export const accentTextClass = 'text-emerald-700 dark:text-mintcom-green';

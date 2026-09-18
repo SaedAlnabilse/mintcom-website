@@ -1,7 +1,9 @@
 export * from './SearchInput';
 export * from './Button';
 export * from './sharedStyles';
+export * from './theme';
 export * from './FilterBar';
+export * from './ListFilterBar';
 export * from './SelectInput';
 export * from './Pagination';
 export * from './StatValue';
@@ -14,3 +16,4 @@ export * from './Card';
 export * from './TextInput';
 export * from './Toggle';
 export * from './ErrorBanner';
+export * from './StatCard';
