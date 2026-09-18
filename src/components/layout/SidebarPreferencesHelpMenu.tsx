@@ -86,11 +86,11 @@ export function SidebarPreferencesHelpMenu({
   };
 
   const triggerClasses = compact
-    ? `flex h-12 w-12 items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white ${
-        isOpen ? 'bg-gray-100 text-gray-900 dark:bg-white/5 dark:text-white' : ''
+    ? `flex h-12 w-12 items-center justify-center rounded-xl text-stone-500 transition-all hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 ${
+        isOpen ? 'bg-stone-100 text-stone-900 dark:bg-zinc-800 dark:text-zinc-100' : ''
       }`
-    : `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start text-sm font-bold text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white ${
-        isOpen ? 'bg-gray-100 text-gray-900 dark:bg-white/5 dark:text-white' : ''
+    : `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start text-sm font-bold text-stone-500 transition-all hover:bg-stone-100 hover:text-stone-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100 ${
+        isOpen ? 'bg-stone-100 text-stone-900 dark:bg-zinc-800 dark:text-zinc-100' : ''
       }`;
 
   return (
@@ -109,17 +109,17 @@ export function SidebarPreferencesHelpMenu({
           <>
             <span>{t('common.helpAndPreferences')}</span>
             <span className="ms-auto flex items-center gap-1.5">
-              <span className="rounded-md bg-gray-100 px-1.5 py-0.5 text-[10px] font-black tracking-wider text-gray-500 dark:bg-white/10 dark:text-gray-400">
+              <span className="rounded-md bg-stone-100 px-1.5 py-0.5 text-[10px] font-black tracking-wider text-stone-500 dark:bg-zinc-800 dark:text-zinc-400">
                 {activeLanguage.shortName}
               </span>
-              <ActiveThemeIcon size={15} className="text-gray-400" />
+              <ActiveThemeIcon size={15} className="text-stone-400" />
             </span>
           </>
         )}
       </button>
 
       {compact && (
-        <div className="pointer-events-none absolute left-full top-1/2 z-[80] ms-2 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-lg border border-white/10 bg-gray-900/90 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-xl backdrop-blur-md transition-all group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:opacity-100 rtl:left-auto rtl:right-full rtl:ml-0 rtl:mr-2 rtl:-translate-x-1 rtl:group-hover:translate-x-0">
+        <div className="pointer-events-none absolute left-full top-1/2 z-[80] ms-2 -translate-y-1/2 translate-x-1 whitespace-nowrap rounded-lg border border-white/10 bg-stone-900/90 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-xl backdrop-blur-md transition-all group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:opacity-100 rtl:left-auto rtl:right-full rtl:ml-0 rtl:mr-2 rtl:-translate-x-1 rtl:group-hover:translate-x-0">
           {t('common.helpAndPreferences')}
         </div>
       )}
@@ -133,10 +133,10 @@ export function SidebarPreferencesHelpMenu({
         maxHeight="max-h-[min(75vh,30rem)]"
       >
         <div role="menu" dir={isRTL ? 'rtl' : 'ltr'} className="overflow-y-auto p-2">
-          <p className="px-2 pb-2 pt-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          <p className="px-2 pb-2 pt-1 text-[11px] font-bold uppercase tracking-wider text-stone-400">
             {t('common.appearance')}
           </p>
-          <div className="grid grid-cols-3 gap-1 rounded-xl bg-gray-50 p-1 dark:bg-white/5">
+          <div className="grid grid-cols-3 gap-1 rounded-xl bg-stone-50 p-1 dark:bg-zinc-800">
             {themeOptions.map((option) => (
               <button
                 key={option.id}
@@ -146,8 +146,8 @@ export function SidebarPreferencesHelpMenu({
                 onClick={() => setTheme(option.id)}
                 className={`flex flex-col items-center gap-1 rounded-lg px-1 py-2 transition-all ${
                   theme === option.id
-                    ? 'bg-white text-mintcom-green shadow-sm dark:bg-white/10'
-                    : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                    ? 'bg-white text-mintcom-green shadow-sm dark:bg-zinc-800'
+                    : 'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                 }`}
               >
                 <option.icon size={16} />
@@ -156,7 +156,7 @@ export function SidebarPreferencesHelpMenu({
             ))}
           </div>
 
-          <p className="px-2 pb-1 pt-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          <p className="px-2 pb-1 pt-3 text-[11px] font-bold uppercase tracking-wider text-stone-400">
             {t('common.language')}
           </p>
           {languages.map((lang) => (
@@ -170,10 +170,10 @@ export function SidebarPreferencesHelpMenu({
               onClick={() => handleLanguageSelect(lang.code)}
               className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-start text-sm font-semibold transition-all ${
                 lang.comingSoon
-                  ? 'cursor-not-allowed text-gray-400 opacity-60 dark:text-gray-600'
+                  ? 'cursor-not-allowed text-stone-400 opacity-60 dark:text-zinc-600'
                   : normalizedLanguage === lang.code
                     ? 'bg-mintcom-green/10 text-mintcom-green'
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white'
+                    : 'text-stone-500 hover:bg-stone-50 hover:text-stone-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100'
               }`}
             >
               <span className="flex items-center gap-2">
@@ -181,7 +181,7 @@ export function SidebarPreferencesHelpMenu({
                 <span>{lang.nativeName}</span>
               </span>
               {lang.comingSoon ? (
-                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-400 dark:bg-white/10 dark:text-gray-500">
+                <span className="rounded-full bg-stone-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-stone-400 dark:bg-zinc-800 dark:text-zinc-500">
                   {t('common.comingSoon')}
                 </span>
               ) : (
@@ -190,7 +190,7 @@ export function SidebarPreferencesHelpMenu({
             </button>
           ))}
 
-          <p className="px-2 pb-1 pt-3 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+          <p className="px-2 pb-1 pt-3 text-[11px] font-bold uppercase tracking-wider text-stone-400">
             {t('common.helpAndSupport')}
           </p>
           {canReplay && onReplay && (
@@ -199,7 +199,7 @@ export function SidebarPreferencesHelpMenu({
               role="menuitem"
               disabled={isReplaying}
               onClick={() => void handleReplay()}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-950 disabled:cursor-wait disabled:opacity-60 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start text-sm font-semibold text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-950 disabled:cursor-wait disabled:opacity-60 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             >
               <BookOpen size={17} className="text-mintcom-green" />
               <span>{t('dashboard.setupGuide.menuItem')}</span>
@@ -213,9 +213,9 @@ export function SidebarPreferencesHelpMenu({
                 setIsOpen(false);
                 onOpenHelpCenter();
               }}
-              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-950 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-start text-sm font-semibold text-stone-600 transition-colors hover:bg-stone-50 hover:text-stone-950 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             >
-              <LifeBuoy size={17} className="text-gray-400" />
+              <LifeBuoy size={17} className="text-stone-400" />
               <span>{t('dashboard.setupGuide.helpCenter')}</span>
             </button>
           )}

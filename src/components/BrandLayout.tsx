@@ -368,7 +368,6 @@ export function BrandLayout() {
                 {/* Footer User Profile */}
                 <SidebarUserProfileFooter
                     sidebarOpen={sidebarOpen}
-                    account={account}
                     scope="brand"
                     locations={brandLocations}
                     establishmentIds={brandEstablishmentIds}

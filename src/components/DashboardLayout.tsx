@@ -1090,18 +1090,7 @@ export function DashboardLayout() {
         <div className="p-3 border-t border-stone-200 dark:border-zinc-800 relative shrink-0 mt-auto">
           {sidebarOpen ? (
             <div className="space-y-1">
-              <div className={`flex items-center gap-3 p-3 mb-2 ${userCardClass}`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm ${avatarClass}`}>
-                  {account?.firstName?.charAt(0).toUpperCase()}
-                </div>
-                <div className="min-w-0">
-                  <p className={userNameClass}>
-                    {account?.firstName} {account?.lastName}
-                  </p>
-                  <p className={userEmailClass}>{account?.email || t('staff.roles.manager')}</p>
-                </div>
-              </div>
-
+              
               {hasAccess('notifications') && (
                 <div className="flex items-center justify-between gap-3 px-3 py-1">
                   <span className="text-sm font-bold text-stone-500 dark:text-zinc-400">

@@ -113,6 +113,7 @@ const targetFiles = [
   ...collectFiles(path.join(ROOT, 'src', 'pages', 'dashboard')),
   ...collectFiles(path.join(ROOT, 'src', 'components', 'dashboard')),
   ...collectFiles(path.join(ROOT, 'src', 'components', 'forms')),
+  ...collectFiles(path.join(ROOT, 'src', 'components', 'layout')),
   path.join(ROOT, 'src', 'components', 'OwnerLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'BrandLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'DashboardLayout.tsx'),

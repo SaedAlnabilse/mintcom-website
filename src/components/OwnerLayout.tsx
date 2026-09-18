@@ -267,7 +267,6 @@ export function OwnerLayout() {
                 {/* Footer User Profile */}
                 <SidebarUserProfileFooter
                     sidebarOpen={sidebarOpen}
-                    account={account}
                     scope="owner"
                     locations={ownerLocations}
                     onOpenMobileAppModal={() => setMobileAppModalOpen(true)}

@@ -71,10 +71,10 @@ export const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
             role="dialog"
             aria-modal="true"
             aria-label={t('common.aria.mobileNav', { defaultValue: 'Menu' })}
-            className="fixed inset-y-0 start-0 rtl:start-auto rtl:end-0 w-[85vw] max-w-[300px] min-w-[260px] bg-white dark:bg-[#1E293B] border-e rtl:border-e-0 rtl:border-s border-gray-200 dark:border-white/5 z-[100] flex flex-col lg:hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
+            className="fixed inset-y-0 start-0 rtl:start-auto rtl:end-0 w-[85vw] max-w-[300px] min-w-[260px] bg-white dark:bg-zinc-900/60 border-e rtl:border-e-0 rtl:border-s border-stone-200 dark:border-zinc-800 z-[100] flex flex-col lg:hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
           >
           {/* Mobile Header */}
-          <div className="h-16 shrink-0 flex items-center justify-between px-4 border-b border-gray-100 dark:border-white/5">
+          <div className="h-16 shrink-0 flex items-center justify-between px-4 border-b border-stone-100 dark:border-zinc-800">
             <div className="flex items-center min-w-0">
               <img
                 src={MintcomLogoGreen}
@@ -123,7 +123,7 @@ export const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-gray-100 dark:border-white/5 shrink-0">
+          <div className="p-4 border-t border-stone-100 dark:border-zinc-800 shrink-0">
             <div className="mb-3">
               <SidebarPreferencesHelpMenu onOpenHelpCenter={() => navigate('/support')} />
             </div>

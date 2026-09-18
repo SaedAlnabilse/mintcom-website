@@ -21,12 +21,11 @@ vi.mock('../../../context/AuthContext', () => ({
 }));
 
 describe('Layout Deduplicated Components', () => {
-  it('renders SidebarUserProfileFooter correctly when open', () => {
+  it('renders SidebarUserProfileFooter actions without an identity card', () => {
     render(
       <MemoryRouter>
         <SidebarUserProfileFooter
           sidebarOpen={true}
-          account={{ id: '1', firstName: 'John', lastName: 'Doe', email: 'john@example.com' } as any}
           scope="owner"
           locations={[]}
           onOpenMobileAppModal={vi.fn()}
@@ -35,9 +34,12 @@ describe('Layout Deduplicated Components', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText('John Doe')).toBeDefined();
-    expect(screen.getByText('john@example.com')).toBeDefined();
+    // The identity card was removed from the sidebar/drawer footer; the
+    // actions it sat above must all still be reachable.
     expect(screen.getByText('dashboard.menu.logout')).toBeDefined();
+    expect(screen.getByText('owner.menu.getMobileApp')).toBeDefined();
+    expect(screen.queryByText('John Doe')).toBeNull();
+    expect(screen.queryByText('john@example.com')).toBeNull();
   });
 
   it('renders MobileNavigationDrawer navigation items and keeps logout reachable', () => {
