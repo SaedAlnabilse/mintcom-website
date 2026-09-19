@@ -529,7 +529,7 @@
       "showcaseSyncBadge": "مزامنة سحابية فورية ونسخ احتياطي تلقائي",
       "showcaseTitle": "البساطة هي الأفضل",
       "signUpButton": "إنشاء الحساب",
-      "subscribeToNews": "أبقني على اطلاع بأخبار مينتكوم وتحديثات المنتج",
+      "subscribeToNews": "أرسل لي أخبار المنتج والعروض عبر البريد الإلكتروني",
       "subtitle": "انضم إلى مينتكوم وابدأ في تنمية عملك",
       "success": "تم إنشاء الحساب بنجاح!",
       "title": "إنشاء حسابك",
@@ -2400,6 +2400,8 @@
       "realTime": "مزامنة فورية",
       "shiftAlerts": "تنبيهات الورديات",
       "stockAlerts": "تنبيهات المخزون",
+      "orderTracking": "متابعة الطلبات والإلغاءات المباشرة",
+      "instantPush": "إشعارات فورية على هاتفك",
       "subtitle": "تحكم كامل في عملك من أي مكان في العالم.",
       "title": "لوحة تحكم إدارية قوية",
       "title1": "رؤية كاملة.",
@@ -3692,33 +3694,37 @@
   "onboarding": {
     "businessProfile": {
       "title": "أخبرنا عن نشاطك التجاري",
-      "subtitle": "اختياري — يساعدنا في إعداد Mintcom لك. يستغرق 30 ثانية.",
+      "subtitle": "يساعدنا في إعداد Mintcom لك. يستغرق 30 ثانية.",
       "stepBadge": "الخطوة 2 من 3 · اختياري",
       "phoneLabel": "رقم الهاتف للتواصل",
       "phonePlaceholder": "+1 555 000 1234",
-      "phoneHint": "يُستخدم فقط إذا طلبت المساعدة — لا تتم مشاركته أبداً.",
+      "phoneHint": "يُستخدم فقط إذا طلبت المساعدة، لا تتم مشاركته أبداً.",
       "staffLabel": "كم عدد الموظفين لديك؟",
+      "staffPlaceholder": "اختر عدد الموظفين",
       "staffOptions": {
-        "1-5": "1–5",
-        "6-15": "6–15",
-        "16-50": "16–50",
+        "1-5": "1 إلى 5",
+        "6-15": "6 إلى 15",
+        "16-50": "16 إلى 50",
         "50+": "50+"
       },
       "branchesLabel": "كم عدد الفروع المخطط لها؟",
+      "branchesPlaceholder": "اختر عدد الفروع المخطط لها",
       "branchesOptions": {
         "single": "هذا الفرع فقط",
-        "2-5": "2–5",
+        "2-5": "2 إلى 5",
         "5+": "5+"
       },
       "posLabel": "هل تنتقل من نظام نقاط بيع آخر؟",
+      "posPlaceholder": "اختر نظام نقاط البيع السابق",
       "posOptions": {
-        "none": "لا يوجد — نشاط تجاري جديد",
+        "none": "لا يوجد (نشاط تجاري جديد)",
         "cash": "نقدي / ورقي",
         "square": "Square",
         "foodics": "Foodics",
         "other": "نظام نقاط بيع آخر"
       },
       "sourceLabel": "كيف سمعت عنا؟",
+      "sourcePlaceholder": "اختر كيف سمعت عنا",
       "sourceOptions": {
         "google": "Google",
         "social": "Instagram / TikTok",
@@ -3727,7 +3733,7 @@
         "other": "أخرى"
       },
       "referralCodeLabel": "رمز الإحالة",
-      "referralCodePlaceholder": "مثال: AHMED-123",
+      "referralCodePlaceholder": "مثال: AHMED123",
       "marketingConsent": "أرسل لي أخبار المنتج والعروض عبر البريد الإلكتروني",
       "skip": "تخطي الآن",
       "continue": "متابعة",

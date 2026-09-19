@@ -2,7 +2,7 @@ import { AppDownloadBadgeGroup } from './landing/AppDownloadBadgeGroup';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Bell, Menu, Search, AlertTriangle, Package, RotateCcw, Plus, LayoutGrid, Home, MapPin, Briefcase, KeyRound, AlertOctagon, TrendingUp, Coffee, Store, Users, ChevronRight, ChevronDown, Calendar, Clock, CreditCard, Activity, ShoppingBag, CornerUpLeft, ExternalLink, MoreHorizontal, Zap, Link2, SlidersHorizontal } from 'lucide-react';
+import { Bell, Menu, Search, AlertTriangle, Package, RotateCcw, Plus, LayoutGrid, Home, MapPin, Briefcase, KeyRound, AlertOctagon, TrendingUp, Coffee, Store, Users, ChevronRight, ChevronDown, Calendar, Clock, CreditCard, Activity, ShoppingBag, CornerUpLeft, ExternalLink, MoreHorizontal, Zap, Link2, SlidersHorizontal, Smartphone } from 'lucide-react';
 import { OWNER_ANDROID_DOWNLOAD_URL, OWNER_IOS_DOWNLOAD_URL } from '../config/downloads';
 import { useTheme } from '../context/ThemeContext';
 
@@ -1297,16 +1297,16 @@ export const AdminControl = () => {
     >
 
       <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Copy — right side (mirrors Cloud Control: text left / visual right) */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="order-1 text-start lg:order-2"
+            className="order-1 text-start lg:order-2 lg:pt-2"
           >
-            <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+            <p className="mb-3 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
               {t('landing.admin.badge')}
             </p>
             <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
@@ -1320,22 +1320,22 @@ export const AdminControl = () => {
             <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-stone-500 dark:text-zinc-400">
               {t('landing.admin.description')}
             </p>
-            <ol className="mt-5 divide-y divide-stone-200 dark:divide-zinc-800">
+            <ul className="mt-5 divide-y divide-stone-200 dark:divide-zinc-800">
               {[
                 { label: t('landing.admin.shiftAlerts'), icon: Bell },
                 { label: t('landing.admin.stockAlerts'), icon: Package },
-                { label: t('landing.admin.liveReports'), icon: AlertTriangle },
+                { label: t('landing.admin.liveReports'), icon: TrendingUp },
+                { label: t('landing.admin.multiLocationManagement'), icon: Store },
+                { label: t('landing.admin.orderTracking'), icon: Activity },
+                { label: t('landing.admin.instantPush'), icon: Smartphone },
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 py-2.5 text-sm">
-                  <span className="font-magilio text-sm font-bold tabular-nums text-stone-300 dark:text-zinc-600">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
                   <item.icon size={15} className="shrink-0 text-stone-400" />
                   <span className="min-w-0 flex-1 truncate font-medium text-stone-700 dark:text-zinc-200">{item.label}</span>
                 </li>
               ))}
-            </ol>
-            <div className="mt-5">
+            </ul>
+            <div className="mt-0">
               <AppDownloadBadgeGroup
                 label={t("landing.admin.installBackofficeApp")}
                 hasIosDownload={hasOwnerIosDownload}

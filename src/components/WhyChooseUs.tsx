@@ -590,9 +590,9 @@ export const WhyChooseUs = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-5 text-start"
+          className="mb-6 text-start sm:mb-8"
         >
-          <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+          <p className="mb-3 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
             {t('landing.features.badge')}
           </p>
 
@@ -605,7 +605,7 @@ export const WhyChooseUs = () => {
           </p>
         </motion.div>
 
-        <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-8 sm:gap-10">
           <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
               <LandingFeatureCard
@@ -620,72 +620,117 @@ export const WhyChooseUs = () => {
             ))}
           </div>
 
-          {/* Video Section — ambient demo loop + Try POS CTA (no modal) */}
+          {/* Ambient Living POS Showcase — styled as a sleek desktop app window with GIF-like ambient looping */}
           <motion.div
             ref={videoRef}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7 }}
-            className="mx-auto w-full"
+            viewport={{ once: true }}
+            transition={{ duration: 0.45 }}
+            className="mx-auto w-full max-w-4xl lg:max-w-[940px]"
           >
-            <div className="group w-full overflow-hidden rounded-2xl border border-stone-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/60">
-              <div className="relative aspect-video w-full">
-                {isVideoVisible && demoIsNative ? (
-                  <video
-                    src={demoSrc}
-                    poster={DEMO_VIDEO_POSTER_URL}
-                    className="h-full w-full object-cover"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    aria-label={t('landing.features.videoTitle')}
-                  />
-                ) : isVideoVisible && !demoIsNative ? (
-                  <iframe
-                    src={demoSrc}
-                    className="pointer-events-none h-full w-full object-cover"
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    allowFullScreen
-                    loading="lazy"
-                    title={t('landing.features.videoTitle')}
-                  />
-                ) : (
-                  <img
-                    src={DEMO_VIDEO_POSTER_URL}
-                    alt=""
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                  />
-                )}
-              </div>
+            <div className="relative">
+              {/* Soft ambient backlight aura */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -inset-2 -z-10 rounded-2xl bg-mintcom-green/10 opacity-50 blur-2xl"
+              />
 
-              {/* Caption footer — in-flow below the video, stacks on mobile */}
-              <div className="flex flex-col gap-3 border-t border-stone-200 bg-white px-5 py-4 dark:border-zinc-800 dark:bg-zinc-900/60 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0 text-start">
-                  <p className="font-barlow text-[17px] font-bold tracking-tight text-stone-900 dark:text-zinc-100">
-                    {t('landing.features.seeInAction')}
-                  </p>
-                  <p className="mt-0.5 text-sm leading-relaxed text-stone-500 dark:text-zinc-400">
-                    {t('landing.features.seamlessSync')}
-                  </p>
+              {/* Desktop App Window Container */}
+              <div className="group overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-lg dark:border-zinc-800 dark:bg-zinc-900/90 dark:shadow-black/40">
+                {/* macOS-style Window Header Bar */}
+                <div
+                  dir="ltr"
+                  className="flex items-center justify-between border-b border-stone-200/80 bg-stone-50/90 px-3.5 py-2.5 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/90 sm:px-4"
+                >
+                  {/* Window traffic light dots */}
+                  <div className="flex items-center gap-1.5 shrink-0" aria-hidden>
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
+                  </div>
+
+                  {/* Window title / ambient status chip */}
+                  <div className="flex items-center gap-2 rounded-full border border-stone-200/80 bg-white/90 px-3 py-0.5 text-[11px] font-medium text-stone-600 shadow-sm dark:border-zinc-700/60 dark:bg-zinc-800/90 dark:text-zinc-300 sm:text-xs">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    <span className="font-mono text-[11px] tracking-tight">mintcom-pos.app</span>
+                    <span className="hidden text-stone-300 dark:text-zinc-600 sm:inline">·</span>
+                    <span className="hidden text-[10px] font-semibold uppercase tracking-wider text-stone-400 dark:text-zinc-400 sm:inline">
+                      {t('landing.features.liveDemo', 'LIVE DEMO')}
+                    </span>
+                  </div>
+
+                  {/* Window header action */}
+                  <div className="flex items-center shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => window.open('/try-pos', '_blank', 'noopener,noreferrer')}
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-stone-500 transition-colors hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                    >
+                      <span>{t('landing.hero.tryDesktop')}</span>
+                      <ArrowRight size={11} className={isRtl ? 'rotate-180' : ''} />
+                    </button>
+                  </div>
                 </div>
 
-                <motion.button
-                  type="button"
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => window.open('/try-pos', '_blank', 'noopener,noreferrer')}
-                  className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110 sm:w-auto"
-                >
-                  <Play size={15} fill="currentColor" className="shrink-0" />
-                  <span>{t('landing.hero.tryDesktop')}</span>
-                  <ArrowRight
-                    size={14}
-                    className={`shrink-0 ${isRtl ? 'rotate-180' : ''}`}
-                  />
-                </motion.button>
+                {/* Living Video Screen — pointer-events-none ensures it feels like a native looping gif */}
+                <div className="relative aspect-video w-full overflow-hidden bg-stone-950">
+                  {isVideoVisible && demoIsNative ? (
+                    <video
+                      src={demoSrc}
+                      poster={DEMO_VIDEO_POSTER_URL}
+                      className="pointer-events-none h-full w-full object-cover select-none"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      aria-label={t('landing.features.videoTitle')}
+                    />
+                  ) : isVideoVisible && !demoIsNative ? (
+                    <iframe
+                      src={demoSrc}
+                      className="pointer-events-none h-full w-full object-cover"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                      title={t('landing.features.videoTitle')}
+                    />
+                  ) : (
+                    <img
+                      src={DEMO_VIDEO_POSTER_URL}
+                      alt=""
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+
+                {/* Refined Lower Dock / Caption Bar */}
+                <div className="flex flex-col gap-3 border-t border-stone-200/80 bg-white px-5 py-3.5 dark:border-zinc-800 dark:bg-zinc-900/60 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-4">
+                  <div className="min-w-0 text-start">
+                    <p className="font-barlow text-sm font-bold tracking-tight text-stone-900 dark:text-zinc-100 sm:text-base">
+                      {t('landing.features.seeInAction')}
+                    </p>
+                    <p className="mt-0.5 text-xs text-stone-500 dark:text-zinc-400 sm:text-[13px]">
+                      {t('landing.features.seamlessSync')}
+                    </p>
+                  </div>
+
+                  <motion.button
+                    type="button"
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => window.open('/try-pos', '_blank', 'noopener,noreferrer')}
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-stone-900 px-5 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-stone-700 dark:bg-mintcom-green dark:text-black dark:hover:brightness-110 sm:w-auto sm:text-sm"
+                  >
+                    <Play size={13} fill="currentColor" className="shrink-0" />
+                    <span>{t('landing.hero.tryDesktop')}</span>
+                    <ArrowRight
+                      size={14}
+                      className={`shrink-0 ${isRtl ? 'rotate-180' : ''}`}
+                    />
+                  </motion.button>
+                </div>
               </div>
             </div>
           </motion.div>

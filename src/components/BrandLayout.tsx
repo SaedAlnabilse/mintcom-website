@@ -209,7 +209,7 @@ export function BrandLayout() {
                     transition: { duration: 0.3, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    dashboard-sidebar relative z-[100] flex flex-col h-full max-h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar overflow-hidden
+                    dashboard-sidebar relative z-[100] flex flex-col h-full max-h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar ${sidebarOpen ? 'overflow-hidden' : 'overflow-visible'}
                     ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
                 `}
             >

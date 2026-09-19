@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { endOfDay, startOfDay, format } from 'date-fns';
@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   TrendingUp, Clock, ShoppingBag,
   CreditCard, Percent, Scale,
-  Users, PlusCircle, FileText
+  Users, PlusCircle, FileText,
+  ChevronLeft, ChevronRight
 } from 'lucide-react';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
@@ -109,8 +110,122 @@ export function ReportsPage() {
   const [hoveredReportId, setHoveredReportId] = useState<string | null>(null);
   const [tooltipCoords, setTooltipCoords] = useState({ top: 0, left: 0 });
   const tabContainerRef = useRef<HTMLDivElement>(null);
+  const isRTL = t('common.locale') === 'ar';
+  const [canScrollStart, setCanScrollStart] = useState(false);
+  const [canScrollEnd, setCanScrollEnd] = useState(false);
+
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+  const hasDraggedRef = useRef(false);
+
+  const checkScroll = useCallback(() => {
+    const el = tabContainerRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    const maxScroll = scrollWidth - clientWidth;
+    if (maxScroll <= 2) {
+      setCanScrollStart(false);
+      setCanScrollEnd(false);
+      return;
+    }
+    if (isRTL) {
+      const abs = Math.abs(scrollLeft);
+      setCanScrollStart(abs > 4);
+      setCanScrollEnd(abs < maxScroll - 4);
+    } else {
+      setCanScrollStart(scrollLeft > 4);
+      setCanScrollEnd(scrollLeft < maxScroll - 4);
+    }
+  }, [isRTL]);
+
+  const scrollPills = (direction: 'start' | 'end') => {
+    if (!tabContainerRef.current) return;
+    const container = tabContainerRef.current;
+    const scrollAmount = Math.max(container.clientWidth * 0.65, 240);
+    const sign = direction === 'end' ? (isRTL ? -1 : 1) : (isRTL ? 1 : -1);
+    container.scrollBy({ left: sign * scrollAmount, behavior: 'smooth' });
+    setTimeout(checkScroll, 350);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!tabContainerRef.current) return;
+    isDraggingRef.current = true;
+    startXRef.current = e.pageX - tabContainerRef.current.offsetLeft;
+    scrollLeftRef.current = tabContainerRef.current.scrollLeft;
+    hasDraggedRef.current = false;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDraggingRef.current || !tabContainerRef.current) return;
+    const x = e.pageX - tabContainerRef.current.offsetLeft;
+    const walk = x - startXRef.current;
+    if (Math.abs(walk) > 4) {
+      hasDraggedRef.current = true;
+      setHoveredReportId(null);
+      tabContainerRef.current.scrollLeft = scrollLeftRef.current - walk;
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      setTimeout(() => {
+        hasDraggedRef.current = false;
+      }, 50);
+    }
+  };
+
+  useEffect(() => {
+    const el = tabContainerRef.current;
+    if (!el) return;
+
+    checkScroll();
+
+    el.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('resize', checkScroll);
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => {
+        checkScroll();
+      });
+      resizeObserver.observe(el);
+    }
+
+    // Translate vertical mouse wheel to smooth horizontal scrolling
+    const handleWheel = (e: WheelEvent) => {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (maxScroll <= 2) return;
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+
+    const handleGlobalMouseUp = () => {
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+        setTimeout(() => {
+          hasDraggedRef.current = false;
+        }, 50);
+      }
+    };
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+
+    return () => {
+      el.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+      if (resizeObserver) resizeObserver.disconnect();
+      el.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, [checkScroll]);
 
   const handlePillMouseEnter = (e: React.MouseEvent, id: string) => {
+    if (hasDraggedRef.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
     setTooltipCoords({
       top: rect.top - 12,
@@ -126,8 +241,10 @@ export function ReportsPage() {
       if (selectedEl) {
         selectedEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
       }
+      const timer = setTimeout(checkScroll, 350);
+      return () => clearTimeout(timer);
     }
-  }, [reportType, itemReportTab]);
+  }, [reportType, itemReportTab, checkScroll]);
 
   const localizedDateOptions = useMemo(() =>
     DATE_PERIOD_OPTIONS.map(opt => ({
@@ -970,55 +1087,100 @@ export function ReportsPage() {
 
       {/* Dynamic Filter Strip */}
       <div className="space-y-2">
-        {/* Report Type Selector - Improved Pills */}
-        <div ref={tabContainerRef} className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-          {[
-            { id: 'sales', label: t('dashboard.menu.salesSummary'), icon: TrendingUp },
-            { id: 'items-categories', label: t('dashboard.menu.salesByItems'), icon: ShoppingBag },
-            { id: 'addons', label: t('dashboard.menu.salesByAddons'), icon: PlusCircle },
-            { id: 'staff-sales', label: t('dashboard.menu.salesByStaff'), icon: Users },
-            { id: 'shifts', label: t('dashboard.menu.shiftsReports'), icon: Clock },
-            { id: 'cash-discrepancy', label: t('dashboard.menu.cashGapReports'), icon: Scale },
-            { id: 'peak-hours', label: t('orders.reports.peakHours.title', { defaultValue: 'Busy Times' }), icon: Clock },
-            { id: 'payments', label: t('dashboard.menu.paymentsReports'), icon: CreditCard },
-            { id: 'discounts', label: t('dashboard.menu.discountReports'), icon: Percent },
-            { id: 'taxes', label: t('reports.taxes', { defaultValue: 'Taxes Report' }), icon: FileText },
-          ].map((type) => {
-            const isSelected = type.id === 'items-categories'
-              ? (reportType === 'top-items' && (itemReportTab === 'items' || itemReportTab === 'categories'))
-              : type.id === 'addons'
-                ? (reportType === 'top-items' && (itemReportTab === 'modifiers' || itemReportTab === 'attributes'))
-                : reportType === type.id;
+        {/* Report Type Selector - Improved Scrollable Pills Strip */}
+        <div className="relative group/pillstrip">
+          {/* Start (Previous) Arrow & Gradient Mask */}
+          <div
+            className={`absolute start-0 top-0 bottom-2 z-20 flex items-center pe-5 ps-0.5 bg-gradient-to-r rtl:bg-gradient-to-l from-stone-50 via-stone-50/90 to-transparent dark:from-zinc-950 dark:via-zinc-950/90 to-transparent transition-opacity duration-200 pointer-events-none ${
+              canScrollStart ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => scrollPills('start')}
+              disabled={!canScrollStart}
+              aria-label={t('common.previous', { defaultValue: 'Previous' })}
+              className="pointer-events-auto h-[42px] w-9 sm:w-10 rounded-xl bg-white dark:bg-zinc-900/90 border border-stone-200 dark:border-zinc-800 shadow-sm flex items-center justify-center text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100 hover:border-mintcom-green/50 dark:hover:border-mintcom-green/50 transition-all duration-150 active:scale-95"
+            >
+              <ChevronLeft size={18} className={isRTL ? 'rotate-180' : ''} />
+            </button>
+          </div>
 
-            return (
-              <button
-                key={type.id}
-                type="button"
-                data-selected={isSelected}
-                onMouseEnter={(e) => handlePillMouseEnter(e, type.id)}
-                onMouseLeave={() => setHoveredReportId(null)}
-                onClick={() => {
-                  // Navigate to the appropriate route so sidebar stays in sync
-                  if (type.id === 'items-categories') {
-                    setItemReportTab('items');
-                    navigate(`/dashboard/${locationSlug}/reports/items`);
-                  } else if (type.id === 'addons') {
-                    setItemReportTab('modifiers');
-                    navigate(`/dashboard/${locationSlug}/reports/modifiers`);
-                  } else {
-                    navigate(`/dashboard/${locationSlug}/reports/${type.id}`);
-                  }
-                }}
-                className={`relative shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-lg transition-colors duration-150 text-xs sm:text-sm font-semibold whitespace-nowrap border ${isSelected
-                  ? 'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 border-mintcom-green/30'
-                  : 'bg-white dark:bg-zinc-900/60 text-stone-600 dark:text-zinc-300 hover:text-stone-900 dark:hover:text-zinc-100 hover:bg-stone-50 dark:hover:bg-zinc-800 border-stone-200 dark:border-zinc-800 hover:border-stone-300 dark:hover:border-zinc-800'
-                  }`}
-              >
-                <type.icon size={15} className={`shrink-0 ${isSelected ? 'text-emerald-700 dark:text-mintcom-green' : 'text-stone-400 dark:text-zinc-400'}`} />
-                <span className="relative z-10">{type.label}</span>
-              </button>
-            );
-          })}
+          {/* Pills Track */}
+          <div
+            ref={tabContainerRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 cursor-grab active:cursor-grabbing select-none scroll-smooth"
+          >
+            {[
+              { id: 'sales', label: t('dashboard.menu.salesSummary'), icon: TrendingUp },
+              { id: 'items-categories', label: t('dashboard.menu.salesByItems'), icon: ShoppingBag },
+              { id: 'addons', label: t('dashboard.menu.salesByAddons'), icon: PlusCircle },
+              { id: 'staff-sales', label: t('dashboard.menu.salesByStaff'), icon: Users },
+              { id: 'shifts', label: t('dashboard.menu.shiftsReports'), icon: Clock },
+              { id: 'cash-discrepancy', label: t('dashboard.menu.cashGapReports'), icon: Scale },
+              { id: 'peak-hours', label: t('orders.reports.peakHours.title', { defaultValue: 'Busy Times' }), icon: Clock },
+              { id: 'payments', label: t('dashboard.menu.paymentsReports'), icon: CreditCard },
+              { id: 'discounts', label: t('dashboard.menu.discountReports'), icon: Percent },
+              { id: 'taxes', label: t('reports.taxes', { defaultValue: 'Taxes Report' }), icon: FileText },
+            ].map((type) => {
+              const isSelected = type.id === 'items-categories'
+                ? (reportType === 'top-items' && (itemReportTab === 'items' || itemReportTab === 'categories'))
+                : type.id === 'addons'
+                  ? (reportType === 'top-items' && (itemReportTab === 'modifiers' || itemReportTab === 'attributes'))
+                  : reportType === type.id;
+
+              return (
+                <button
+                  key={type.id}
+                  type="button"
+                  data-selected={isSelected}
+                  onMouseEnter={(e) => handlePillMouseEnter(e, type.id)}
+                  onMouseLeave={() => setHoveredReportId(null)}
+                  onClick={() => {
+                    if (hasDraggedRef.current) return;
+                    // Navigate to the appropriate route so sidebar stays in sync
+                    if (type.id === 'items-categories') {
+                      setItemReportTab('items');
+                      navigate(`/dashboard/${locationSlug}/reports/items`);
+                    } else if (type.id === 'addons') {
+                      setItemReportTab('modifiers');
+                      navigate(`/dashboard/${locationSlug}/reports/modifiers`);
+                    } else {
+                      navigate(`/dashboard/${locationSlug}/reports/${type.id}`);
+                    }
+                  }}
+                  className={`relative shrink-0 flex items-center gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl transition-colors duration-150 text-xs sm:text-sm font-semibold whitespace-nowrap border ${isSelected
+                    ? 'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 border-mintcom-green/30'
+                    : 'bg-white dark:bg-zinc-900/60 text-stone-600 dark:text-zinc-300 hover:text-stone-900 dark:hover:text-zinc-100 hover:bg-stone-50 dark:hover:bg-zinc-800 border-stone-200 dark:border-zinc-800 hover:border-stone-300 dark:hover:border-zinc-800'
+                    }`}
+                >
+                  <type.icon size={15} className={`shrink-0 ${isSelected ? 'text-emerald-700 dark:text-mintcom-green' : 'text-stone-400 dark:text-zinc-400'}`} />
+                  <span className="relative z-10">{type.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* End (Next) Arrow & Gradient Mask */}
+          <div
+            className={`absolute end-0 top-0 bottom-2 z-20 flex items-center ps-5 pe-0.5 bg-gradient-to-l rtl:bg-gradient-to-r from-stone-50 via-stone-50/90 to-transparent dark:from-zinc-950 dark:via-zinc-950/90 to-transparent transition-opacity duration-200 pointer-events-none ${
+              canScrollEnd ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <button
+              type="button"
+              onClick={() => scrollPills('end')}
+              disabled={!canScrollEnd}
+              aria-label={t('common.next', { defaultValue: 'Next' })}
+              className="pointer-events-auto h-[42px] w-9 sm:w-10 rounded-xl bg-white dark:bg-zinc-900/90 border border-stone-200 dark:border-zinc-800 shadow-sm flex items-center justify-center text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100 hover:border-mintcom-green/50 dark:hover:border-mintcom-green/50 transition-all duration-150 active:scale-95"
+            >
+              <ChevronRight size={18} className={isRTL ? 'rotate-180' : ''} />
+            </button>
+          </div>
         </div>
 
         {/* Portal for Pill Tooltips */}

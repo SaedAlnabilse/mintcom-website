@@ -357,9 +357,12 @@ export const DemoPage = () => {
                   <p className="text-sm text-gray-600 dark:text-gray-400">{clean(t('landing.hardware.printers.description'))}</p>
                   <p className="mt-1 text-xs text-gray-500">{t('common.tip')}: {t('landing.hardware.printers.note')}</p>
                 </div>
-                <div>
-                  <h3 className="mb-1 text-base font-bold">{t('landing.hardware.alreadyHave')}</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{clean(t('landing.hardware.alreadyHaveDesc'))}</p>
+                <div className="flex items-start gap-2">
+                  <Check size={16} strokeWidth={3} className="mt-0.5 shrink-0 text-mintcom-green" />
+                  <span>
+                    <h3 className="mb-1 text-base font-bold">{t('landing.hardware.alreadyHave')}</h3>
+                    <p className="text-sm text-gray-700 dark:text-gray-300">{clean(t('landing.hardware.alreadyHaveDesc'))}</p>
+                  </span>
                 </div>
               </div>
             </div>

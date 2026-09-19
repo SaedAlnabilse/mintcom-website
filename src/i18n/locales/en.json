@@ -529,7 +529,7 @@
       "showcaseSyncBadge": "Instant Cloud Sync & Auto-Backup",
       "showcaseTitle": "Simple Is Superior",
       "signUpButton": "Sign Up",
-      "subscribeToNews": "Keep me updated with Mintcom news and product updates",
+      "subscribeToNews": "Email me product news & offers",
       "subtitle": "Join Mintcom and Start Growing Your Business",
       "success": "Account created successfully! Please check your email to verify.",
       "title": "Create Your Account",
@@ -2400,6 +2400,8 @@
       "realTime": "Real-time Sync",
       "shiftAlerts": "Shift Alerts",
       "stockAlerts": "Stock Alerts",
+      "orderTracking": "Live Orders & Void Monitoring",
+      "instantPush": "Instant Mobile Push Notifications",
       "subtitle": "Complete Control over Your Business from Anywhere in the World",
       "title": "Powerful Admin Dashboard",
       "title1": "Full Visibility.",
@@ -3692,33 +3694,37 @@
   "onboarding": {
     "businessProfile": {
       "title": "Tell us about your business",
-      "subtitle": "Optional — helps us set up Mintcom for you. Takes 30 seconds.",
+      "subtitle": "Helps us set up Mintcom for you. Takes 30 seconds.",
       "stepBadge": "Step 2 of 3 · optional",
       "phoneLabel": "Contact phone",
       "phonePlaceholder": "+1 555 000 1234",
-      "phoneHint": "Only used if you ask for help — never shared.",
+      "phoneHint": "Only used if you ask for help, never shared.",
       "staffLabel": "How many staff?",
+      "staffPlaceholder": "Select staff size",
       "staffOptions": {
-        "1-5": "1–5",
-        "6-15": "6–15",
-        "16-50": "16–50",
+        "1-5": "1 to 5",
+        "6-15": "6 to 15",
+        "16-50": "16 to 50",
         "50+": "50+"
       },
       "branchesLabel": "Branches planned?",
+      "branchesPlaceholder": "Select branches planned",
       "branchesOptions": {
         "single": "Just this one",
-        "2-5": "2–5",
+        "2-5": "2 to 5",
         "5+": "5+"
       },
       "posLabel": "Switching from another POS?",
+      "posPlaceholder": "Select current POS",
       "posOptions": {
-        "none": "None — new business",
+        "none": "None (new business)",
         "cash": "Cash / paper",
         "square": "Square",
         "foodics": "Foodics",
         "other": "Other POS"
       },
       "sourceLabel": "How did you hear about us?",
+      "sourcePlaceholder": "Select how you heard about us",
       "sourceOptions": {
         "google": "Google",
         "social": "Instagram / TikTok",
@@ -3727,7 +3733,7 @@
         "other": "Other"
       },
       "referralCodeLabel": "Referral code",
-      "referralCodePlaceholder": "e.g. AHMED-123",
+      "referralCodePlaceholder": "e.g. AHMED123",
       "marketingConsent": "Email me product news & offers",
       "skip": "Skip for now",
       "continue": "Continue",

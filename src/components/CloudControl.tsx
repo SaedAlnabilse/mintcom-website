@@ -1511,7 +1511,7 @@ export const CloudControl = () => {
 
       <div className="mx-auto w-full max-w-7xl px-5 py-12 sm:px-6 lg:px-8">
         {/* Top Section: first-design side-by-side, support-system styling */}
-        <div className="mb-5 grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
+        <div className="mb-8 grid grid-cols-1 items-start gap-8 sm:mb-10 lg:grid-cols-2 lg:gap-12">
           {/* Heading */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -1520,7 +1520,7 @@ export const CloudControl = () => {
             transition={{ duration: 0.45 }}
             className="text-start"
           >
-            <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+            <p className="mb-3 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
               {t('landing.cloudControl.badge')}
             </p>
 

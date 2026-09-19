@@ -50,9 +50,9 @@ export const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.45 }}
-          className="mb-5 text-start"
+          className="mb-6 text-start sm:mb-8"
         >
-          <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+          <p className="mb-3 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
             {t('landing.contact.badge')}
           </p>
           <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">

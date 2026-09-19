@@ -54,7 +54,6 @@ import api from '../config/api';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { QuickInfo } from '../components/QuickInfo';
-import { Toggle } from '../components/ui';
 import { formatCurrencyCode } from '../utils/currency';
 import {
   ANDROID_DOWNLOAD_URL,
@@ -142,23 +141,24 @@ const SAFE_DRAFT_KEYS = [
   'heardAbout',
   'referralCode',
   'marketingConsent',
+  'billingCycle',
 ] as const;
 
 const STAFF_OPTIONS = [
-  { value: '1–5', labelKey: 'onboarding.businessProfile.staffOptions.1-5' },
-  { value: '6–15', labelKey: 'onboarding.businessProfile.staffOptions.6-15' },
-  { value: '16–50', labelKey: 'onboarding.businessProfile.staffOptions.16-50' },
+  { value: '1 to 5', labelKey: 'onboarding.businessProfile.staffOptions.1-5' },
+  { value: '6 to 15', labelKey: 'onboarding.businessProfile.staffOptions.6-15' },
+  { value: '16 to 50', labelKey: 'onboarding.businessProfile.staffOptions.16-50' },
   { value: '50+', labelKey: 'onboarding.businessProfile.staffOptions.50+' },
 ];
 
 const BRANCH_OPTIONS = [
   { value: 'Just this one', labelKey: 'onboarding.businessProfile.branchesOptions.single' },
-  { value: '2–5', labelKey: 'onboarding.businessProfile.branchesOptions.2-5' },
+  { value: '2 to 5', labelKey: 'onboarding.businessProfile.branchesOptions.2-5' },
   { value: '5+', labelKey: 'onboarding.businessProfile.branchesOptions.5+' },
 ];
 
 const POS_OPTIONS = [
-  { value: 'None — new business', labelKey: 'onboarding.businessProfile.posOptions.none' },
+  { value: 'None (new business)', labelKey: 'onboarding.businessProfile.posOptions.none' },
   { value: 'Cash / paper', labelKey: 'onboarding.businessProfile.posOptions.cash' },
   { value: 'Square', labelKey: 'onboarding.businessProfile.posOptions.square' },
   { value: 'Foodics', labelKey: 'onboarding.businessProfile.posOptions.foodics' },
@@ -173,27 +173,26 @@ const SOURCE_OPTIONS = [
   { value: 'Other', labelKey: 'onboarding.businessProfile.sourceOptions.other' },
 ];
 
-const BusinessPill = ({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: ReactNode;
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    className={`px-5 py-3 rounded-xl border-2 text-sm font-sans font-medium transition-all active:scale-95 ${
-      active
-        ? 'border-mintcom-green bg-mintcom-green/5 text-mintcom-green font-bold'
-        : 'border-stone-100 dark:border-white/5 bg-stone-100 dark:bg-transparent text-stone-600 dark:text-stone-400 hover:border-stone-200 dark:hover:border-zinc-700'
-    }`}
-  >
-    {children}
-  </button>
-);
+const normalizeStaffSize = (val?: string) => {
+  if (!val) return '';
+  if (val === '1–5' || val === '1-5') return '1 to 5';
+  if (val === '6–15' || val === '6-15') return '6 to 15';
+  if (val === '16–50' || val === '16-50') return '16 to 50';
+  return val;
+};
+
+const normalizeBranchesPlanned = (val?: string) => {
+  if (!val) return '';
+  if (val === '2–5' || val === '2-5') return '2 to 5';
+  return val;
+};
+
+const normalizeCurrentPos = (val?: string) => {
+  if (!val) return '';
+  if (val === 'None — new business' || val === 'None - new business') return 'None (new business)';
+  return val;
+};
+
 
 const sanitizeDraftForStorage = (value: Record<string, unknown>) => {
   const safe: Record<string, unknown> = {};
@@ -430,20 +429,20 @@ export function OnboardingPage() {
   const sessionBootRef = useRef(false);
 
   const [formData, setFormData] = useState<any>(() => readStoredLaunchData());
-  const [contactPhone, setContactPhone] = useState<string>(formData.contactPhone || '');
-  const [staffSize, setStaffSize] = useState<string>(formData.staffSize || '');
-  const [branchesPlanned, setBranchesPlanned] = useState<string>(formData.branchesPlanned || '');
-  const [currentPos, setCurrentPos] = useState<string>(formData.currentPos || '');
-  const [heardAbout, setHeardAbout] = useState<string>(formData.heardAbout || '');
-  const [referralCode, setReferralCode] = useState<string>(formData.referralCode || '');
-  const [marketingConsent, setMarketingConsent] = useState<boolean>(!!formData.marketingConsent);
+  const [contactPhone, setContactPhone] = useState<string>(() => formData.contactPhone || '');
+  const [staffSize, setStaffSize] = useState<string>(() => normalizeStaffSize(formData.staffSize));
+  const [branchesPlanned, setBranchesPlanned] = useState<string>(() => normalizeBranchesPlanned(formData.branchesPlanned));
+  const [currentPos, setCurrentPos] = useState<string>(() => normalizeCurrentPos(formData.currentPos));
+  const [heardAbout, setHeardAbout] = useState<string>(() => formData.heardAbout || '');
+  const [referralCode, setReferralCode] = useState<string>(() => formData.referralCode || '');
+  const [marketingConsent, setMarketingConsent] = useState<boolean>(() => !!formData.marketingConsent);
   const launchLocked = isLaunchLocked(serverPhase, apiPhase);
 
-  const [useSavedCard, setUseSavedCard] = useState(true); // Default to using saved card if available
-  const [billingCycle, setBillingCycle] = useState<BillingCycle>(MINTCOM_PRICING.defaultBillingCycle);
+  const [useSavedCard, setUseSavedCard] = useState<boolean>(() => formData.useSavedCard ?? true);
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>(() => (formData.billingCycle as BillingCycle) || MINTCOM_PRICING.defaultBillingCycle);
   // Explicit, unticked-by-default authorization for recurring billing. Required
   // by card-network / consumer-protection rules for negative-option billing.
-  const [billingConsent, setBillingConsent] = useState(false);
+  const [billingConsent, setBillingConsent] = useState<boolean>(() => formData.billingConsent ?? false);
   const [consentError, setConsentError] = useState(false);
 
   const isAdditionalLocation = establishments.length > 0;
@@ -453,10 +452,10 @@ export function OnboardingPage() {
   const [showAdminPassword, setShowAdminPassword] = useState(false);
 
   // Duplication State
-  const [duplicateFromId, setDuplicateFromId] = useState<string>('');
-  const [duplicateInventory, setDuplicateInventory] = useState(true);
-  const [duplicateDiscounts, setDuplicateDiscounts] = useState(true);
-  const [duplicatePaymentMethods, setDuplicatePaymentMethods] = useState(true);
+  const [duplicateFromId, setDuplicateFromId] = useState<string>(() => formData.duplicateFromId || '');
+  const [duplicateInventory, setDuplicateInventory] = useState<boolean>(() => formData.duplicateInventory ?? true);
+  const [duplicateDiscounts, setDuplicateDiscounts] = useState<boolean>(() => formData.duplicateDiscounts ?? true);
+  const [duplicatePaymentMethods, setDuplicatePaymentMethods] = useState<boolean>(() => formData.duplicatePaymentMethods ?? true);
   const [ownerLogin, setOwnerLogin] = useState<{
     firstName?: string;
     lastName?: string;
@@ -472,6 +471,21 @@ export function OnboardingPage() {
       setDuplicateInventory(true);
       setDuplicateDiscounts(true);
       setDuplicatePaymentMethods(true);
+      updateFormData((prev: any) => ({
+        ...prev,
+        duplicateFromId: sourceId,
+        duplicateInventory: true,
+        duplicateDiscounts: true,
+        duplicatePaymentMethods: true,
+      }));
+    } else {
+      updateFormData((prev: any) => ({
+        ...prev,
+        duplicateFromId: '',
+        duplicateInventory: false,
+        duplicateDiscounts: false,
+        duplicatePaymentMethods: false,
+      }));
     }
   };
 
@@ -491,6 +505,7 @@ export function OnboardingPage() {
     phase: string;
     draft?: Record<string, unknown>;
     establishmentId?: string;
+    reservedLoginId?: string;
   }) => {
     const mapped = mapApiPhase(session.phase);
     setApiPhase(session.phase);
@@ -498,25 +513,37 @@ export function OnboardingPage() {
     if (session.draft && typeof session.draft === 'object') {
       const draft = session.draft as Record<string, unknown>;
       if (typeof draft.contactPhone === 'string') setContactPhone(draft.contactPhone);
-      if (typeof draft.staffSize === 'string') setStaffSize(draft.staffSize);
-      if (typeof draft.branchesPlanned === 'string') setBranchesPlanned(draft.branchesPlanned);
-      if (typeof draft.currentPos === 'string') setCurrentPos(draft.currentPos);
+      if (typeof draft.staffSize === 'string') setStaffSize(normalizeStaffSize(draft.staffSize));
+      if (typeof draft.branchesPlanned === 'string') setBranchesPlanned(normalizeBranchesPlanned(draft.branchesPlanned));
+      if (typeof draft.currentPos === 'string') setCurrentPos(normalizeCurrentPos(draft.currentPos));
       if (typeof draft.heardAbout === 'string') setHeardAbout(draft.heardAbout);
       if (typeof draft.referralCode === 'string') setReferralCode(draft.referralCode);
       if (typeof draft.marketingConsent === 'boolean') setMarketingConsent(draft.marketingConsent);
+      if (typeof draft.duplicateFromId === 'string') setDuplicateFromId(draft.duplicateFromId);
+      if (typeof draft.duplicateInventory === 'boolean') setDuplicateInventory(draft.duplicateInventory);
+      if (typeof draft.duplicateDiscounts === 'boolean') setDuplicateDiscounts(draft.duplicateDiscounts);
+      if (typeof draft.duplicatePaymentMethods === 'boolean') setDuplicatePaymentMethods(draft.duplicatePaymentMethods);
+      if (typeof draft.billingCycle === 'string' && (draft.billingCycle === 'monthly' || draft.billingCycle === 'yearly')) {
+        setBillingCycle(draft.billingCycle as BillingCycle);
+      }
 
       setFormData((prev: any) => {
         const merged = {
           ...prev,
           ...sanitizeDraftForStorage(session.draft as Record<string, unknown>),
           ...(session.establishmentId ? { establishmentId: session.establishmentId } : {}),
+          ...(session.reservedLoginId ? { establishmentLoginId: prev.establishmentLoginId || session.reservedLoginId } : {}),
         };
         persistStoredLaunchData(merged);
         return merged;
       });
-    } else if (session.establishmentId) {
+    } else if (session.establishmentId || session.reservedLoginId) {
       setFormData((prev: any) => {
-        const merged = { ...prev, establishmentId: session.establishmentId };
+        const merged = {
+          ...prev,
+          ...(session.establishmentId ? { establishmentId: session.establishmentId } : {}),
+          ...(session.reservedLoginId ? { establishmentLoginId: prev.establishmentLoginId || session.reservedLoginId } : {}),
+        };
         persistStoredLaunchData(merged);
         return merged;
       });
@@ -736,30 +763,121 @@ export function OnboardingPage() {
   const form1 = useForm({
     resolver: zodResolver(step1Schema),
     defaultValues: {
-      currency: 'USD',
-      type: 'restaurant',
-      country: 'US',
-      timezone: getBestTimeZoneForCountry('US', getDeviceTimeZone()),
+      name: formData.name || '',
+      type: formData.type || 'restaurant',
+      country: formData.country || 'US',
+      timezone: formData.timezone || getBestTimeZoneForCountry(formData.country || 'US', getDeviceTimeZone()),
+      currency: formData.currency || 'USD',
+      address: formData.address || '',
     }
   });
 
   const form2 = useForm({
-    resolver: zodResolver(step2Schema)
+    resolver: zodResolver(step2Schema),
+    defaultValues: {
+      establishmentLoginId: formData.establishmentLoginId || '',
+      establishmentPassword: formData.establishmentPassword || '',
+    }
   });
 
   const form3 = useForm({
-    resolver: zodResolver(step3Schema)
+    resolver: zodResolver(step3Schema),
+    defaultValues: {
+      firstName: formData.firstName || account?.firstName || '',
+      lastName: formData.lastName || account?.lastName || '',
+      username: formData.username || '',
+      password: formData.password || '',
+    }
   });
 
   const form4 = useForm({
     resolver: zodResolver(step4Schema),
     defaultValues: {
-      cardNumber: '',
-      expiryDate: '',
-      cvv: '',
-      cardName: '',
+      cardNumber: formData.cardNumber || '',
+      expiryDate: formData.expiryDate || '',
+      cvv: formData.cvv || '',
+      cardName: formData.cardName || '',
     },
   });
+
+  // Keep form1 in sync with formData when entering Step 1A or when session data loads
+  useEffect(() => {
+    if (step !== 1 || phaseParam !== 'location') return;
+    const curName = form1.getValues('name');
+    const curAddress = form1.getValues('address');
+    const curType = form1.getValues('type');
+    const curCountry = form1.getValues('country');
+    const curTimezone = form1.getValues('timezone');
+    const curCurrency = form1.getValues('currency');
+
+    if (!curName && formData.name) form1.setValue('name', formData.name);
+    if (!curAddress && formData.address) form1.setValue('address', formData.address);
+    if ((!curType || curType === 'restaurant') && formData.type) form1.setValue('type', formData.type);
+    if ((!curCountry || curCountry === 'US') && formData.country) form1.setValue('country', formData.country);
+    if (!curTimezone && formData.timezone) form1.setValue('timezone', formData.timezone);
+    if (!curCurrency && formData.currency) form1.setValue('currency', formData.currency);
+  }, [step, phaseParam, formData.name, formData.address, formData.type, formData.country, formData.timezone, formData.currency, form1]);
+
+  // Keep form2 in sync with formData when entering Step 2
+  useEffect(() => {
+    if (step !== 2) return;
+    const curLoginId = form2.getValues('establishmentLoginId');
+    const curPassword = form2.getValues('establishmentPassword');
+    if (!curLoginId && formData.establishmentLoginId) {
+      form2.setValue('establishmentLoginId', formData.establishmentLoginId);
+    }
+    if (!curPassword && formData.establishmentPassword) {
+      form2.setValue('establishmentPassword', formData.establishmentPassword);
+    }
+  }, [step, formData.establishmentLoginId, formData.establishmentPassword, form2]);
+
+  // Keep form3 in sync with formData when entering Step 3
+  useEffect(() => {
+    if (step !== 3 || isAdditionalLocation) return;
+    const curFirst = form3.getValues('firstName');
+    const curLast = form3.getValues('lastName');
+    const curUsername = form3.getValues('username');
+    const curPassword = form3.getValues('password');
+
+    const targetFirst = formData.firstName || account?.firstName || '';
+    const targetLast = formData.lastName || account?.lastName || '';
+
+    if (!curFirst && targetFirst) {
+      form3.setValue('firstName', targetFirst);
+    }
+    if (!curLast && targetLast) {
+      form3.setValue('lastName', targetLast);
+    }
+    if (!curUsername && formData.username) {
+      form3.setValue('username', formData.username);
+    }
+    if (!curPassword && formData.password) {
+      form3.setValue('password', formData.password);
+    }
+  }, [step, isAdditionalLocation, formData.firstName, formData.lastName, formData.username, formData.password, account?.firstName, account?.lastName, form3]);
+
+  // Keep form4 and billing choices in sync with formData when entering Step 4
+  useEffect(() => {
+    if (step !== 4) return;
+    const curCardName = form4.getValues('cardName');
+    const curCardNumber = form4.getValues('cardNumber');
+    const curExpiryDate = form4.getValues('expiryDate');
+    const curCvv = form4.getValues('cvv');
+
+    if (!curCardName && formData.cardName) form4.setValue('cardName', formData.cardName);
+    if (!curCardNumber && formData.cardNumber) form4.setValue('cardNumber', formData.cardNumber);
+    if (!curExpiryDate && formData.expiryDate) form4.setValue('expiryDate', formData.expiryDate);
+    if (!curCvv && formData.cvv) form4.setValue('cvv', formData.cvv);
+    if (formData.billingCycle && (formData.billingCycle === BILLING_CYCLES.MONTHLY || formData.billingCycle === BILLING_CYCLES.YEARLY)) {
+      setBillingCycle(formData.billingCycle as BillingCycle);
+    }
+    if (typeof formData.useSavedCard === 'boolean') {
+      setUseSavedCard(formData.useSavedCard);
+    }
+    if (typeof formData.billingConsent === 'boolean') {
+      setBillingConsent(formData.billingConsent);
+    }
+  }, [step, formData.cardName, formData.cardNumber, formData.expiryDate, formData.cvv, formData.billingCycle, formData.useSavedCard, formData.billingConsent, form4]);
 
   const selectedEstablishmentCurrency = form1.watch('currency') || establishments?.[0]?.currency || 'USD';
   const effectiveCurrency = selectedEstablishmentCurrency.toUpperCase();
@@ -807,14 +925,22 @@ export function OnboardingPage() {
     if (isAdditionalLocation) return;
 
     const currentValues = form3.getValues();
-    if (!currentValues.firstName && account?.firstName) {
-      form3.setValue('firstName', account.firstName);
+    const targetFirst = formData.firstName || account?.firstName || '';
+    const targetLast = formData.lastName || account?.lastName || '';
+    if (!currentValues.firstName && targetFirst) {
+      form3.setValue('firstName', targetFirst);
     }
-    if (!currentValues.lastName && account?.lastName) {
-      form3.setValue('lastName', account.lastName);
+    if (!currentValues.lastName && targetLast) {
+      form3.setValue('lastName', targetLast);
     }
-    // Owner username is left empty on purpose so the owner can choose their own.
-  }, [account?.email, account?.firstName, account?.lastName, form3, isAdditionalLocation]);
+    if (!currentValues.username && formData.username) {
+      form3.setValue('username', formData.username);
+    }
+    if (!currentValues.password && formData.password) {
+      form3.setValue('password', formData.password);
+    }
+    // Owner username is left empty on purpose so the owner can choose their own if not in formData.
+  }, [account?.email, account?.firstName, account?.lastName, formData.firstName, formData.lastName, formData.username, formData.password, form3, isAdditionalLocation]);
 
   useEffect(() => {
     let isMounted = true;
@@ -897,12 +1023,20 @@ export function OnboardingPage() {
   // When the country changes on first registration, auto-select that country's
   // primary currency. The currency field stays fully editable so the user can
   // pick any other currency afterwards.
+  const prevCountryRef = useRef<string | undefined>(formData.country || 'US');
+
+  // When the country changes on first registration, auto-select that country's
+  // primary currency. The currency field stays fully editable so the user can
+  // pick any other currency afterwards.
   useEffect(() => {
     if (isCurrencyLocked || !selectedCountry) return;
-    const primaryCurrency = getCountryPrimaryCurrency(selectedCountry);
-    if (primaryCurrency) {
-      form1.setValue('currency', primaryCurrency, { shouldValidate: true, shouldDirty: true });
+    if (prevCountryRef.current !== undefined && prevCountryRef.current !== selectedCountry) {
+      const primaryCurrency = getCountryPrimaryCurrency(selectedCountry);
+      if (primaryCurrency) {
+        form1.setValue('currency', primaryCurrency, { shouldValidate: true, shouldDirty: true });
+      }
     }
+    prevCountryRef.current = selectedCountry;
   }, [selectedCountry, isCurrencyLocked, form1]);
 
   // Timezone follows the country by default (device TZ when it belongs to the
@@ -919,8 +1053,12 @@ export function OnboardingPage() {
     if (!selectedCountry) return;
     const current = form1.getValues('timezone');
     const dirty = form1.getFieldState('timezone').isDirty;
+    const prevTimezone = formData.timezone;
     // Auto-fill on first paint and on country change until the user overrides.
-    if (!current || !dirty) {
+    if (!current) {
+      const best = prevTimezone || getBestTimeZoneForCountry(selectedCountry, getDeviceTimeZone());
+      form1.setValue('timezone', best, { shouldValidate: true });
+    } else if (!dirty && !prevTimezone) {
       const best = getBestTimeZoneForCountry(selectedCountry, getDeviceTimeZone());
       form1.setValue('timezone', best, { shouldValidate: true });
     } else if (!timezoneOptions.includes(current)) {
@@ -1004,6 +1142,15 @@ export function OnboardingPage() {
   };
 
   const handleSkipBusinessProfile = async () => {
+    updateFormData((prev: any) => ({
+      ...prev,
+      contactPhone: contactPhone.trim() || undefined,
+      staffSize: staffSize || undefined,
+      branchesPlanned: branchesPlanned || undefined,
+      currentPos: currentPos || undefined,
+      heardAbout: heardAbout || undefined,
+      referralCode: heardAbout === 'Friend / referral' ? (referralCode.trim() || undefined) : undefined,
+    }));
     await submitProfilePayload({});
   };
 
@@ -1017,6 +1164,10 @@ export function OnboardingPage() {
       referralCode: heardAbout === 'Friend / referral' ? (referralCode.trim() || undefined) : undefined,
       marketingConsent: marketingConsent,
     };
+    updateFormData((prev: any) => ({
+      ...prev,
+      ...businessData,
+    }));
     await submitProfilePayload(businessData);
   };
 
@@ -1460,9 +1611,23 @@ export function OnboardingPage() {
                       <div className="flex justify-between items-center mb-6 pb-4 border-b border-stone-100 dark:border-white/5">
                         <button
                           type="button"
-                          onClick={() =>
-                            isAdditionalLocation ? navigate('/owner') : navigate('/')
-                          }
+                          onClick={() => {
+                            const vals = form1.getValues();
+                            updateFormData((prev: any) => ({
+                              ...prev,
+                              ...(vals.name ? { name: vals.name } : {}),
+                              ...(vals.type ? { type: vals.type } : {}),
+                              ...(vals.country ? { country: vals.country } : {}),
+                              ...(vals.timezone ? { timezone: vals.timezone } : {}),
+                              ...(vals.currency ? { currency: vals.currency } : {}),
+                              ...(vals.address ? { address: vals.address } : {}),
+                            }));
+                            if (isAdditionalLocation) {
+                              navigate('/owner');
+                            } else {
+                              navigate('/');
+                            }
+                          }}
                           className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                         >
                           {!isRTL && <ArrowLeft size={16} />}
@@ -1497,7 +1662,9 @@ export function OnboardingPage() {
                             <input
                               maxLength={TEXT_INPUT_LIMITS.BUSINESS_NAME}
                               type="text"
-                              {...form1.register('name')}
+                              {...form1.register('name', {
+                                onChange: (e) => updateFormData((prev: any) => ({ ...prev, name: e.target.value })),
+                              })}
                               className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.name ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                               placeholder={formatInputPlaceholder(t('onboarding.step1.locationNamePlaceholder'), t('common.locale'))}
                             />
@@ -1512,7 +1679,9 @@ export function OnboardingPage() {
                           <div className="relative">
                             <Building2 className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <select
-                              {...form1.register('type')}
+                              {...form1.register('type', {
+                                onChange: (e) => updateFormData((prev: any) => ({ ...prev, type: e.target.value })),
+                              })}
                               className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.type ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                             >
                               {businessTypeGroups.map((group) => (
@@ -1550,7 +1719,9 @@ export function OnboardingPage() {
                           <div className="relative">
                             <Globe className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <select
-                              {...form1.register('country')}
+                              {...form1.register('country', {
+                                onChange: (e) => updateFormData((prev: any) => ({ ...prev, country: e.target.value })),
+                              })}
                               className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.country ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                             >
                               {countryOptions.map((countryOption) => (
@@ -1572,7 +1743,9 @@ export function OnboardingPage() {
                           <div className="relative">
                             <CalendarClock className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <select
-                              {...form1.register('timezone')}
+                              {...form1.register('timezone', {
+                                onChange: (e) => updateFormData((prev: any) => ({ ...prev, timezone: e.target.value })),
+                              })}
                               className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.timezone ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none`}
                             >
                               {timezoneOptions.map((tz) => (
@@ -1603,7 +1776,9 @@ export function OnboardingPage() {
                           <div className="relative">
                             <DollarSign className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 ${isCurrencyLocked ? 'text-stone-500' : 'text-stone-400'}`} size={20} />
                             <select
-                              {...form1.register('currency')}
+                              {...form1.register('currency', {
+                                onChange: (e) => updateFormData((prev: any) => ({ ...prev, currency: e.target.value })),
+                              })}
                               disabled={isCurrencyLocked}
                               className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.currency ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none ${isCurrencyLocked ? 'opacity-60 cursor-not-allowed bg-stone-100 dark:bg-zinc-800' : ''}`}
                             >
@@ -1647,7 +1822,9 @@ export function OnboardingPage() {
                             <MapPin className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400`} size={20} />
                             <input maxLength={255}
                               type="text"
-                              {...form1.register('address')}
+                              {...form1.register('address', {
+                                onChange: (e) => updateFormData((prev: any) => ({ ...prev, address: e.target.value })),
+                              })}
                               className={`w-full bg-white dark:bg-zinc-900/60 border ${form1.formState.errors.address ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                               placeholder={formatInputPlaceholder(t('onboarding.step1.addressPlaceholder'), t('common.locale'))}
                             />
@@ -1704,7 +1881,10 @@ export function OnboardingPage() {
                                         type="checkbox"
                                         className="hidden"
                                         checked={duplicateInventory}
-                                        onChange={(e) => setDuplicateInventory(e.target.checked)}
+                                        onChange={(e) => {
+                                          setDuplicateInventory(e.target.checked);
+                                          updateFormData((prev: any) => ({ ...prev, duplicateInventory: e.target.checked }));
+                                        }}
                                       />
                                       <div className="flex-1 flex items-center gap-2">
                                         <Box size={16} className={duplicateInventory ? 'text-mintcom-green' : 'text-stone-400'} />
@@ -1724,7 +1904,10 @@ export function OnboardingPage() {
                                         type="checkbox"
                                         className="hidden"
                                         checked={duplicateDiscounts}
-                                        onChange={(e) => setDuplicateDiscounts(e.target.checked)}
+                                        onChange={(e) => {
+                                          setDuplicateDiscounts(e.target.checked);
+                                          updateFormData((prev: any) => ({ ...prev, duplicateDiscounts: e.target.checked }));
+                                        }}
                                       />
                                       <div className="flex-1 flex items-center gap-2">
                                         <Tags size={16} className={duplicateDiscounts ? 'text-mintcom-green' : 'text-stone-400'} />
@@ -1744,7 +1927,10 @@ export function OnboardingPage() {
                                         type="checkbox"
                                         className="hidden"
                                         checked={duplicatePaymentMethods}
-                                        onChange={(e) => setDuplicatePaymentMethods(e.target.checked)}
+                                        onChange={(e) => {
+                                          setDuplicatePaymentMethods(e.target.checked);
+                                          updateFormData((prev: any) => ({ ...prev, duplicatePaymentMethods: e.target.checked }));
+                                        }}
                                       />
                                       <div className="flex-1 flex items-center gap-2">
                                         <CreditCard size={16} className={duplicatePaymentMethods ? 'text-mintcom-green' : 'text-stone-400'} />
@@ -1795,6 +1981,15 @@ export function OnboardingPage() {
                         <button
                           type="button"
                           onClick={() => {
+                            updateFormData((prev: any) => ({
+                              ...prev,
+                              contactPhone: contactPhone.trim(),
+                              staffSize,
+                              branchesPlanned,
+                              currentPos,
+                              heardAbout,
+                              referralCode: heardAbout === 'Friend / referral' ? referralCode.trim() : '',
+                            }));
                             navigate('/onboarding/location', { replace: true });
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
@@ -1818,7 +2013,10 @@ export function OnboardingPage() {
 
                       <div className="flex justify-between items-start mb-2">
                         <h2 className="font-sans text-2xl sm:text-3xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
-                          {t('onboarding.businessProfile.title')}
+                          {t('onboarding.businessProfile.title')}{' '}
+                          <span className="font-normal text-stone-500 dark:text-zinc-400 text-xl sm:text-2xl">
+                            ({t('common.optional', { defaultValue: 'Optional' })})
+                          </span>
                         </h2>
                       </div>
                       <p className="text-sm font-sans text-stone-600 dark:text-zinc-300">
@@ -1838,7 +2036,10 @@ export function OnboardingPage() {
                             <input
                               type="tel"
                               value={contactPhone}
-                              onChange={(e) => setContactPhone(e.target.value)}
+                              onChange={(e) => {
+                                setContactPhone(e.target.value);
+                                updateFormData((prev: any) => ({ ...prev, contactPhone: e.target.value }));
+                              }}
                               className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                               placeholder={formatInputPlaceholder(t('onboarding.businessProfile.phonePlaceholder'), t('common.locale'))}
                             />
@@ -1850,74 +2051,130 @@ export function OnboardingPage() {
                         </div>
 
                         {/* Staff Size */}
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.staffLabel')}
                           </label>
-                          <div className="flex flex-wrap gap-3">
-                            {STAFF_OPTIONS.map((opt) => (
-                              <BusinessPill
-                                key={opt.value}
-                                active={staffSize === opt.value}
-                                onClick={() => setStaffSize((prev) => (prev === opt.value ? '' : opt.value))}
-                              >
-                                {t(opt.labelKey)}
-                              </BusinessPill>
-                            ))}
+                          <div className="relative group">
+                            <Users className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <select
+                              value={staffSize}
+                              onChange={(e) => {
+                                setStaffSize(e.target.value);
+                                updateFormData((prev: any) => ({ ...prev, staffSize: e.target.value }));
+                              }}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans ${staffSize ? 'font-bold text-stone-900 dark:text-zinc-100' : 'font-normal text-stone-400'} placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none cursor-pointer`}
+                            >
+                              <option value="" className="text-stone-400 font-normal bg-white dark:bg-zinc-900">
+                                {t('onboarding.businessProfile.staffPlaceholder', { defaultValue: 'Select staff size' })}
+                              </option>
+                              {STAFF_OPTIONS.map((opt) => (
+                                <option
+                                  key={opt.value}
+                                  value={opt.value}
+                                  className="bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 font-normal"
+                                >
+                                  {t(opt.labelKey)}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                           </div>
                         </div>
 
                         {/* Branches Planned */}
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.branchesLabel')}
                           </label>
-                          <div className="flex flex-wrap gap-3">
-                            {BRANCH_OPTIONS.map((opt) => (
-                              <BusinessPill
-                                key={opt.value}
-                                active={branchesPlanned === opt.value}
-                                onClick={() => setBranchesPlanned((prev) => (prev === opt.value ? '' : opt.value))}
-                              >
-                                {t(opt.labelKey)}
-                              </BusinessPill>
-                            ))}
+                          <div className="relative group">
+                            <GitBranch className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <select
+                              value={branchesPlanned}
+                              onChange={(e) => {
+                                setBranchesPlanned(e.target.value);
+                                updateFormData((prev: any) => ({ ...prev, branchesPlanned: e.target.value }));
+                              }}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans ${branchesPlanned ? 'font-bold text-stone-900 dark:text-zinc-100' : 'font-normal text-stone-400'} placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none cursor-pointer`}
+                            >
+                              <option value="" className="text-stone-400 font-normal bg-white dark:bg-zinc-900">
+                                {t('onboarding.businessProfile.branchesPlaceholder', { defaultValue: 'Select branches planned' })}
+                              </option>
+                              {BRANCH_OPTIONS.map((opt) => (
+                                <option
+                                  key={opt.value}
+                                  value={opt.value}
+                                  className="bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 font-normal"
+                                >
+                                  {t(opt.labelKey)}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                           </div>
                         </div>
 
                         {/* Current POS */}
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.posLabel')}
                           </label>
-                          <div className="flex flex-wrap gap-3">
-                            {POS_OPTIONS.map((opt) => (
-                              <BusinessPill
-                                key={opt.value}
-                                active={currentPos === opt.value}
-                                onClick={() => setCurrentPos((prev) => (prev === opt.value ? '' : opt.value))}
-                              >
-                                {t(opt.labelKey)}
-                              </BusinessPill>
-                            ))}
+                          <div className="relative group">
+                            <Repeat className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <select
+                              value={currentPos}
+                              onChange={(e) => {
+                                setCurrentPos(e.target.value);
+                                updateFormData((prev: any) => ({ ...prev, currentPos: e.target.value }));
+                              }}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans ${currentPos ? 'font-bold text-stone-900 dark:text-zinc-100' : 'font-normal text-stone-400'} placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none cursor-pointer`}
+                            >
+                              <option value="" className="text-stone-400 font-normal bg-white dark:bg-zinc-900">
+                                {t('onboarding.businessProfile.posPlaceholder', { defaultValue: 'Select current POS' })}
+                              </option>
+                              {POS_OPTIONS.map((opt) => (
+                                <option
+                                  key={opt.value}
+                                  value={opt.value}
+                                  className="bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 font-normal"
+                                >
+                                  {t(opt.labelKey)}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                           </div>
                         </div>
 
                         {/* How did you hear about us */}
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <label className="text-sm font-sans font-medium text-stone-600 dark:text-zinc-300 mx-1 flex items-center">
                             {t('onboarding.businessProfile.sourceLabel')}
                           </label>
-                          <div className="flex flex-wrap gap-3">
-                            {SOURCE_OPTIONS.map((opt) => (
-                              <BusinessPill
-                                key={opt.value}
-                                active={heardAbout === opt.value}
-                                onClick={() => setHeardAbout((prev) => (prev === opt.value ? '' : opt.value))}
-                              >
-                                {t(opt.labelKey)}
-                              </BusinessPill>
-                            ))}
+                          <div className="relative group">
+                            <Megaphone className={`absolute ${isRTL ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors`} size={20} />
+                            <select
+                              value={heardAbout}
+                              onChange={(e) => {
+                                setHeardAbout(e.target.value);
+                                updateFormData((prev: any) => ({ ...prev, heardAbout: e.target.value }));
+                              }}
+                              className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans ${heardAbout ? 'font-bold text-stone-900 dark:text-zinc-100' : 'font-normal text-stone-400'} placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all appearance-none cursor-pointer`}
+                            >
+                              <option value="" className="text-stone-400 font-normal bg-white dark:bg-zinc-900">
+                                {t('onboarding.businessProfile.sourcePlaceholder', { defaultValue: 'Select how you heard about us' })}
+                              </option>
+                              {SOURCE_OPTIONS.map((opt) => (
+                                <option
+                                  key={opt.value}
+                                  value={opt.value}
+                                  className="bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 font-normal"
+                                >
+                                  {t(opt.labelKey)}
+                                </option>
+                              ))}
+                            </select>
+                            <ChevronDown className={`absolute ${isRTL ? 'left-4' : 'right-4'} top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none`} size={16} />
                           </div>
                           {heardAbout === 'Friend / referral' && (
                             <div className="space-y-2 pt-2">
@@ -1929,7 +2186,10 @@ export function OnboardingPage() {
                                 <input
                                   type="text"
                                   value={referralCode}
-                                  onChange={(e) => setReferralCode(e.target.value)}
+                                  onChange={(e) => {
+                                    setReferralCode(e.target.value);
+                                    updateFormData((prev: any) => ({ ...prev, referralCode: e.target.value }));
+                                  }}
                                   className={`w-full bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl py-4 ${isRTL ? 'pr-12 pl-4' : 'pl-12 pr-4'} text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                                   placeholder={formatInputPlaceholder(t('onboarding.businessProfile.referralCodePlaceholder'), t('common.locale'))}
                                 />
@@ -1938,13 +2198,6 @@ export function OnboardingPage() {
                           )}
                         </div>
 
-                        {/* Marketing Consent */}
-                        <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl flex items-center justify-between border border-stone-100 dark:border-white/5">
-                          <span className="text-sm font-sans font-medium text-stone-900 dark:text-zinc-100">
-                            {t('onboarding.businessProfile.marketingConsent')}
-                          </span>
-                          <Toggle checked={marketingConsent} onChange={setMarketingConsent} size="md" />
-                        </div>
                       </div>
 
                       <div className="flex items-center gap-3 pt-4">
@@ -1993,7 +2246,15 @@ export function OnboardingPage() {
                   <div className="flex justify-between items-center mb-6 pb-4 border-b border-stone-100 dark:border-white/5">
                     <button
                       type="button"
-                      onClick={() => goToStep(1)}
+                      onClick={() => {
+                        const vals = form2.getValues();
+                        updateFormData((prev: any) => ({
+                          ...prev,
+                          establishmentLoginId: vals.establishmentLoginId !== undefined ? vals.establishmentLoginId.trim().toLowerCase() : prev.establishmentLoginId,
+                          establishmentPassword: vals.establishmentPassword !== undefined ? vals.establishmentPassword : prev.establishmentPassword,
+                        }));
+                        goToStep(1);
+                      }}
                       className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                     >
                       {!isRTL && <ArrowLeft size={16} />}
@@ -2031,7 +2292,9 @@ export function OnboardingPage() {
                         autoComplete="off"
                         autoCorrect="off"
                         spellCheck={false}
-                        {...form2.register('establishmentLoginId')}
+                        {...form2.register('establishmentLoginId', {
+                          onChange: (e) => updateFormData((prev: any) => ({ ...prev, establishmentLoginId: e.target.value })),
+                        })}
                         className={`w-full bg-white dark:bg-zinc-900/60 border ${form2.formState.errors.establishmentLoginId ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.locationIdPlaceholder'), t('common.locale'))}
                       />
@@ -2048,7 +2311,9 @@ export function OnboardingPage() {
                       <input maxLength={255}
                         type={showEstablishmentPassword ? "text" : "password"}
                         autoComplete="new-password"
-                        {...form2.register('establishmentPassword')}
+                        {...form2.register('establishmentPassword', {
+                          onChange: (e) => updateFormData((prev: any) => ({ ...prev, establishmentPassword: e.target.value })),
+                        })}
                         className={`w-full bg-white dark:bg-zinc-900/60 border ${form2.formState.errors.establishmentPassword ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step3.passwordPlaceholder'), t('common.locale'))}
                       />
@@ -2092,7 +2357,17 @@ export function OnboardingPage() {
                   <div className="flex justify-between items-center mb-6 pb-4 border-b border-stone-100 dark:border-white/5">
                     <button
                       type="button"
-                      onClick={() => goToStep(2)}
+                      onClick={() => {
+                        const vals = form3.getValues();
+                        updateFormData((prev: any) => ({
+                          ...prev,
+                          firstName: vals.firstName !== undefined ? vals.firstName : prev.firstName,
+                          lastName: vals.lastName !== undefined ? vals.lastName : prev.lastName,
+                          username: vals.username !== undefined ? vals.username : prev.username,
+                          password: vals.password !== undefined ? vals.password : prev.password,
+                        }));
+                        goToStep(2);
+                      }}
                       className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                     >
                       {!isRTL && <ArrowLeft size={16} />}
@@ -2243,7 +2518,9 @@ export function OnboardingPage() {
                           autoComplete="new-password"
                           autoCorrect="off"
                           spellCheck={false}
-                          {...form3.register('firstName')}
+                          {...form3.register('firstName', {
+                            onChange: (e) => updateFormData((prev: any) => ({ ...prev, firstName: e.target.value })),
+                          })}
                           className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.firstName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.firstNamePlaceholder'), t('common.locale'))}
                         />
@@ -2261,7 +2538,9 @@ export function OnboardingPage() {
                           autoComplete="new-password"
                           autoCorrect="off"
                           spellCheck={false}
-                          {...form3.register('lastName')}
+                          {...form3.register('lastName', {
+                            onChange: (e) => updateFormData((prev: any) => ({ ...prev, lastName: e.target.value })),
+                          })}
                           className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.lastName ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                           placeholder={formatInputPlaceholder(t('onboarding.step4.lastNamePlaceholder'), t('common.locale'))}
                         />
@@ -2282,7 +2561,9 @@ export function OnboardingPage() {
                         autoComplete="new-password"
                         autoCorrect="off"
                         spellCheck={false}
-                        {...form3.register('username')}
+                        {...form3.register('username', {
+                          onChange: (e) => updateFormData((prev: any) => ({ ...prev, username: e.target.value })),
+                        })}
                         className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.username ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-4 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.usernamePlaceholder'), t('common.locale'))}
                       />
@@ -2300,7 +2581,9 @@ export function OnboardingPage() {
                       <input maxLength={255}
                         type={showAdminPassword ? "text" : "password"}
                         autoComplete="new-password"
-                        {...form3.register('password')}
+                        {...form3.register('password', {
+                          onChange: (e) => updateFormData((prev: any) => ({ ...prev, password: e.target.value })),
+                        })}
                         className={`w-full bg-white dark:bg-zinc-900/60 border ${form3.formState.errors.password ? 'border-mintcom-red ring-2 ring-mintcom-red/20' : 'border-stone-200 dark:border-zinc-800'} rounded-2xl py-4 ps-12 pe-12 text-base sm:text-sm font-sans font-normal text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 transition-all`}
                         placeholder={formatInputPlaceholder(t('onboarding.step4.passwordPlaceholder'), t('common.locale'))}
                       />
@@ -2343,7 +2626,20 @@ export function OnboardingPage() {
               <div className="mb-6 flex justify-between items-center px-2">
                 <button
                   type="button"
-                  onClick={() => goToStep(3)}
+                  onClick={() => {
+                    const vals = form4.getValues();
+                    updateFormData((prev: any) => ({
+                      ...prev,
+                      billingCycle,
+                      cardName: vals.cardName !== undefined ? vals.cardName : prev.cardName,
+                      cardNumber: vals.cardNumber !== undefined ? vals.cardNumber : prev.cardNumber,
+                      expiryDate: vals.expiryDate !== undefined ? vals.expiryDate : prev.expiryDate,
+                      cvv: vals.cvv !== undefined ? vals.cvv : prev.cvv,
+                      useSavedCard,
+                      billingConsent,
+                    }));
+                    goToStep(3);
+                  }}
                   className="inline-flex items-center gap-2 text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white transition-colors"
                 >
                   {!isRTL && <ArrowLeft size={16} />}
@@ -2414,7 +2710,10 @@ export function OnboardingPage() {
                       <div className="inline-grid w-full grid-cols-2 gap-1 rounded-xl border border-stone-200 bg-white p-1 dark:border-zinc-800 dark:bg-transparent">
                         <button
                           type="button"
-                          onClick={() => setBillingCycle(BILLING_CYCLES.MONTHLY)}
+                          onClick={() => {
+                            setBillingCycle(BILLING_CYCLES.MONTHLY);
+                            updateFormData((prev: any) => ({ ...prev, billingCycle: BILLING_CYCLES.MONTHLY }));
+                          }}
                           className={`rounded-lg py-2 text-[13px] font-semibold transition-colors ${
                             billingCycle === BILLING_CYCLES.MONTHLY
                               ? 'bg-stone-900 text-white dark:bg-mintcom-green dark:text-black'
@@ -2425,7 +2724,10 @@ export function OnboardingPage() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setBillingCycle(BILLING_CYCLES.YEARLY)}
+                          onClick={() => {
+                            setBillingCycle(BILLING_CYCLES.YEARLY);
+                            updateFormData((prev: any) => ({ ...prev, billingCycle: BILLING_CYCLES.YEARLY }));
+                          }}
                           className={`flex items-center justify-center gap-1.5 rounded-lg py-2 text-[13px] font-semibold transition-colors ${
                             billingCycle === BILLING_CYCLES.YEARLY
                               ? 'bg-stone-900 text-white dark:bg-mintcom-green dark:text-black'
@@ -2643,7 +2945,10 @@ export function OnboardingPage() {
                     {hasSavedCard && (
                       <div className="space-y-3">
                         <div
-                          onClick={() => setUseSavedCard(true)}
+                          onClick={() => {
+                            setUseSavedCard(true);
+                            updateFormData((prev: any) => ({ ...prev, useSavedCard: true }));
+                          }}
                           className={`cursor-pointer rounded-2xl border p-4 transition-colors ${
                             useSavedCard
                               ? 'border-mintcom-green bg-mintcom-green/5'
@@ -2679,7 +2984,10 @@ export function OnboardingPage() {
                         </div>
 
                         <div
-                          onClick={() => setUseSavedCard(false)}
+                          onClick={() => {
+                            setUseSavedCard(false);
+                            updateFormData((prev: any) => ({ ...prev, useSavedCard: false }));
+                          }}
                           className={`cursor-pointer rounded-2xl border p-4 transition-colors ${
                             !useSavedCard
                               ? 'border-mintcom-green bg-mintcom-green/5'
@@ -2735,11 +3043,13 @@ export function OnboardingPage() {
                             {...form4.register('cardNumber')}
                             value={cardNumberValue}
                             onChange={(e) => {
-                              form4.setValue('cardNumber', formatCardNumberInput(e.target.value), {
+                              const formatted = formatCardNumberInput(e.target.value);
+                              form4.setValue('cardNumber', formatted, {
                                 shouldDirty: true,
                                 shouldTouch: true,
                               });
                               form4.clearErrors('cardNumber');
+                              updateFormData((prev: any) => ({ ...prev, cardNumber: formatted }));
                             }}
                             maxLength={MAX_FORMATTED_CARD_NUMBER_LENGTH}
                             inputMode="numeric"
@@ -2762,11 +3072,13 @@ export function OnboardingPage() {
                               {...form4.register('expiryDate')}
                               value={form4.watch('expiryDate') || ''}
                               onChange={(e) => {
-                                form4.setValue('expiryDate', formatExpiryInput(e.target.value), {
+                                const formatted = formatExpiryInput(e.target.value);
+                                form4.setValue('expiryDate', formatted, {
                                   shouldDirty: true,
                                   shouldTouch: true,
                                 });
                                 form4.clearErrors('expiryDate');
+                                updateFormData((prev: any) => ({ ...prev, expiryDate: formatted }));
                               }}
                               maxLength={5}
                               inputMode="numeric"
@@ -2790,15 +3102,17 @@ export function OnboardingPage() {
                               {...form4.register('cvv')}
                               value={form4.watch('cvv') || ''}
                               onChange={(e) => {
+                                const val = getCardDigits(e.target.value).slice(0, cvvLength);
                                 form4.setValue(
                                   'cvv',
-                                  getCardDigits(e.target.value).slice(0, cvvLength),
+                                  val,
                                   {
                                     shouldDirty: true,
                                     shouldTouch: true,
                                   },
                                 );
                                 form4.clearErrors('cvv');
+                                updateFormData((prev: any) => ({ ...prev, cvv: val }));
                               }}
                               maxLength={4}
                               inputMode="numeric"
@@ -2826,6 +3140,7 @@ export function OnboardingPage() {
                                 shouldTouch: true,
                               });
                               form4.clearErrors('cardName');
+                              updateFormData((prev: any) => ({ ...prev, cardName: e.target.value }));
                             }}
                             placeholder={t('paymentMethods.modal.cardholderPlaceholder', {
                               defaultValue: 'Name as it appears on card',
@@ -2919,6 +3234,7 @@ export function OnboardingPage() {
                           onChange={(e) => {
                             setBillingConsent(e.target.checked);
                             if (e.target.checked) setConsentError(false);
+                            updateFormData((prev: any) => ({ ...prev, billingConsent: e.target.checked }));
                           }}
                           className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-mintcom-green"
                         />

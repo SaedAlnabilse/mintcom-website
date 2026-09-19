@@ -7,6 +7,7 @@ import { NavLink, Outlet, useNavigate, useLocation, useParams, useSearchParams }
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useRealtime } from '../hooks/useRealtime';
+import { useIsCompactSidebar } from '../hooks/useIsCompactSidebar';
 import { ThemeToggle } from './ThemeToggle';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { BottomNavigation } from './mobile/BottomNavigation';
@@ -121,6 +122,7 @@ export function DashboardLayout() {
   const location = useLocation();
   const { locationSlug } = useParams<{ locationSlug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const isCompact = useIsCompactSidebar();
   const dashboardLocations = useMemo(
     () => currentEstablishment ? [{
       id: currentEstablishment.id,
@@ -757,16 +759,16 @@ export function DashboardLayout() {
         ref={sidebarRef}
         initial={false}
         animate={{
-          width: sidebarOpen ? 300 : 100,
+          width: sidebarOpen ? (isCompact ? 260 : 300) : (isCompact ? 80 : 100),
           transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
         }}
         className={`
-          relative z-[100] flex flex-col h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar
+          dashboard-sidebar relative z-[100] flex flex-col h-full max-h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar ${sidebarOpen ? 'overflow-hidden' : 'overflow-visible'}
           ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
         `}
       >
         {/* Logo Section */}
-        <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
+        <div className="dashboard-sidebar-header h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
           <AnimatePresence mode="wait">
             {sidebarOpen ? (
               <motion.div
@@ -809,7 +811,7 @@ export function DashboardLayout() {
                 className="mx-auto"
               >
                 <button
-                  className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 border border-mintcom-green/20 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
+                  className="logo-icon-btn w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-gradient-to-br from-mintcom-green/20 to-mintcom-green/5 border border-mintcom-green/20 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                   onClick={() => setSidebarOpen(true)}
                 >
                   <img src={MintcomLeafIcon} width={32} height={32} className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} loading="eager" decoding="async" />
@@ -839,12 +841,12 @@ export function DashboardLayout() {
         {sidebarOpen ? (
           <div className="px-2 pb-2 pt-0">
             <div
-              className={`p-3 bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-xl relative overflow-hidden group transition-colors duration-200 ${canSwitchLocation ? 'cursor-pointer hover:border-mintcom-green/40' : ''}`}
+              className={`dashboard-sidebar-card p-3 bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-xl relative overflow-hidden group transition-colors duration-200 ${canSwitchLocation ? 'cursor-pointer hover:border-mintcom-green/40' : ''}`}
               onClick={canSwitchLocation ? () => navigate('/select-establishment') : undefined}
             >
               <div className="relative z-10">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-lg bg-mintcom-green/12 flex items-center justify-center flex-shrink-0">
+                  <div className="card-icon-box w-9 h-9 rounded-lg bg-mintcom-green/12 flex items-center justify-center flex-shrink-0">
                     {(() => {
                       const Icon = getBusinessTypeIcon(currentEstablishment?.type || '');
                       return <Icon size={18} className="text-emerald-700 dark:text-mintcom-green" />;
@@ -857,7 +859,7 @@ export function DashboardLayout() {
                     </h2>
                   </div>
                 </div>
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-stone-200 dark:border-zinc-800">
+                <div className="card-footer-row flex items-center justify-between mt-2 pt-2 border-t border-stone-200 dark:border-zinc-800">
                   <div className="flex items-center gap-1.5">
                     <RealtimeStatusIndicator variant="inline" />
                   </div>
@@ -900,17 +902,17 @@ export function DashboardLayout() {
         ) : null}
 
         {/* Navigation */}
-        <div className="relative flex-1 min-h-0 flex flex-col">
+        <div className="relative flex-1 min-h-0 flex flex-col overflow-hidden">
           <nav
             ref={sidebarNavRef}
-            className="flex-1 min-h-0 overflow-y-auto overflow-x-visible px-3 space-y-1.5 scrollbar-none pb-4 relative z-10"
+            className="dashboard-sidebar-nav flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-3 space-y-1.5 scrollbar-none pb-4 relative z-10"
             onScroll={() => {
               hideCollapsedNavOverlay();
               updateNavOverflow();
             }}
           >
           {sidebarOpen && (
-            <p className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal">{t('dashboard.menu.mainMenu')}</p>
+            <p className="dashboard-sidebar-section-title px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal">{t('dashboard.menu.mainMenu')}</p>
           )}
 
           {filteredMenu.map((item, index) => {
@@ -931,12 +933,12 @@ export function DashboardLayout() {
                     onBlur={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
                     aria-label={!sidebarOpen ? item.label : undefined}
                     className={`
-                      flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group relative
+                      dashboard-sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group relative
                       ${sidebarOpen ? 'w-full' : ''}
                       ${isActive
                         ? (!sidebarOpen ? activeRowClass : activeGroupClass)
                         : inactiveRowClass}
-                      ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}
+                      ${!sidebarOpen ? 'dashboard-sidebar-collapsed-btn justify-center w-12 h-12 mx-auto' : ''}
                     `}
                   >
                     <Icon size={!sidebarOpen ? 24 : 20} className={isActive && !sidebarOpen ? 'text-black' : (isActive ? 'text-mintcom-green' : '')} />
@@ -965,7 +967,7 @@ export function DashboardLayout() {
                               end={subItem.path === 'settings'}
                               onClick={() => setSidebarOpen(false)}
                               className={({ isActive }) =>
-                                `flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? activeSubRowClass : inactiveSubRowClass}`
+                                `dashboard-sidebar-subitem flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${isActive ? activeSubRowClass : inactiveSubRowClass}`
                               }
                             >
                               {({ isActive }) => (
@@ -1000,9 +1002,9 @@ export function DashboardLayout() {
                   onBlur={() => !sidebarOpen && scheduleHideCollapsedNavOverlay()}
                   aria-label={!sidebarOpen ? item.label : undefined}
                   className={({ isActive }) =>
-                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
+                    `dashboard-sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
                     ${isActive ? activeRowClass : inactiveRowClass}
-                    ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
+                    ${!sidebarOpen ? 'dashboard-sidebar-collapsed-btn justify-center w-12 h-12 mx-auto' : ''}`
                   }
                 >
                   <Icon size={!sidebarOpen ? 24 : 20} />
@@ -1087,7 +1089,7 @@ export function DashboardLayout() {
           )}
 
         {/* Footer — match OwnerLayout: expanded list, collapsed icon column */}
-        <div className="p-3 border-t border-stone-200 dark:border-zinc-800 relative shrink-0 mt-auto">
+        <div className="dashboard-sidebar-footer p-3 border-t border-stone-200 dark:border-zinc-800 relative shrink-0 mt-auto">
           {sidebarOpen ? (
             <div className="space-y-1">
               

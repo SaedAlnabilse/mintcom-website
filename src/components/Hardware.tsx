@@ -139,9 +139,9 @@ export const Hardware = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="mb-5 text-start"
+            className="mb-6 text-start sm:mb-8"
           >
-            <p className="mb-1 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
+            <p className="mb-3 text-[13px] font-semibold text-stone-500 dark:text-zinc-400">
               {t('landing.hardware.badge')}
             </p>
             <h2 className="font-magilio text-4xl font-bold tracking-tight sm:text-5xl">
@@ -184,9 +184,11 @@ export const Hardware = () => {
             ))}
           </div>
 
-          {/* Quiet footer line */}
-          <p className="mt-10 border-t border-stone-200 pt-5 text-center text-[13px] text-stone-400 dark:border-zinc-800 dark:text-zinc-500">
-            {t('landing.hardware.alreadyHave')} {t('landing.hardware.alreadyHaveDesc')}
+          {/* Subtle footer note */}
+          <p className="mt-8 border-t border-stone-200 pt-5 text-center text-sm text-stone-600 dark:border-zinc-800 dark:text-zinc-300">
+            <CheckCircle2 size={15} className="me-1.5 inline-block -mt-0.5 text-mintcom-green" />
+            <strong className="font-bold text-stone-900 dark:text-zinc-100">{t('landing.hardware.alreadyHave')}</strong>{' '}
+            {t('landing.hardware.alreadyHaveDesc')}
           </p>
         </div>
       </section>

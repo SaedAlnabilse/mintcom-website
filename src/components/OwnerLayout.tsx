@@ -137,7 +137,7 @@ export function OwnerLayout() {
                     transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    dashboard-sidebar relative z-[100] flex-col h-full max-h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar overflow-hidden
+                    dashboard-sidebar relative z-[100] flex-col h-full max-h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar ${sidebarOpen ? 'overflow-hidden' : 'overflow-visible'}
                     hidden lg:flex
                 `}
             >

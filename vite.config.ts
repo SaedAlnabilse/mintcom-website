@@ -107,6 +107,18 @@ export default defineConfig(({ mode }) => {
             return 'realtime';
           }
 
+          // Spreadsheet export/import - dynamically imported by dashboard
+          // utils, kept out of page chunks so they stay cacheable
+          if (id.includes('node_modules/write-excel-file') ||
+              id.includes('node_modules/read-excel-file')) {
+            return 'exports';
+          }
+
+          // QR rendering - only needed for QR menu / app download flows
+          if (id.includes('node_modules/qrcode.react')) {
+            return 'qr';
+          }
+
           // Axios and HTTP utilities
           if (id.includes('node_modules/axios')) {
             return 'http';

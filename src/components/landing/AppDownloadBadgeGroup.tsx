@@ -34,7 +34,7 @@ export const AppDownloadBadgeGroup: React.FC<AppDownloadBadgeGroupProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className={`mt-8 sm:mt-10 flex flex-col ${
+      className={`mt-5 sm:mt-6 flex flex-col ${
         align === 'center'
           ? 'items-center mx-auto'
           : 'items-center sm:items-start mx-auto sm:mx-0'

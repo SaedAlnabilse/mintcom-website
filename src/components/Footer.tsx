@@ -86,7 +86,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
     <footer
       dir={isRtl ? 'rtl' : 'ltr'}
       className={`relative bg-cream-200 transition-colors duration-300 dark:bg-zinc-950 ${
-        minimal ? 'pb-6 pt-10' : 'pb-8 pt-16 lg:pt-20'
+        minimal ? 'pb-6 pt-10' : 'pb-8 pt-12 lg:pt-14'
       }`}
     >
       {/* Top accent border */}

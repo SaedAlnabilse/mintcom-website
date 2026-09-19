@@ -529,7 +529,7 @@
       "showcaseSyncBadge": "云端即时同步与自动备份",
       "showcaseTitle": "简单即卓越",
       "signUpButton": "注册",
-      "subscribeToNews": "接收 Mintcom 新闻和产品更新",
+      "subscribeToNews": "通过电子邮件接收产品动态和优惠信息",
       "subtitle": "加入 Mintcom，开启业务增长之旅",
       "success": "账户创建成功！请查收邮件完成验证。",
       "title": "创建您的账户",
@@ -2400,6 +2400,8 @@
       "realTime": "实时同步",
       "shiftAlerts": "班次提醒",
       "stockAlerts": "库存提醒",
+      "orderTracking": "实时订单与作废监控",
+      "instantPush": "即时手机推送通知",
       "subtitle": "在世界任何地方全面掌控您的业务",
       "title": "强大的管理仪表盘",
       "title1": "全面可见。",
@@ -3692,33 +3694,37 @@
   "onboarding": {
     "businessProfile": {
       "title": "告诉我们您的业务",
-      "subtitle": "可选 — 帮助我们为您配置 Mintcom。仅需 30 秒。",
+      "subtitle": "帮助我们为您配置 Mintcom，仅需 30 秒。",
       "stepBadge": "第 2 步，共 3 步 · 可选",
       "phoneLabel": "联系电话",
       "phonePlaceholder": "+1 555 000 1234",
-      "phoneHint": "仅在您请求帮助时使用 — 绝不泄露。",
+      "phoneHint": "仅在您请求帮助时使用，绝不泄露。",
       "staffLabel": "员工人数？",
+      "staffPlaceholder": "选择员工人数",
       "staffOptions": {
-        "1-5": "1–5",
-        "6-15": "6–15",
-        "16-50": "16–50",
+        "1-5": "1 至 5",
+        "6-15": "6 至 15",
+        "16-50": "16 至 50",
         "50+": "50+"
       },
       "branchesLabel": "计划开设的分店？",
+      "branchesPlaceholder": "选择计划分店数",
       "branchesOptions": {
         "single": "仅此一家",
-        "2-5": "2–5",
+        "2-5": "2 至 5",
         "5+": "5+"
       },
       "posLabel": "是否从其他 POS 系统切换？",
+      "posPlaceholder": "选择当前收银系统",
       "posOptions": {
-        "none": "无 — 新业务",
+        "none": "无（新业务）",
         "cash": "现金 / 纸质",
         "square": "Square",
         "foodics": "Foodics",
         "other": "其他 POS"
       },
       "sourceLabel": "您是如何得知我们的？",
+      "sourcePlaceholder": "选择获知渠道",
       "sourceOptions": {
         "google": "Google",
         "social": "Instagram / TikTok",
@@ -3727,7 +3733,7 @@
         "other": "其他"
       },
       "referralCodeLabel": "推荐码",
-      "referralCodePlaceholder": "例如：AHMED-123",
+      "referralCodePlaceholder": "例如：AHMED123",
       "marketingConsent": "通过电子邮件接收产品动态和优惠信息",
       "skip": "暂时跳过",
       "continue": "继续",

@@ -1069,3 +1069,107 @@ html[lang="ar"] [class*="tracking-"] {
   color: #ffffff;
   stroke: currentColor;
 }
+
+/* ============================================
+   ADAPTIVE COMPACT DASHBOARD & OWNER SIDEBAR
+   For laptops / 1080p screens with Windows scaling (ThinkPad, etc.)
+   Preserves full spacious layout on tall/Retina screens (MacBook, iMac, 1440p)
+   ============================================ */
+@media (max-height: 860px), (max-width: 1366px) {
+  .dashboard-sidebar {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .dashboard-sidebar-header {
+    height: 3.5rem !important; /* 56px instead of 80px */
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .dashboard-sidebar-header img {
+    height: 1.875rem !important; /* 30px instead of 40px */
+  }
+
+  .dashboard-sidebar-header .logo-icon-btn {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+
+  .dashboard-sidebar-card {
+    padding: 0.5rem 0.625rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .dashboard-sidebar-card .card-icon-box {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+
+  .dashboard-sidebar-card h2 {
+    font-size: 13px !important;
+    line-height: 1.15 !important;
+  }
+
+  .dashboard-sidebar-card .card-footer-row {
+    margin-top: 0.375rem !important;
+    padding-top: 0.375rem !important;
+  }
+
+  .dashboard-sidebar-section-title {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    font-size: 11px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  .dashboard-sidebar-nav {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  .dashboard-sidebar-nav > * + * {
+    margin-top: 0.25rem !important;
+  }
+
+  .dashboard-sidebar-item {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+    gap: 0.625rem !important;
+    font-size: 13px !important;
+    min-height: 2.125rem !important;
+  }
+
+  .dashboard-sidebar-item svg {
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+  }
+
+  .dashboard-sidebar-collapsed-btn {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+  }
+
+  .dashboard-sidebar-collapsed-btn svg {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+  }
+
+  .dashboard-sidebar-footer {
+    padding: 0.5rem 0.625rem !important;
+  }
+
+  .dashboard-sidebar-footer button,
+  .dashboard-sidebar-footer a {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+    font-size: 13px !important;
+  }
+}
+
