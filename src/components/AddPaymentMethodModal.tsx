@@ -1,4 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
+import { brandColor } from './ui/theme';
 import { CreditCard, Lock, Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { QuickInfo } from './QuickInfo';
@@ -151,11 +152,11 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
                 <div ref={scrollRef} className="space-y-4">
                     <div className="mb-7 flex items-start justify-between gap-4">
                         <div>
-                            <h2 className="text-xl font-bold tracking-normal text-gray-900 dark:text-white">
+                            <h2 className="text-xl font-bold tracking-normal text-stone-900 dark:text-zinc-100">
                                 {t('paymentMethods.modal.title', { defaultValue: 'Add Payment Card' })}
                             </h2>
-                            <div className="mt-1 flex items-center gap-1.5 text-sm font-medium tracking-normal text-slate-500 dark:text-slate-400">
-                                <Lock size={13} className="shrink-0 text-slate-400 dark:text-slate-500" />
+                            <div className="mt-1 flex items-center gap-1.5 text-sm font-medium tracking-normal text-stone-500 dark:text-zinc-400">
+                                <Lock size={13} className="shrink-0 text-stone-400 dark:text-zinc-500" />
                                 <span>
                                     {linkEstablishmentName
                                         ? t('owner.billing.add_card_for_location', {
@@ -194,9 +195,9 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
                                 autoComplete="cc-number"
                                 maxLength={MAX_FORMATTED_CARD_NUMBER_LENGTH}
                                 data-error={errors.cardNumber ? 'true' : undefined}
-                                className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-slate-500"
+                                className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-stone-900 placeholder:text-stone-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500"
                             />
-                            <CreditCard size={18} className="shrink-0 text-slate-400 dark:text-slate-500" />
+                            <CreditCard size={18} className="shrink-0 text-stone-400 dark:text-zinc-500" />
                         </CardField>
 
                         <div className="grid grid-cols-2 gap-3">
@@ -216,7 +217,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
                                     autoComplete="cc-exp"
                                     maxLength={5}
                                     data-error={errors.expiry ? 'true' : undefined}
-                                    className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-slate-500"
+                                    className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-stone-900 placeholder:text-stone-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500"
                                 />
                             </CardField>
 
@@ -241,7 +242,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
                                     autoComplete="cc-csc"
                                     maxLength={4}
                                     data-error={errors.cvv ? 'true' : undefined}
-                                    className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-slate-500"
+                                    className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-stone-900 placeholder:text-stone-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500"
                                 />
                             </CardField>
                         </div>
@@ -263,20 +264,20 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
                                 autoComplete="cc-name"
                                 maxLength={80}
                                 data-error={errors.name ? 'true' : undefined}
-                                className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white dark:placeholder:text-slate-500"
+                                className="h-10 min-w-0 flex-1 bg-transparent text-base font-medium tracking-normal text-stone-900 placeholder:text-stone-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500"
                             />
                         </CardField>
 
                         <button
                             type="button"
                             onClick={() => setSaveForFuturePurchases((value) => !value)}
-                            className="flex items-center gap-2 pt-1 text-left text-sm font-medium tracking-normal text-slate-600 transition-colors dark:text-slate-300"
+                            className="flex items-center gap-2 pt-1 text-left text-sm font-medium tracking-normal text-stone-600 transition-colors dark:text-zinc-300"
                         >
                             <span
                                 className={`grid h-4 w-4 place-items-center rounded-sm border transition ${
                                     saveForFuturePurchases
-                                        ? 'border-[#5DC99B] bg-[#5DC99B]'
-                                        : 'border-slate-300 bg-white dark:border-white/20 dark:bg-slate-900/60'
+                                        ? 'border-mintcom-green bg-mintcom-green'
+                                        : 'border-stone-300 bg-white dark:border-zinc-800 dark:bg-zinc-900/60'
                                 }`}
                             >
                                 {saveForFuturePurchases && <Check size={12} className="text-white" />}
@@ -291,7 +292,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-md bg-[#5DC99B] text-base font-semibold tracking-normal text-white shadow-lg shadow-[#5DC99B]/25 transition hover:bg-[#55bc90] disabled:cursor-not-allowed disabled:opacity-70"
+                            className="mt-5 flex h-11 w-full items-center justify-center gap-2 rounded-md bg-mintcom-green text-base font-semibold tracking-normal text-white shadow-lg shadow-mintcom-green/25 transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-70"
                         >
                             {isSubmitting ? (
                                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
@@ -303,7 +304,7 @@ export function AddPaymentMethodModal({ isOpen, onClose, onSuccess, linkEstablis
                             )}
                         </button>
 
-                        <div className="flex items-center justify-center gap-5 pt-1 text-sm font-semibold tracking-normal text-gray-400 dark:text-slate-400">
+                        <div className="flex items-center justify-center gap-5 pt-1 text-sm font-semibold tracking-normal text-stone-400 dark:text-zinc-400">
                             <BrandMark brand="mastercard" />
                             <BrandMark brand="visa" />
                             <BrandMark brand="amex" />
@@ -324,10 +325,10 @@ interface CardFieldProps {
 function CardField({ label, error, children }: CardFieldProps) {
     return (
         <label className="block">
-            <span className="mb-1.5 block text-sm font-medium tracking-normal text-slate-600 dark:text-slate-300">{label}</span>
+            <span className="mb-1.5 block text-sm font-medium tracking-normal text-stone-600 dark:text-zinc-300">{label}</span>
             <span
-                className={`flex h-10 items-center rounded-md border bg-white px-3 transition dark:bg-slate-900/60 focus-within:border-[#5DC99B] focus-within:ring-2 focus-within:ring-[#5DC99B]/15 ${
-                    error ? 'border-red-500 dark:border-red-500' : 'border-gray-200 dark:border-white/10'
+                className={`flex h-10 items-center rounded-md border bg-white px-3 transition dark:bg-zinc-900/60 focus-within:border-mintcom-green focus-within:ring-2 focus-within:ring-mintcom-green/15 ${
+                    error ? 'border-red-500 dark:border-red-500' : 'border-stone-200 dark:border-zinc-800'
                 }`}
             >
                 {children}
@@ -342,8 +343,8 @@ function BrandMark({ brand }: { brand: 'mastercard' | 'visa' | 'amex' }) {
         return (
             <span className="inline-flex items-center gap-1.5">
                 <span className="relative inline-block h-4 w-7 shrink-0">
-                    <span className="absolute left-0.5 top-0.5 h-3.5 w-3.5 rounded-full bg-[#EB001B]" />
-                    <span className="absolute right-0.5 top-0.5 h-3.5 w-3.5 rounded-full bg-[#F79E1B]/90" />
+                    <span className={`absolute left-0.5 top-0.5 h-3.5 w-3.5 rounded-full ${brandColor.mastercard.red}`} />
+                    <span className={`absolute right-0.5 top-0.5 h-3.5 w-3.5 rounded-full ${brandColor.mastercard.amber}/90`} />
                 </span>
                 <span>Mastercard</span>
             </span>
@@ -353,8 +354,8 @@ function BrandMark({ brand }: { brand: 'mastercard' | 'visa' | 'amex' }) {
     if (brand === 'visa') {
         return (
             <span className="inline-flex items-center gap-1.5">
-                <span className="inline-flex h-4 min-w-[30px] items-center justify-center rounded bg-white px-1 shadow-xs border border-slate-200 dark:border-white/10 shrink-0">
-                    <span className="text-[8.5px] font-black italic tracking-tighter text-[#1434CB] leading-none">
+                <span className="inline-flex h-4 min-w-[30px] items-center justify-center rounded bg-white px-1 shadow-xs border border-stone-200 dark:border-zinc-800 shrink-0">
+                    <span className={`text-[8.5px] font-black italic tracking-tighter ${brandColor.visa.text} leading-none`}>
                         VISA
                     </span>
                 </span>
@@ -365,7 +366,7 @@ function BrandMark({ brand }: { brand: 'mastercard' | 'visa' | 'amex' }) {
 
     return (
         <span className="inline-flex items-center gap-1.5">
-            <span className="inline-flex h-4 min-w-[30px] items-center justify-center rounded bg-[#2E77BC] px-1 text-[8px] font-black tracking-normal text-white shrink-0">
+            <span className="inline-flex h-4 min-w-[30px] items-center justify-center rounded ${brandColor.amex.bg} px-1 text-[8px] font-black tracking-normal text-white shrink-0">
                 AMEX
             </span>
             <span>Amex</span>

@@ -10,6 +10,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { AlertsBell } from './notifications/AlertsBell';
 import { useTranslation } from 'react-i18next';
+import { useIsCompactSidebar } from '../hooks/useIsCompactSidebar';
 import {
     LayoutDashboard,
     Store,
@@ -53,6 +54,7 @@ const SIDEBAR_STATE_KEY = 'brand_sidebar_expanded';
 export function BrandLayout() {
     const { t } = useTranslation();
     const isRtl = t('common.locale') === 'ar';
+    const isCompact = useIsCompactSidebar();
     const { brandId } = useParams<{ brandId: string }>();
     const { account, establishments, logout } = useAuth();
     const navigate = useNavigate();
@@ -203,16 +205,16 @@ export function BrandLayout() {
                 ref={sidebarRef}
                 initial={false}
                 animate={{
-                    width: sidebarOpen ? 300 : 100,
+                    width: sidebarOpen ? (isCompact ? 260 : 300) : (isCompact ? 80 : 100),
                     transition: { duration: 0.3, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    relative z-[100] flex flex-col h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar
+                    dashboard-sidebar relative z-[100] flex flex-col h-full max-h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar overflow-hidden
                     ${mobileMenuOpen ? 'fixed left-0 top-0 w-[280px]' : 'hidden lg:flex'}
                 `}
             >
                 {/* Logo Section */}
-                <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
+                <div className="dashboard-sidebar-header h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
                     <AnimatePresence mode="wait">
                         {sidebarOpen ? (
                             <motion.div
@@ -251,7 +253,7 @@ export function BrandLayout() {
                                 className="mx-auto"
                             >
                                 <button
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
+                                    className="logo-icon-btn w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
                                     <img src={MintcomLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt={t('brand.name').charAt(0)} />
@@ -282,7 +284,7 @@ export function BrandLayout() {
                     {sidebarOpen ? (
                         <button
                             onClick={goBackToOwner}
-                            className="w-full flex items-center gap-3 p-3.5 rounded-xl text-stone-500 dark:text-zinc-400 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group border border-transparent hover:border-mintcom-green/20"
+                            className="dashboard-sidebar-card w-full flex items-center gap-3 p-3.5 rounded-xl text-stone-500 dark:text-zinc-400 hover:text-mintcom-green hover:bg-mintcom-green/5 transition-all group border border-transparent hover:border-mintcom-green/20"
                         >
                             <ArrowLeft size={18} className={`transition-transform ${isRtl ? 'rotate-180 group-hover:translate-x-1' : 'group-hover:-translate-x-1'}`} />
                             <div className="flex-1 min-w-0 text-left rtl:text-right">
@@ -301,7 +303,7 @@ export function BrandLayout() {
                         >
                             <ArrowLeft size={24} className={isRtl ? 'rotate-180' : ''} />
                             <div className="absolute left-full rtl:left-auto rtl:right-full top-1/2 -translate-y-1/2 ml-2 rtl:ml-0 rtl:mr-2 px-3 py-1.5 bg-stone-900 dark:bg-zinc-800 backdrop-blur-md text-stone-100 dark:text-zinc-100 text-xs font-sans font-medium tracking-normal rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[70] whitespace-nowrap border border-stone-800 dark:border-zinc-700 shadow-md translate-x-1 rtl:-translate-x-1 group-hover:translate-x-0">
-                                {t('brand.menu.switchBrand')}
+                                <span className="truncate">{t('brand.menu.switchBrand')}</span>
                             </div>
                         </button>
                     )}
@@ -309,12 +311,12 @@ export function BrandLayout() {
 
                 {/* Navigation */}
                 <nav
-                    className="flex-1 min-h-0 overflow-y-auto overflow-x-visible px-3 space-y-1.5 scrollbar-none pb-4 relative z-10"
+                    className="dashboard-sidebar-nav flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-3 space-y-1.5 scrollbar-none pb-4 relative z-10"
                     onScroll={hideCollapsedNavTooltip}
                 >
 
                     {sidebarOpen && (
-                        <p className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal">{t('brand.menu.mainMenu')}</p>
+                        <p className="dashboard-sidebar-section-title px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal">{t('brand.menu.mainMenu')}</p>
                     )}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
@@ -335,9 +337,9 @@ export function BrandLayout() {
                                 onBlur={hideCollapsedNavTooltip}
                                 aria-label={!sidebarOpen ? item.label : undefined}
                                 className={({ isActive }) =>
-                                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
+                                    `dashboard-sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
                                     ${isActive ? activeRowClass : inactiveRowClass}
-                                    ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
+                                    ${!sidebarOpen ? 'dashboard-sidebar-collapsed-btn justify-center w-12 h-12 mx-auto' : ''}`
                                 }
                             >
                                 <Icon size={!sidebarOpen ? 24 : 20} />

@@ -495,7 +495,7 @@ export function CustomRoleFormModal({
                 value={name}
                 onChange={(e) => { setName(e.target.value); if (errors.name) setErrors({ ...errors, name: '' }); }}
                 placeholder={formatInputPlaceholder(t('roles.form.roleNamePlaceholder'), t('common.locale'))}
-                className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-mintcom-red' : 'border-gray-200 dark:border-gray-700'} py-2 text-lg font-bold text-gray-900 dark:text-white placeholder-gray-300 focus:outline-none focus:border-mintcom-green transition-colors`}
+                className={`w-full bg-transparent border-b-2 ${errors.name ? 'border-mintcom-red' : 'border-stone-200 dark:border-zinc-700'} py-2 text-lg font-bold text-stone-900 dark:text-zinc-100 placeholder-stone-300 focus:outline-none focus:border-mintcom-green transition-colors`}
               />
               {errors.name && <p className="absolute -bottom-5 left-0 text-xs font-bold text-mintcom-red">{errors.name}</p>}
             </div>
@@ -506,34 +506,34 @@ export function CustomRoleFormModal({
               <select
                 value={baseRole}
                 onChange={(e) => setBaseRole(e.target.value as CustomRole['baseRole'])}
-                className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-700 py-2 text-lg font-bold text-gray-900 dark:text-white focus:outline-none focus:border-mintcom-green transition-colors appearance-none cursor-pointer"
+                className="w-full bg-transparent border-b-2 border-stone-200 dark:border-zinc-700 py-2 text-lg font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:border-mintcom-green transition-colors appearance-none cursor-pointer"
               >
-                <option value="USER" className="dark:bg-[#1E293B]">{t('staff.roles.user')}</option>
-                <option value="CASHIER" className="dark:bg-[#1E293B]">{t('staff.roles.cashier')}</option>
-                <option value="MANAGER" className="dark:bg-[#1E293B]">{t('staff.roles.manager')}</option>
+                <option value="USER" className="dark:bg-zinc-900/60">{t('staff.roles.user')}</option>
+                <option value="CASHIER" className="dark:bg-zinc-900/60">{t('staff.roles.cashier')}</option>
+                <option value="MANAGER" className="dark:bg-zinc-900/60">{t('staff.roles.manager')}</option>
               </select>
-              <div className={`absolute bottom-3 ${t('common.locale') === 'ar' ? 'left-2' : 'right-2'} pointer-events-none text-gray-400`}>
+              <div className={`absolute bottom-3 ${t('common.locale') === 'ar' ? 'left-2' : 'right-2'} pointer-events-none text-stone-400`}>
                 <ChevronDown size={20} />
               </div>
             </div>
           </div>
 
           {/* POS Section */}
-          <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
+          <div className="rounded-2xl bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 overflow-hidden transition-all duration-300">
             <div
-              className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
+              className="flex items-center justify-between p-5 cursor-pointer hover:bg-stone-100/50 dark:hover:bg-zinc-800/40"
               onClick={() => setPosAccess(!posAccess)}
             >
               <div className="flex flex-col">
-                <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                <h3 className="text-base font-bold text-stone-900 dark:text-zinc-100 flex items-center gap-1">
                   {t('roles.pos.title')}
                   <QuickInfo text={t('roles.pos.defaultSalesInfo', { defaultValue: 'Sales screen access is included by default when this section is enabled.' })} />
                 </h3>
-                <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.pos.description')}</p>
+                <p className="text-xs text-stone-500 max-w-[250px] leading-relaxed">{t('roles.pos.description')}</p>
               </div>
               <button
                 type="button"
-                className={`w-14 h-8 rounded-full transition-all duration-300 relative ${posAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
+                className={`w-14 h-8 rounded-full transition-all duration-300 relative ${posAccess ? 'bg-mintcom-green shadow-inner' : 'bg-stone-300 dark:bg-zinc-600'}`}
               >
                 <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${posAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
               </button>
@@ -545,7 +545,7 @@ export function CustomRoleFormModal({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="border-t border-gray-200 dark:border-white/10"
+                  className="border-t border-stone-200 dark:border-zinc-800"
                 >
                   <div className="p-5 space-y-6">
                     {/* POS Defaults Info */}
@@ -555,7 +555,7 @@ export function CustomRoleFormModal({
                       </div>
                       <div>
                         <p className="text-sm font-bold text-mintcom-green mb-1">{t('roles.form.includedByDefault')}</p>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+                        <p className="text-sm text-stone-700 dark:text-zinc-300 font-medium leading-relaxed">
                           {t('roles.pos.includedDefaults')}
                         </p>
                       </div>
@@ -566,17 +566,17 @@ export function CustomRoleFormModal({
                       {POS_PERMISSIONS.map(perm => (
                         <div
                           key={perm.id}
-                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                           onClick={() => togglePermission(perm.id)}
                         >
                           <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${permissions.includes(perm.id)
                             ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                            : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                            : 'border-stone-300 dark:border-zinc-600 bg-white dark:bg-transparent'
                             }`}>
                             {permissions.includes(perm.id) && <Check size={14} className="text-white" />}
                           </div>
                           <div className="flex items-center gap-1">
-                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                            <p className="text-sm font-bold text-stone-700 dark:text-zinc-200 leading-none">{perm.label}</p>
                             {perm.description &&
                               perm.description.toLowerCase().trim() !== perm.label.toLowerCase().trim() &&
                               perm.description.toLowerCase().replace(/[^a-z0-9]/g, '') !== perm.label.toLowerCase().replace(/[^a-z0-9]/g, '') && (
@@ -589,17 +589,17 @@ export function CustomRoleFormModal({
 
                     {/* Discounts Section */}
                     {permissions.includes('discounts') && (
-                      <div className="pt-4 border-t border-gray-200 dark:border-white/10" ref={discountsContainerRef}>
+                      <div className="pt-4 border-t border-stone-200 dark:border-zinc-800" ref={discountsContainerRef}>
                         <div
                           className="flex items-center justify-between py-2 cursor-pointer group"
                           onClick={() => setShowDiscountsDropdown(!showDiscountsDropdown)}
                         >
-                          <p className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
+                          <p className="text-sm font-bold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors">{t('roles.form.allowedDiscounts')}</p>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-medium text-gray-500 bg-white dark:bg-white/5 px-2 py-1 rounded-md border border-gray-200 dark:border-white/10">
+                            <span className="text-xs font-medium text-stone-500 bg-white dark:bg-zinc-800 px-2 py-1 rounded-md border border-stone-200 dark:border-zinc-800">
                               {allDiscountsSelected ? t('roles.form.allAllowed') : t('roles.form.selectedCount', { count: allowedDiscounts.length })}
                             </span>
-                            <ChevronDown size={14} className={`text-gray-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''} ${t('common.locale') === 'ar' ? 'mr-auto' : ''}`} />
+                            <ChevronDown size={14} className={`text-stone-400 transition-transform duration-300 ${showDiscountsDropdown ? 'rotate-180' : ''} ${t('common.locale') === 'ar' ? 'mr-auto' : ''}`} />
                           </div>
                         </div>
 
@@ -612,7 +612,7 @@ export function CustomRoleFormModal({
                               className="space-y-2 pt-3 overflow-hidden"
                             >
                               <div
-                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                                 onClick={() => {
                                   setAllDiscountsSelected(!allDiscountsSelected);
                                   if (!allDiscountsSelected) setAllowedDiscounts([]);
@@ -620,26 +620,26 @@ export function CustomRoleFormModal({
                               >
                                 <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allDiscountsSelected
                                   ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                  : 'border-stone-300 dark:border-zinc-600 bg-white dark:bg-transparent'
                                   }`}>
                                   {allDiscountsSelected && <Check size={14} className="text-white" />}
                                 </div>
-                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('roles.form.allowAllDiscounts')}</p>
+                                <p className="text-sm font-medium text-stone-700 dark:text-zinc-300">{t('roles.form.allowAllDiscounts')}</p>
                               </div>
 
                               {!allDiscountsSelected && availableDiscounts.map(discount => (
                                 <div
                                   key={discount.id}
-                                  className="flex items-start gap-3 pl-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                  className="flex items-start gap-3 pl-4 p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                                   onClick={() => toggleDiscount(discount.id)}
                                 >
                                   <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${allowedDiscounts.includes(discount.id)
                                     ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                    : 'border-stone-300 dark:border-zinc-600 bg-white dark:bg-transparent'
                                     }`}>
                                     {allowedDiscounts.includes(discount.id) && <Check size={14} className="text-white" />}
                                   </div>
-                                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  <p className="text-sm text-stone-600 dark:text-zinc-400">
                                     {discount.name} ({discount.percentage.toLocaleString(t('common.locale'))}%)
                                   </p>
                                 </div>
@@ -656,9 +656,9 @@ export function CustomRoleFormModal({
           </div>
 
           {/* Back Office Section */}
-          <div className="rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 overflow-hidden transition-all duration-300">
+          <div className="rounded-2xl bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 overflow-hidden transition-all duration-300">
             <div
-              className="flex items-center justify-between p-5 cursor-pointer hover:bg-gray-100/50 dark:hover:bg-white/[0.02]"
+              className="flex items-center justify-between p-5 cursor-pointer hover:bg-stone-100/50 dark:hover:bg-zinc-800/40"
               onClick={() =>
                 setBackofficeAccess((prev) => {
                   const next = !prev;
@@ -672,15 +672,15 @@ export function CustomRoleFormModal({
               }
             >
               <div className="flex flex-col">
-                <h3 className="text-base font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                <h3 className="text-base font-bold text-stone-900 dark:text-zinc-100 flex items-center gap-1">
                   {t('roles.backoffice.title')}
                   <QuickInfo text="Basic sales operations are included by default with back office access." />
                 </h3>
-                <p className="text-xs text-gray-500 max-w-[250px] leading-relaxed">{t('roles.backoffice.description')}</p>
+                <p className="text-xs text-stone-500 max-w-[250px] leading-relaxed">{t('roles.backoffice.description')}</p>
               </div>
               <button
                 type="button"
-                className={`w-14 h-8 rounded-full transition-all duration-300 relative ${backofficeAccess ? 'bg-mintcom-green shadow-inner' : 'bg-gray-300 dark:bg-gray-600'}`}
+                className={`w-14 h-8 rounded-full transition-all duration-300 relative ${backofficeAccess ? 'bg-mintcom-green shadow-inner' : 'bg-stone-300 dark:bg-zinc-600'}`}
               >
                 <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-sm transition-all duration-300 ${backofficeAccess ? 'left-[calc(100%-1.75rem)]' : 'left-1'}`} />
               </button>
@@ -692,7 +692,7 @@ export function CustomRoleFormModal({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  className="border-t border-gray-200 dark:border-white/10"
+                  className="border-t border-stone-200 dark:border-zinc-800"
                 >
                   <div className="p-5 space-y-3">
                     {/* Backoffice Defaults Info */}
@@ -702,7 +702,7 @@ export function CustomRoleFormModal({
                       </div>
                       <div>
                         <p className="text-sm font-bold text-mintcom-green mb-1">{t('roles.form.includedByDefault')}</p>
-                        <p className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-relaxed">
+                        <p className="text-sm text-stone-700 dark:text-zinc-300 font-medium leading-relaxed">
                           {t('roles.backoffice.includedDefaults')}
                         </p>
                       </div>
@@ -711,17 +711,17 @@ export function CustomRoleFormModal({
                     {BACKOFFICE_PERMISSIONS.map(perm => (
                       <div key={perm.id}>
                         <div
-                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                           onClick={() => toggleBackofficePermission(perm.id)}
                         >
                           <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(perm.id)
                             ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                            : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                            : 'border-stone-300 dark:border-zinc-600 bg-white dark:bg-transparent'
                             }`}>
                             {backofficePermissions.includes(perm.id) && <Check size={14} className="text-white" />}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">{perm.label}</p>
+                            <p className="text-sm font-bold text-stone-700 dark:text-zinc-200 leading-none">{perm.label}</p>
                           </div>
                         </div>
 
@@ -735,17 +735,17 @@ export function CustomRoleFormModal({
                             {SETTINGS_SUB_PERMISSIONS.map(sub => (
                               <div
                                 key={sub.id}
-                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                                className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                                 onClick={() => toggleBackofficePermission(sub.id)}
                               >
                                 <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200 ${backofficePermissions.includes(sub.id)
                                   ? 'bg-mintcom-green border-mintcom-green shadow-sm'
-                                  : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-transparent'
+                                  : 'border-stone-300 dark:border-zinc-600 bg-white dark:bg-transparent'
                                   }`}>
                                   {backofficePermissions.includes(sub.id) && <Check size={12} className="text-white" />}
                                 </div>
                                 <div>
-                                  <p className="text-xs font-bold text-gray-600 dark:text-gray-300 leading-none">{sub.label}</p>
+                                  <p className="text-xs font-bold text-stone-600 dark:text-zinc-300 leading-none">{sub.label}</p>
                                 </div>
                               </div>
                             ))}

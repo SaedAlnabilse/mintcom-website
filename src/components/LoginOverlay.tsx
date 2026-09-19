@@ -14,7 +14,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
   }, [isSuccess]);
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white dark:bg-gray-900">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white dark:bg-zinc-900">
       <div className="text-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -86,7 +86,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-2xl font-sans font-bold tracking-tight text-gray-900 dark:text-white mb-2"
+          className="text-2xl font-sans font-bold tracking-tight text-stone-900 dark:text-zinc-100 mb-2"
         >
           {showSuccess ? t('auth.login.welcomeBack') : t('auth.login.signingIn')}
         </motion.h2>
@@ -95,7 +95,7 @@ export function LoginOverlay({ isSuccess = false }: { isSuccess?: boolean }) {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-gray-500 dark:text-gray-400 font-medium"
+          className="text-stone-500 dark:text-zinc-400 font-medium"
         >
           {showSuccess ? t('auth.login.redirecting') : t('auth.login.checkingInfo')}
         </motion.p>

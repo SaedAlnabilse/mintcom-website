@@ -21,7 +21,7 @@ import {
 import toast from 'react-hot-toast';
 import api, { extractErrorMessage } from '../../config/api';
 import { getAccountingRedirectUri } from '../../utils/accountingOAuth';
-import { ErrorBanner } from '../ui';
+import { ErrorBanner, brandColor } from '../ui';
 
 interface AccountInfo {
   code: string;
@@ -384,7 +384,7 @@ export const AccountingSettingsTab: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center p-16 space-y-4">
         <div className="w-10 h-10 border-4 border-mintcom-green/20 border-t-mintcom-green rounded-full animate-spin" />
-        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+        <p className="text-stone-500 dark:text-zinc-400 text-sm font-medium">
           {t('common.loading', 'Loading accounting settings...')}
         </p>
       </div>
@@ -394,11 +394,11 @@ export const AccountingSettingsTab: React.FC = () => {
   return (
     <div className="w-full space-y-6 sm:space-y-8 font-sans">
       {/* 1. Provider Connection Card */}
-      <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
+      <div className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-100 dark:border-zinc-800">
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+              <h3 className="text-lg sm:text-xl font-bold text-stone-900 dark:text-zinc-100">
                 {t('settings.accounting.providerCardTitle', 'Accounting Provider')}
               </h3>
               {status?.isConnected ? (
@@ -407,13 +407,13 @@ export const AccountingSettingsTab: React.FC = () => {
                   {status.provider === 'XERO' ? 'Xero' : 'QuickBooks Online'} Connected
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-300">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-100 text-stone-700 dark:bg-zinc-800 dark:text-zinc-300">
                   <XCircle size={13} />
                   Not Connected
                 </span>
               )}
             </div>
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+            <p className="text-xs sm:text-sm text-stone-500 dark:text-zinc-400 mt-1 leading-relaxed">
               {t(
                 'settings.accounting.subtitle',
                 isUS
@@ -443,32 +443,32 @@ export const AccountingSettingsTab: React.FC = () => {
         {/* Connection Details or Connect Buttons */}
         <div className="mt-6">
           {status?.isConnected ? (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200/60 dark:border-white/10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-stone-50 dark:bg-zinc-800 border border-stone-200/60 dark:border-zinc-800">
               <div>
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Organization / Tenant</p>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white mt-1 flex items-center gap-1.5">
-                  <Building2 size={16} className="text-gray-400" />
+                <p className="text-xs font-medium text-stone-500 dark:text-zinc-400">Organization / Tenant</p>
+                <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100 mt-1 flex items-center gap-1.5">
+                  <Building2 size={16} className="text-stone-400" />
                   {status.tenantName || status.tenantId || 'Primary Organization'}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Automatic Sync</p>
+                <p className="text-xs font-medium text-stone-500 dark:text-zinc-400">Automatic Sync</p>
                 <p className="text-sm font-semibold text-green-700 dark:text-green-400 mt-1 flex items-center gap-1.5">
                   <ShieldCheck size={16} />
                   Active on register/shift close
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">Last Synced</p>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white mt-1 flex items-center gap-1.5">
-                  <Clock size={16} className="text-gray-400" />
+                <p className="text-xs font-medium text-stone-500 dark:text-zinc-400">Last Synced</p>
+                <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100 mt-1 flex items-center gap-1.5">
+                  <Clock size={16} className="text-stone-400" />
                   {status.lastSyncAt ? new Date(status.lastSyncAt).toLocaleString() : 'No syncs yet'}
                 </p>
               </div>
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-stone-600 dark:text-zinc-300">
                 Connect your accounting platform using OAuth 2.0 to begin automatic double-entry Z-report syncs upon cashier shift close.
               </p>
               <div className="flex flex-wrap gap-4 pt-2">
@@ -476,12 +476,12 @@ export const AccountingSettingsTab: React.FC = () => {
                   type="button"
                   onClick={() => handleConnect('XERO')}
                   disabled={connectingProvider !== null}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#13B5EA] text-white font-semibold text-sm hover:bg-[#0fa4d4] transition-colors disabled:opacity-50"
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg ${brandColor.xero.bg} text-white font-semibold text-sm hover:brightness-95 transition-colors disabled:opacity-50`}
                 >
                   {connectingProvider === 'XERO' ? (
                     <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-white text-[#13B5EA] flex items-center justify-center font-black text-xs">
+                    <div className={`w-6 h-6 rounded-full bg-white ${brandColor.xero.text} flex items-center justify-center font-black text-xs`}>
                       X
                     </div>
                   )}
@@ -492,12 +492,12 @@ export const AccountingSettingsTab: React.FC = () => {
                   type="button"
                   onClick={() => handleConnect('QUICKBOOKS')}
                   disabled={connectingProvider !== null}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#2CA01C] text-white font-semibold text-sm hover:bg-[#258d18] transition-colors disabled:opacity-50"
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg ${brandColor.quickbooks.bg} text-white font-semibold text-sm hover:brightness-95 transition-colors disabled:opacity-50`}
                 >
                   {connectingProvider === 'QUICKBOOKS' ? (
                     <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-white text-[#2CA01C] flex items-center justify-center font-black text-xs">
+                    <div className={`w-6 h-6 rounded-full bg-white ${brandColor.quickbooks.text} flex items-center justify-center font-black text-xs`}>
                       QB
                     </div>
                   )}
@@ -516,9 +516,9 @@ export const AccountingSettingsTab: React.FC = () => {
                     : null;
                 if (!tip && !clearance) return null;
                 return (
-                  <div className="flex items-start gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border-l-[3px] border-[#13B5EA]">
-                    <Info size={15} className="text-[#13B5EA] mt-0.5 shrink-0" />
-                    <div className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                  <div className="flex items-start gap-2 p-3 rounded-xl bg-stone-50 dark:bg-zinc-800 border-l-[3px] border-">
+                    <Info size={15} className={`${brandColor.xero.text} mt-0.5 shrink-0`} />
+                    <div className="text-xs text-stone-600 dark:text-zinc-300 leading-relaxed">
                       {tip && <p className="font-semibold">{tip}</p>}
                       {clearance && (
                         <p className={tip ? 'mt-1' : 'font-semibold'}>
@@ -538,7 +538,7 @@ export const AccountingSettingsTab: React.FC = () => {
               <div className="mt-4 p-4 rounded-xl bg-blue-50/60 dark:bg-blue-900/10 border border-blue-200/70 dark:border-blue-800/40 text-xs text-blue-950 dark:text-blue-200 space-y-2.5">
                 <div className="flex items-center justify-between font-semibold">
                   <span className="flex items-center gap-1.5 text-blue-900 dark:text-blue-300 font-bold">
-                    <Info size={15} className="text-[#13B5EA] shrink-0" />
+                    <Info size={15} className={`${brandColor.xero.text} shrink-0`} />
                     Xero & QuickBooks OAuth Redirect URI
                   </span>
                   <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300">
@@ -546,17 +546,17 @@ export const AccountingSettingsTab: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-blue-800/90 dark:text-blue-300/90 leading-relaxed">
-                  In your <a href="https://developer.xero.com/app/manage" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-[#13B5EA]">Xero Developer Portal</a> under <strong>Configuration &gt; Redirect URIs</strong>, register this exact URL verbatim (no trailing slash or query params):
+                  In your <a href="https://developer.xero.com/app/manage" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-">Xero Developer Portal</a> under <strong>Configuration &gt; Redirect URIs</strong>, register this exact URL verbatim (no trailing slash or query params):
                 </p>
                 <div className="flex items-center gap-2 bg-white dark:bg-black/30 border border-blue-200 dark:border-blue-800/50 rounded-lg px-3 py-2 font-mono text-[11px] select-all break-all shadow-inner">
-                  <span className="flex-1 text-gray-800 dark:text-gray-200 select-all">{getAccountingRedirectUri()}</span>
+                  <span className="flex-1 text-stone-800 dark:text-zinc-200 select-all">{getAccountingRedirectUri()}</span>
                   <button
                     type="button"
                     onClick={() => {
                       navigator.clipboard.writeText(getAccountingRedirectUri());
                       toast.success(t('common.copied', 'Copied redirect URI to clipboard!'));
                     }}
-                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors text-gray-600 dark:text-gray-300 shrink-0 flex items-center gap-1"
+                    className="p-1.5 hover:bg-stone-100 dark:hover:bg-zinc-800 rounded transition-colors text-stone-600 dark:text-zinc-300 shrink-0 flex items-center gap-1"
                     title="Copy Redirect URI"
                   >
                     <Copy size={13} />
@@ -574,17 +574,17 @@ export const AccountingSettingsTab: React.FC = () => {
 
       {/* 2. Chart of Accounts Mapping Card */}
       {status?.isConnected && (
-        <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
+        <div className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-stone-100 dark:border-zinc-800">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
                 <Layers size={22} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100">
                   Chart of Accounts Mapping
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+                <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1 leading-relaxed">
                   {status.provider === 'XERO'
                     ? 'Press Auto-setup and the website matches your Xero accounts, creates the missing POS ones, and fills this in — or pick each account by hand.'
                     : 'Select which General Ledger accounts map to each Mintcom POS tender, revenue, and tax liability bucket.'}
@@ -599,7 +599,7 @@ export const AccountingSettingsTab: React.FC = () => {
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50 self-start shrink-0"
               >
                 {autoSettingUp ? (
-                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-stone-200 border-t-black rounded-full animate-spin" />
                 ) : (
                   <Sparkles size={16} />
                 )}
@@ -636,12 +636,12 @@ export const AccountingSettingsTab: React.FC = () => {
           <form onSubmit={handleSaveMapping} className="mt-6 space-y-8">
             {/* Section A: Clearing Accounts (Tenders) */}
             <div>
-              <h4 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-2">
+              <h4 className="text-sm font-bold uppercase tracking-wider text-stone-700 dark:text-zinc-300 flex items-center gap-2">
                 <span>Tenders & Clearing Accounts (Debits)</span>
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     Cash Clearing Account <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
@@ -651,11 +651,11 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder="e.g. 100 - Till Cash Clearing"
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Net cash collected in cash drawers (before variance adjustments)</p>
+                  <p className="text-xs text-stone-400 mt-1">Net cash collected in cash drawers (before variance adjustments)</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     Card Clearing Account <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
@@ -665,11 +665,11 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder="e.g. 101 - Card Payments Clearing"
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Card tenders cleared into bank feed (Zettle, Dojo, Stripe)</p>
+                  <p className="text-xs text-stone-400 mt-1">Card tenders cleared into bank feed (Zettle, Dojo, Stripe)</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     Delivery Aggregators Clearing (Optional)
                   </label>
                   <AccountSelect
@@ -678,14 +678,14 @@ export const AccountingSettingsTab: React.FC = () => {
                     onChange={(code) => setMappingForm((prev) => ({ ...prev, deliveryClearingAccountId: code }))}
                     placeholder="e.g. 102 - Delivery Clearing (Deliveroo/UberEats)"
                   />
-                  <p className="text-xs text-gray-400 mt-1">Net sales from online delivery aggregators</p>
+                  <p className="text-xs text-stone-400 mt-1">Net sales from online delivery aggregators</p>
                 </div>
               </div>
             </div>
 
             {/* Section B: Sales Revenue Accounts */}
-            <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <div className="pt-6 border-t border-stone-100 dark:border-zinc-800">
+              <h4 className="text-sm font-bold uppercase tracking-wider text-stone-700 dark:text-zinc-300 flex items-center gap-2">
                 <span>
                   {isUS
                     ? 'Sales Revenue Buckets (Credits - Net of Sales Tax)'
@@ -694,7 +694,7 @@ export const AccountingSettingsTab: React.FC = () => {
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     {isUS ? 'Taxable Sales Account' : 'Standard Rate (20% VAT) Sales'}{' '}
                     <span className="text-red-500">*</span>
                   </label>
@@ -705,7 +705,7 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder={isUS ? 'e.g. 200 - Taxable Sales' : 'e.g. 200 - Sales Standard 20%'}
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-stone-400 mt-1">
                     {isUS
                       ? 'General taxable menu sales subject to state/local sales tax'
                       : 'Dine-in hot meals, hot drinks, soft drinks'}
@@ -714,7 +714,7 @@ export const AccountingSettingsTab: React.FC = () => {
 
                 {!isUS && (
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                       Reduced Rate (5% VAT) Sales (Optional)
                     </label>
                     <AccountSelect
@@ -723,12 +723,12 @@ export const AccountingSettingsTab: React.FC = () => {
                       onChange={(code) => setMappingForm((prev) => ({ ...prev, salesReducedVatAccountId: code }))}
                       placeholder="e.g. 201 - Sales Reduced 5%"
                     />
-                    <p className="text-xs text-gray-400 mt-1">Special hospitality reduced rates</p>
+                    <p className="text-xs text-stone-400 mt-1">Special hospitality reduced rates</p>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     {isUS ? 'Exempt / Non-Taxable Sales Account' : 'Zero Rate (0% VAT) Sales'}{' '}
                     <span className="text-red-500">*</span>
                   </label>
@@ -739,7 +739,7 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder={isUS ? 'e.g. 202 - Non-Taxable Sales' : 'e.g. 202 - Sales Zero 0%'}
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-stone-400 mt-1">
                     {isUS
                       ? 'Non-taxable groceries, gift cards, or exempt items'
                       : 'Cold takeaway food, bakery, groceries'}
@@ -748,7 +748,7 @@ export const AccountingSettingsTab: React.FC = () => {
 
                 {!isUS && (
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                       Exempt Sales (Optional)
                     </label>
                     <AccountSelect
@@ -757,12 +757,12 @@ export const AccountingSettingsTab: React.FC = () => {
                       onChange={(code) => setMappingForm((prev) => ({ ...prev, salesExemptAccountId: code }))}
                       placeholder="e.g. 203 - Sales Exempt"
                     />
-                    <p className="text-xs text-gray-400 mt-1">VAT exempt sales and vouchers</p>
+                    <p className="text-xs text-stone-400 mt-1">VAT exempt sales and vouchers</p>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     {isUS ? 'Service Charge Revenue (Optional)' : 'Mandatory Service Charge Revenue (Optional)'}
                   </label>
                   <AccountSelect
@@ -771,7 +771,7 @@ export const AccountingSettingsTab: React.FC = () => {
                     onChange={(code) => setMappingForm((prev) => ({ ...prev, serviceChargeAccountId: code }))}
                     placeholder="e.g. 204 - Service Charge Revenue"
                   />
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-stone-400 mt-1">
                     {isUS
                       ? 'Service charges and gratuities revenue'
                       : 'Mandatory service charge (subject to 20% standard VAT)'}
@@ -781,13 +781,13 @@ export const AccountingSettingsTab: React.FC = () => {
             </div>
 
             {/* Section C: Tax Liability & Variances */}
-            <div className="pt-6 border-t border-gray-100 dark:border-gray-800">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 flex items-center gap-2">
+            <div className="pt-6 border-t border-stone-100 dark:border-zinc-800">
+              <h4 className="text-sm font-bold uppercase tracking-wider text-stone-700 dark:text-zinc-300 flex items-center gap-2">
                 <span>Tax Liability, Variances & Guard Accounts</span>
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     {isUS ? 'Sales Tax Payable Account' : 'Output VAT Liability Account'}{' '}
                     <span className="text-red-500">*</span>
                   </label>
@@ -798,7 +798,7 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder={isUS ? 'e.g. 820 - Sales Tax Payable' : 'e.g. 820 - Output VAT Liability (HMRC)'}
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-stone-400 mt-1">
                     {isUS
                       ? 'Current liability account for state and local sales tax remittance'
                       : 'Current liability account for HMRC quarterly VAT return'}
@@ -806,7 +806,7 @@ export const AccountingSettingsTab: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     Rounding Drift Guard Adjustment Account <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
@@ -816,11 +816,11 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder="e.g. 495 - Rounding Adjustment Variance"
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Absorbs penny rounding drift (≤ £0.02) to guarantee balanced journals</p>
+                  <p className="text-xs text-stone-400 mt-1">Absorbs penny rounding drift (≤ £0.02) to guarantee balanced journals</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     Cash Drawer Shortage Expense Account <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
@@ -830,11 +830,11 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder="e.g. 490 - Cash Shortage Expense"
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Expense account debited when register counted cash is short</p>
+                  <p className="text-xs text-stone-400 mt-1">Expense account debited when register counted cash is short</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-zinc-300 mb-2">
                     Cash Drawer Overage Income Account <span className="text-red-500">*</span>
                   </label>
                   <AccountSelect
@@ -844,7 +844,7 @@ export const AccountingSettingsTab: React.FC = () => {
                     placeholder="e.g. 491 - Cash Overage Income"
                     required
                   />
-                  <p className="text-xs text-gray-400 mt-1">Income account credited when register counted cash is over</p>
+                  <p className="text-xs text-stone-400 mt-1">Income account credited when register counted cash is over</p>
                 </div>
               </div>
             </div>
@@ -856,7 +856,7 @@ export const AccountingSettingsTab: React.FC = () => {
                 className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-mintcom-green text-black font-semibold text-sm hover:bg-mintcom-green/90 active:bg-mintcom-green/80 transition-colors disabled:opacity-50"
               >
                 {savingMapping ? (
-                  <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-stone-200 border-t-black rounded-full animate-spin" />
                 ) : (
                   <Save size={18} />
                 )}
@@ -868,17 +868,17 @@ export const AccountingSettingsTab: React.FC = () => {
       )}
 
       {/* 3. Z-Report Sync Logs Table */}
-      <div className="bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl p-6 sm:p-8 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-white/5">
+      <div className="bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-100 dark:border-zinc-800">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-mintcom-green/10 flex items-center justify-center text-mintcom-green shadow-sm shrink-0">
               <Calendar size={22} />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100">
                 Recent Z-Report Shift Sync Logs
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+              <p className="text-sm text-stone-500 dark:text-zinc-400 mt-1 leading-relaxed">
                 History of double-entry journals posted automatically on shift close or manually retried.
               </p>
             </div>
@@ -888,7 +888,7 @@ export const AccountingSettingsTab: React.FC = () => {
             type="button"
             onClick={handleRefreshLogs}
             disabled={refreshingLogs}
-            className="p-2.5 rounded-xl text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/5 transition-all self-end sm:self-center"
+            className="p-2.5 rounded-xl text-stone-500 hover:text-stone-900 dark:hover:text-zinc-100 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-all self-end sm:self-center"
             title="Refresh logs"
           >
             <RotateCw size={18} className={refreshingLogs ? 'animate-spin text-mintcom-green' : ''} />
@@ -898,10 +898,10 @@ export const AccountingSettingsTab: React.FC = () => {
         <div className="mt-6 overflow-x-auto">
           {logs.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-14 px-4 text-center">
-              <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 mb-3">
+              <div className="w-12 h-12 rounded-full bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-400 mb-3">
                 <Calendar size={22} />
               </div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100">
                 No shift journals synced yet
               </p>
               {logsError ? (
@@ -909,15 +909,15 @@ export const AccountingSettingsTab: React.FC = () => {
                   Couldn't load sync logs: {logsError}
                 </p>
               ) : !status?.isConnected ? (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+                <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 max-w-sm">
                   Connect Xero or QuickBooks above to start logging automatic Z-report syncs. Shifts closed while disconnected leave no log entries.
                 </p>
               ) : !status?.mapping ? (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+                <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 max-w-sm">
                   Connected, but your Chart of Accounts mapping isn't saved yet. Shifts closed until then can't sync — save the mapping above, close a shift, and its journal will appear here.
                 </p>
               ) : (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-sm">
+                <p className="text-xs text-stone-500 dark:text-zinc-400 mt-1 max-w-sm">
                   Once a register shift is closed, daily double-entry Z-reports will appear here automatically.
                 </p>
               )}
@@ -925,7 +925,7 @@ export const AccountingSettingsTab: React.FC = () => {
           ) : (
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-white/5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <tr className="border-b border-stone-100 dark:border-zinc-800 text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
                   <th className="pb-3 pr-4">Shift Time</th>
                   <th className="pb-3 px-4">Cashier</th>
                   <th className="pb-3 px-4">Debits / Credits</th>
@@ -935,24 +935,24 @@ export const AccountingSettingsTab: React.FC = () => {
                   <th className="pb-3 pl-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-white/5 font-medium">
+              <tbody className="divide-y divide-stone-100 dark:divide-zinc-800 font-medium">
                 {logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/30 transition-colors">
-                    <td className="py-4 pr-4 text-gray-900 dark:text-white whitespace-nowrap">
+                  <tr key={log.id} className="hover:bg-stone-50/50 dark:hover:bg-zinc-900/30 transition-colors">
+                    <td className="py-4 pr-4 text-stone-900 dark:text-zinc-100 whitespace-nowrap">
                       {new Date(log.shift.startTime).toLocaleDateString()}{' '}
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-stone-400">
                         {new Date(log.shift.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </td>
-                    <td className="py-4 px-4 text-gray-700 dark:text-gray-300">
+                    <td className="py-4 px-4 text-stone-700 dark:text-zinc-300">
                       {log.shift.employeeName}
                     </td>
                     <td className="py-4 px-4 whitespace-nowrap">
-                      <span className="text-gray-900 dark:text-white font-semibold">
+                      <span className="text-stone-900 dark:text-zinc-100 font-semibold">
                         £{Number(log.debitTotal).toFixed(2)}
                       </span>
                     </td>
-                    <td className="py-4 px-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                    <td className="py-4 px-4 whitespace-nowrap text-xs text-stone-500 dark:text-zinc-400">
                       {Number(log.roundingDrift) === 0 ? '£0.00' : `£${Number(log.roundingDrift).toFixed(2)}`}
                     </td>
                     <td className="py-4 px-4 whitespace-nowrap">
@@ -990,7 +990,7 @@ export const AccountingSettingsTab: React.FC = () => {
                           <ExternalLink size={12} />
                         </a>
                       ) : (
-                        <span className="text-xs text-gray-400">{log.externalReferenceId || '—'}</span>
+                        <span className="text-xs text-stone-400">{log.externalReferenceId || '—'}</span>
                       )}
                     </td>
                     <td className="py-4 pl-4 text-right whitespace-nowrap">
@@ -998,10 +998,10 @@ export const AccountingSettingsTab: React.FC = () => {
                         type="button"
                         onClick={() => handleRetrySync(log.shiftId)}
                         disabled={retryingShiftId === log.shiftId}
-                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-lg transition-all disabled:opacity-50"
+                        className="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold text-stone-700 dark:text-zinc-300 bg-stone-100 hover:bg-stone-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-lg transition-all disabled:opacity-50"
                       >
                         {retryingShiftId === log.shiftId ? (
-                          <div className="w-3 h-3 border-2 border-gray-400 border-t-gray-700 rounded-full animate-spin" />
+                          <div className="w-3 h-3 border-2 border-stone-400 border-t-stone-700 rounded-full animate-spin" />
                         ) : (
                           <RotateCw size={12} />
                         )}
@@ -1039,7 +1039,7 @@ const AccountSelect: React.FC<AccountSelectProps> = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       required={required}
-      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#16181A] text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 focus:border-mintcom-green transition-all"
+      className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-stone-900 dark:text-zinc-100 text-sm focus:outline-none focus:ring-2 focus:ring-mintcom-green/50 focus:border-mintcom-green transition-all"
     >
       <option value="">{placeholder || 'Select Account...'}</option>
       {accounts.map((acc) => (

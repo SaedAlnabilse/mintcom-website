@@ -304,7 +304,7 @@ export const GoogleAuthButton = forwardRef<GoogleAuthButtonHandle, GoogleAuthBut
         onClick={handleClick}
         disabled={disabled || isLoading}
         aria-label={buttonText}
-        className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:hover:bg-white/[0.08]"
+        className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 shadow-sm transition-all hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-800"
       >
         <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
           <GoogleIcon size={18} />
@@ -322,11 +322,11 @@ export function AuthDivider() {
   const { t } = useTranslation();
   return (
     <div className="my-6 flex items-center gap-4">
-      <div className="h-px flex-1 bg-gradient-to-r from-transparent to-gray-200 dark:to-white/10" />
-      <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+      <div className="h-px flex-1 bg-gradient-to-r from-transparent to-stone-200 dark:to-white/10" />
+      <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-stone-500 dark:text-zinc-400">
         {t('common.or')}
       </span>
-      <div className="h-px flex-1 bg-gradient-to-l from-transparent to-gray-200 dark:to-white/10" />
+      <div className="h-px flex-1 bg-gradient-to-l from-transparent to-stone-200 dark:to-white/10" />
     </div>
   );
 }

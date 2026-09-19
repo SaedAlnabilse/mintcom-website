@@ -632,7 +632,7 @@ export function SubscriptionInvoiceModal({ data, onClose, leadingAction }: Subsc
       />
 
       <ModalBody>
-        <div ref={documentRef} className="bg-gray-100/70 dark:bg-black/40 p-4 sm:p-6">
+        <div ref={documentRef} className="bg-stone-100/70 dark:bg-black/40 p-4 sm:p-6">
           <SubscriptionInvoiceDocument data={data} />
         </div>
       </ModalBody>
@@ -643,7 +643,7 @@ export function SubscriptionInvoiceModal({ data, onClose, leadingAction }: Subsc
           <button
             type="button"
             onClick={handleDownload}
-            className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+            className="flex items-center gap-2 rounded-xl border border-stone-200 px-3 py-2 text-xs font-bold text-stone-600 transition hover:bg-stone-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
           >
             <Download size={15} />
             <span className="hidden sm:inline">

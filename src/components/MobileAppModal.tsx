@@ -37,14 +37,14 @@ export function MobileAppModal({
       />
 
       <ModalBody>
-              <div className="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 mb-4 border border-gray-100 dark:border-white/5">
-                <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.04] px-5 py-6 text-center shadow-sm">
+              <div className="bg-stone-50 dark:bg-zinc-800 rounded-2xl p-6 mb-4 border border-stone-100 dark:border-zinc-800">
+                <div className="rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 px-5 py-6 text-center shadow-sm">
                   {/* Non-clickable QR container for phone camera scanning */}
                   <div
                     className="mx-auto mb-4 flex w-fit flex-col items-center gap-3 rounded-2xl p-2 select-none cursor-default"
                     aria-label={t('landing.download.qrCode', 'Scan QR code to download')}
                   >
-                    <div className="rounded-xl bg-white p-3 shadow-sm ring-1 ring-gray-100 dark:ring-white/10">
+                    <div className="rounded-xl bg-white p-3 shadow-sm ring-1 ring-stone-100 dark:ring-zinc-800">
                       <QRCodeSVG
                         value={qrTargetUrl}
                         size={168}
@@ -54,11 +54,11 @@ export function MobileAppModal({
                         fgColor="#0f172a"
                       />
                     </div>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-stone-500 dark:text-zinc-400">
                       {t('landing.download.scanToDownload', 'Scan To Download')}
                     </p>
                   </div>
-                  <p className="text-base font-bold text-gray-900 dark:text-white leading-tight">
+                  <p className="text-base font-bold text-stone-900 dark:text-zinc-100 leading-tight">
                     {t('dashboard.menu.downloadAdminPortal', 'Download Mintcom Admin Portal')}
                   </p>
                 </div>

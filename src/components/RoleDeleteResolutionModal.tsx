@@ -54,12 +54,12 @@ export function RoleDeleteResolutionModal({
                   <AlertTriangle size={24} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                     {t('roles.deleteResolution.title', {
                       defaultValue: 'Role is assigned to employees',
                     })}
                   </h3>
-                  <p className="mt-2 text-sm font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                  <p className="mt-2 text-sm font-bold text-stone-500 dark:text-zinc-400 leading-relaxed">
                     {t('roles.deleteResolution.message', {
                       defaultValue:
                         'Choose what happens to employees using "{{roleName}}" before deleting it.',
@@ -67,7 +67,7 @@ export function RoleDeleteResolutionModal({
                     })}
                   </p>
                   {(employeeCount || assignmentCount || locationCount) && (
-                    <p className="mt-2 text-xs font-bold text-gray-400 dark:text-gray-500">
+                    <p className="mt-2 text-xs font-bold text-stone-400 dark:text-zinc-500">
                       {t('roles.deleteResolution.summary', {
                         defaultValue:
                           '{{employeeCount}} employees, {{assignmentCount}} assignments, {{locationCount}} establishments affected',
@@ -81,16 +81,16 @@ export function RoleDeleteResolutionModal({
               </div>
 
               <div className="mt-6 space-y-3">
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
+                <div className="rounded-xl border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 p-4">
                   <div className="flex items-start gap-3">
                     <ShieldCheck size={20} className="mt-0.5 text-mintcom-green shrink-0" />
                     <div>
-                      <h4 className="text-sm font-black text-gray-900 dark:text-white">
+                      <h4 className="text-sm font-black text-stone-900 dark:text-zinc-100">
                         {t('roles.deleteResolution.detachTitle', {
                           defaultValue: 'Keep their current access',
                         })}
                       </h4>
-                      <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                      <p className="mt-1 text-xs font-bold text-stone-500 dark:text-zinc-400 leading-relaxed">
                         {t('roles.deleteResolution.detachDesc', {
                           defaultValue:
                             'Delete the role and keep each employee permissions exactly as they are.',
@@ -112,16 +112,16 @@ export function RoleDeleteResolutionModal({
                   </button>
                 </div>
 
-                <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 p-4">
+                <div className="rounded-xl border border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800 p-4">
                   <div className="flex items-start gap-3">
                     <ArrowRightLeft size={20} className="mt-0.5 text-blue-500 shrink-0" />
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-black text-gray-900 dark:text-white">
+                      <h4 className="text-sm font-black text-stone-900 dark:text-zinc-100">
                         {t('roles.deleteResolution.reassignTitle', {
                           defaultValue: 'Move employees to another role',
                         })}
                       </h4>
-                      <p className="mt-1 text-xs font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                      <p className="mt-1 text-xs font-bold text-stone-500 dark:text-zinc-400 leading-relaxed">
                         {t('roles.deleteResolution.reassignDesc', {
                           defaultValue:
                             'Employees will receive the selected role permissions immediately.',
@@ -134,7 +134,7 @@ export function RoleDeleteResolutionModal({
                     value={selectedReplacementId}
                     onChange={(event) => setSelectedReplacementId(event.target.value)}
                     disabled={replacementRoles.length === 0 || isSubmitting}
-                    className="mt-4 w-full rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] px-4 py-3 text-sm font-bold text-gray-900 dark:text-white outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green disabled:opacity-60"
+                    className="mt-4 w-full rounded-xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-4 py-3 text-sm font-bold text-stone-900 dark:text-zinc-100 outline-none focus:border-mintcom-green focus:ring-1 focus:ring-mintcom-green disabled:opacity-60"
                   >
                     {replacementRoles.length === 0 ? (
                       <option value="">
@@ -170,7 +170,7 @@ export function RoleDeleteResolutionModal({
                 type="button"
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="mt-4 w-full rounded-xl px-4 py-3 text-sm font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors disabled:opacity-60"
+                className="mt-4 w-full rounded-xl px-4 py-3 text-sm font-bold text-stone-500 dark:text-zinc-400 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors disabled:opacity-60"
               >
                 {t('common.cancel')}
               </button>

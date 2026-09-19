@@ -62,7 +62,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
               }
             }
           }}
-          className="group inline-flex items-center gap-1.5 py-1 text-[13px] text-gray-500 transition-colors duration-200 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
+          className="group inline-flex items-center gap-1.5 py-1 text-[13px] text-stone-500 transition-colors duration-200 hover:text-mintcom-green dark:text-zinc-400 dark:hover:text-mintcom-green"
         >
           {link.name}
           <ArrowUpRight
@@ -75,7 +75,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
     return (
       <button
         onClick={link.action}
-        className="text-[13px] text-gray-500 transition-colors duration-200 hover:text-mintcom-green dark:text-gray-400 dark:hover:text-mintcom-green"
+        className="text-[13px] text-stone-500 transition-colors duration-200 hover:text-mintcom-green dark:text-zinc-400 dark:hover:text-mintcom-green"
       >
         {link.name}
       </button>
@@ -100,7 +100,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             <Logo size="lg" />
             <div className="flex items-center gap-6">
-              <span className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className="flex items-center gap-2 text-sm text-stone-500 dark:text-zinc-400">
                 <Mail size={14} className="text-mintcom-green" />
                 <span dir="ltr">info@mintcompos.com</span>
               </span>
@@ -113,7 +113,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
               {/* Brand column — spans 4 cols */}
               <div className="space-y-5 lg:col-span-4">
                 <Logo size="lg" />
-                <p className="max-w-[280px] text-[13px] leading-relaxed text-gray-500 dark:text-gray-400">
+                <p className="max-w-[280px] text-[13px] leading-relaxed text-stone-500 dark:text-zinc-400">
                   {t('brand.description')}
                 </p>
                 <div className="flex gap-2.5">
@@ -127,7 +127,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.label}
-                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 text-gray-400 transition-all duration-200 hover:border-mintcom-green hover:bg-mintcom-green hover:text-white dark:border-white/10 dark:text-gray-500 dark:hover:border-mintcom-green dark:hover:bg-mintcom-green dark:hover:text-white"
+                      className="flex h-11 w-11 items-center justify-center rounded-xl border border-stone-200 text-stone-400 transition-all duration-200 hover:border-mintcom-green hover:bg-mintcom-green hover:text-white dark:border-zinc-800 dark:text-zinc-500 dark:hover:border-mintcom-green dark:hover:bg-mintcom-green dark:hover:text-zinc-100"
                     >
                       <social.Icon size={16} />
                     </a>
@@ -138,7 +138,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
                 <div className="flex flex-col gap-2 pt-1">
                   <a
                     href="mailto:info@mintcompos.com"
-                    className="group flex items-center gap-2 text-[13px] text-gray-500 transition-colors hover:text-mintcom-green dark:text-gray-400"
+                    className="group flex items-center gap-2 text-[13px] text-stone-500 transition-colors hover:text-mintcom-green dark:text-zinc-400"
                   >
                     <Mail size={13} className="shrink-0 text-mintcom-green" />
                     <span dir="ltr">info@mintcompos.com</span>
@@ -148,7 +148,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
 
               {/* Product links — spans 2 cols */}
               <div className="lg:col-span-2">
-                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-gray-900 dark:text-gray-200">
+                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-900 dark:text-zinc-200">
                   {t('footer.product')}
                 </h4>
                 <ul className="space-y-2.5">
@@ -162,7 +162,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
 
               {/* Company links — spans 2 cols */}
               <div className="lg:col-span-2">
-                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-gray-900 dark:text-gray-200">
+                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-900 dark:text-zinc-200">
                   {t('footer.company')}
                 </h4>
                 <ul className="space-y-2.5">
@@ -174,7 +174,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
                 </ul>
 
                 {/* Legal links under company */}
-                <h4 className="mb-4 mt-8 text-[11px] font-semibold uppercase tracking-[0.15em] text-gray-900 dark:text-gray-200">
+                <h4 className="mb-4 mt-8 text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-900 dark:text-zinc-200">
                   {/* Was hardcoded English while every sibling heading used
                       t() — visible as a lone "LEGAL" on the Arabic site. */}
                   {t('footer.legal', { defaultValue: 'Legal' })}
@@ -190,31 +190,31 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
 
               {/* Help & Support — spans 4 cols */}
               <div className="lg:col-span-4">
-                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-gray-900 dark:text-gray-200">
+                <h4 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-900 dark:text-zinc-200">
                   {t('footer.resources')}
                 </h4>
 
                 {/* Help Center card */}
                 <Link
                   to="/support"
-                  className="group flex items-center gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-mintcom-green/40 hover:shadow-md dark:border-white/10 dark:bg-white/[0.03] dark:hover:border-mintcom-green/30"
+                  className="group flex items-center gap-3 rounded-xl border border-stone-200 bg-white p-4 shadow-sm transition-all duration-200 hover:border-mintcom-green/40 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-800/40 dark:hover:border-mintcom-green/30"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-mintcom-green/10 text-mintcom-green transition-colors group-hover:bg-mintcom-green group-hover:text-white">
                     <HelpCircle size={18} />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-semibold text-gray-800 dark:text-gray-100">
+                    <span className="block text-sm font-semibold text-stone-800 dark:text-zinc-100">
                       {t('footer.helpCenter')}
                     </span>
-                    <span className="mt-0.5 block text-xs text-gray-500 dark:text-gray-400">
+                    <span className="mt-0.5 block text-xs text-stone-500 dark:text-zinc-400">
                       {t('footer.helpCenterDesc')}
                     </span>
                   </span>
                   <ChevronRight
                     size={16}
-                    className={`shrink-0 text-gray-300 transition-all duration-200 group-hover:text-mintcom-green ${
+                    className={`shrink-0 text-stone-300 transition-all duration-200 group-hover:text-mintcom-green ${
                       isRtl ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'
-                    } dark:text-gray-600`}
+                    } dark:text-zinc-600`}
                   />
                 </Link>
 
@@ -222,7 +222,7 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
                 <div className="mt-3 grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5">
                   <Link
                     to="/support/articles"
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-xs font-medium text-gray-600 transition-all duration-200 hover:border-mintcom-green/40 hover:text-mintcom-green dark:border-white/10 dark:bg-white/[0.03] dark:text-gray-300 dark:hover:border-mintcom-green/30 dark:hover:text-mintcom-green"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-xs font-medium text-stone-600 transition-all duration-200 hover:border-mintcom-green/40 hover:text-mintcom-green dark:border-zinc-800 dark:bg-zinc-800/40 dark:text-zinc-300 dark:hover:border-mintcom-green/30 dark:hover:text-mintcom-green"
                   >
                     <BookOpen size={13} />
                     <span>{t('footer.browseArticles')}</span>
@@ -242,8 +242,8 @@ export const Footer = ({ minimal = false, hideCommercialLinks = false }: { minim
         )}
 
         {/* ===== Bottom bar ===== */}
-        <div className="mt-8 border-t border-gray-200/70 pt-6 dark:border-white/5">
-          <p className="text-center text-xs text-gray-400 dark:text-gray-500 sm:text-start">
+        <div className="mt-8 border-t border-stone-200/70 pt-6 dark:border-zinc-800">
+          <p className="text-center text-xs text-stone-400 dark:text-zinc-500 sm:text-start">
             {t('brand.copyright')}
           </p>
         </div>

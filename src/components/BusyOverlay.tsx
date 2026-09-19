@@ -25,7 +25,7 @@ export function BusyOverlay({ visible, message }: BusyOverlayProps) {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center cursor-wait bg-white/60 dark:bg-[#0F172A]/60 backdrop-blur-[2px]"
+      className="fixed inset-0 z-[10000] flex items-center justify-center cursor-wait bg-white/60 dark:bg-zinc-950/60 backdrop-blur-[2px]"
       role="status"
       aria-live="polite"
       onMouseDown={(e) => e.preventDefault()}

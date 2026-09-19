@@ -81,14 +81,14 @@ export function QuickInfo({ text }: { text: string }) {
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
         aria-label="Info"
-        className="inline-flex items-center justify-center ms-1.5 shrink-0 align-middle cursor-help text-gray-400 dark:text-gray-500 hover:text-mintcom-green transition-colors group p-0.5 rounded focus:outline-none focus-visible:ring-1 focus-visible:ring-mintcom-green"
+        className="inline-flex items-center justify-center ms-1.5 shrink-0 align-middle cursor-help text-stone-400 dark:text-zinc-500 hover:text-mintcom-green transition-colors group p-0.5 rounded focus:outline-none focus-visible:ring-1 focus-visible:ring-mintcom-green"
       >
         <Info size={14} />
       </button>
       {isVisible && typeof document !== 'undefined' && createPortal(
         <div
           role="tooltip"
-          className="fixed z-[999999] w-52 p-2.5 bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-bold text-center rounded-xl shadow-2xl pointer-events-none leading-relaxed tracking-wide animate-in fade-in zoom-in-95 duration-150"
+          className="fixed z-[999999] w-52 p-2.5 bg-stone-900 dark:bg-white text-white dark:text-black text-xs font-bold text-center rounded-xl shadow-md pointer-events-none leading-relaxed tracking-wide animate-in fade-in zoom-in-95 duration-150"
           style={{
             top: coords.top,
             left: coords.left,
@@ -97,7 +97,7 @@ export function QuickInfo({ text }: { text: string }) {
         >
           {text}
           {/* Arrow */}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900 dark:border-t-white"></div>
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-stone-900 dark:border-t-white"></div>
         </div>,
         document.body
       )}

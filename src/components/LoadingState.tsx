@@ -26,7 +26,7 @@ function LoadingIndicator({
       className={`flex flex-col items-center justify-center space-y-6 text-center ${className}`}
     >
       <Spinner size={spinnerSize} />
-      <p className="label-strong text-gray-500 dark:text-gray-400">{displayMessage}</p>
+      <p className="label-strong text-stone-500 dark:text-zinc-400">{displayMessage}</p>
     </motion.div>
   );
 }
@@ -38,7 +38,7 @@ export function FullScreenLoader({
 }: BaseLoadingProps) {
   return (
     <div
-      className={`min-h-screen bg-cream-50 dark:bg-mintcom-dark text-gray-900 dark:text-mintcom-text transition-colors duration-300 flex items-center justify-center ${className}`}
+      className={`min-h-screen bg-cream-50 dark:bg-zinc-950 text-stone-900 dark:text-mintcom-text transition-colors duration-300 flex items-center justify-center ${className}`}
     >
       <LoadingIndicator message={message} spinnerSize={spinnerSize} />
     </div>
@@ -73,7 +73,7 @@ export function CenteredOverlay({ children }: { children: React.ReactNode }) {
   if (typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9000] flex items-center justify-center bg-gray-50 dark:bg-mintcom-dark pointer-events-none">
+    <div className="fixed inset-0 z-[9000] flex items-center justify-center bg-stone-50 dark:bg-zinc-950 pointer-events-none">
       {children}
     </div>,
     document.body
@@ -92,7 +92,7 @@ export function SurfaceLoader({
 }: SurfaceLoaderProps) {
   return (
     <div
-      className={`rounded-2xl border border-gray-100 dark:border-white/10 bg-white dark:bg-white/5 shadow-sm ${className}`}
+      className={`rounded-2xl border border-stone-100 dark:border-zinc-800 bg-white dark:bg-zinc-800 shadow-sm ${className}`}
     >
       <div className={`flex items-center justify-center ${paddingClassName}`}>
         <LoadingIndicator message={message} spinnerSize={spinnerSize} />

@@ -204,7 +204,7 @@ export function EstablishmentDeletionWizard({
     if (isLoading) {
         return createPortal(
             <div className="fixed inset-0 z-[9999] popup-surface flex items-center justify-center bg-black/30 dark:bg-black/80 backdrop-blur-sm font-sans p-4">
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl p-8 border border-gray-200 dark:border-white/5 shadow-xl">
+                <div className="bg-white dark:bg-zinc-900/60 rounded-2xl p-8 border border-stone-200 dark:border-zinc-800 shadow-xl">
                     <div className="w-12 h-12 border-4 border-mintcom-red/10 border-t-mintcom-red rounded-full animate-spin mx-auto" />
                     <p className="label-strong font-sans mt-4 text-center">{t('security.deletion.loading')}</p>
                 </div>
@@ -216,24 +216,24 @@ export function EstablishmentDeletionWizard({
     return (
         <Modal isOpen={true} onClose={onClose} size="xl">
             {/* Header */}
-            <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-gray-200 dark:border-white/10 flex-shrink-0">
+            <div className="flex items-center justify-between px-6 sm:px-8 py-4 sm:py-5 relative isolate border-b border-stone-200 dark:border-zinc-800 flex-shrink-0">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-mintcom-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 -z-10" />
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-mintcom-red/10 flex items-center justify-center text-mintcom-red">
                         <Trash2 size={20} />
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
+                        <h2 className="text-xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight leading-tight">
                             {t('security.deletion.title')}
                         </h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{establishmentName}</p>
+                        <p className="text-sm text-stone-500 dark:text-zinc-400">{establishmentName}</p>
                     </div>
                 </div>
                 <ModalCloseButton onClose={onClose} />
             </div>
 
             {/* Step Indicator */}
-            <div className="px-6 sm:px-8 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-white/[0.02] flex-shrink-0">
+            <div className="px-6 sm:px-8 py-4 border-b border-stone-200 dark:border-zinc-800 bg-stone-50/50 dark:bg-zinc-800/40 flex-shrink-0">
                 <div className="flex items-center gap-2">
                     {['warning', 'export', 'confirm'].map((s, i) => (
                         <div key={s} className="flex items-center">
@@ -242,7 +242,7 @@ export function EstablishmentDeletionWizard({
                                     ? 'bg-mintcom-red text-white shadow-sm'
                                     : ['warning', 'export', 'confirm'].indexOf(step) > i
                                         ? 'bg-mintcom-red/20 text-mintcom-red'
-                                        : 'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500'
+                                        : 'bg-stone-200 dark:bg-zinc-800 text-stone-400 dark:text-zinc-500'
                                     }`}
                             >
                                 {i + 1}
@@ -251,7 +251,7 @@ export function EstablishmentDeletionWizard({
                                 <div
                                     className={`w-12 h-0.5 mx-2 ${['warning', 'export', 'confirm'].indexOf(step) > i
                                         ? 'bg-mintcom-red/30'
-                                        : 'bg-gray-200 dark:bg-white/10'
+                                        : 'bg-stone-200 dark:bg-zinc-800'
                                         }`}
                                 />
                             )}
@@ -287,7 +287,7 @@ export function EstablishmentDeletionWizard({
                             </div>
 
                             <div>
-                                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 px-1">
+                                <h3 className="text-sm font-medium text-stone-500 dark:text-zinc-400 mb-4 px-1">
                                     {t('security.deletion.warning.summary')}
                                 </h3>
                                 <div className="grid grid-cols-2 gap-3">
@@ -429,8 +429,8 @@ export function EstablishmentDeletionWizard({
                                 </div>
                             </div>
 
-                            <div className="bg-gray-100 dark:bg-white/5 rounded-2xl p-6 text-center">
-                                <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
+                            <div className="bg-stone-100 dark:bg-zinc-800 rounded-2xl p-6 text-center">
+                                <p className="text-stone-500 dark:text-zinc-400 text-sm mb-2">
                                     {t('security.deletion.confirm.deletionDate')}
                                 </p>
                                 <p className="text-2xl font-bold text-mintcom-red">
@@ -444,7 +444,7 @@ export function EstablishmentDeletionWizard({
                             </div>
 
                             <div>
-                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center">
+                                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 tracking-tight mb-2 flex items-center">
                                     {t('security.deletion.confirm.locationId')}
                                     <QuickInfo text={t('security.deletion.confirm.locationIdTip')} />
                                 </label>
@@ -452,13 +452,13 @@ export function EstablishmentDeletionWizard({
                                     type="text"
                                     value={establishmentLoginId}
                                     onChange={(e) => setEstablishmentLoginId(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
+                                    className="w-full px-4 py-3 bg-white dark:bg-zinc-800 border border-stone-300 dark:border-zinc-700 rounded-xl text-stone-900 dark:text-zinc-100 font-medium focus:outline-none focus:border-mintcom-red transition-colors"
                                 />
                             </div>
 
                             {/* Establishment Password */}
                             <div>
-                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
+                                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 tracking-tight mb-2 flex items-center gap-2">
                                     <div className="flex items-center gap-2">
                                         <Lock size={14} className="text-mintcom-red" />
                                         {t('security.deletion.confirm.locationPassword')}
@@ -469,12 +469,12 @@ export function EstablishmentDeletionWizard({
                                         type={showEstablishmentPassword ? 'text' : 'password'}
                                         value={establishmentPassword}
                                         onChange={(e) => setEstablishmentPassword(e.target.value)}
-                                        className="w-full px-4 py-3 pr-12 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
+                                        className="w-full px-4 py-3 pr-12 bg-white dark:bg-zinc-800 border border-stone-300 dark:border-zinc-700 rounded-xl text-stone-900 dark:text-zinc-100 font-medium focus:outline-none focus:border-mintcom-red transition-colors"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowEstablishmentPassword(!showEstablishmentPassword)}
-                                        className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                                        className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 p-1 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300"
                                     >
                                         {showEstablishmentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
@@ -483,7 +483,7 @@ export function EstablishmentDeletionWizard({
 
                             {/* Account Email */}
                             <div>
-                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
+                                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 tracking-tight mb-2 flex items-center gap-2">
                                     <div className="flex items-center gap-2">
                                         <Mail size={14} className="text-mintcom-red" />
                                         {t('security.deletion.confirm.yourEmail')}
@@ -493,13 +493,13 @@ export function EstablishmentDeletionWizard({
                                     type="email"
                                     value={accountEmail}
                                     onChange={(e) => setAccountEmail(e.target.value)}
-                                    className="w-full px-4 py-3 bg-white dark:bg-[#2a2a2a] border border-gray-300 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white font-medium focus:outline-none focus:border-mintcom-red transition-colors"
+                                    className="w-full px-4 py-3 bg-white dark:bg-zinc-800 border border-stone-300 dark:border-zinc-700 rounded-xl text-stone-900 dark:text-zinc-100 font-medium focus:outline-none focus:border-mintcom-red transition-colors"
                                 />
                             </div>
 
                             {/* Owner identity */}
                             <div>
-                                <label className="block text-sm font-normal text-gray-900 dark:text-white tracking-tight mb-2 flex items-center gap-2">
+                                <label className="block text-sm font-normal text-stone-900 dark:text-zinc-100 tracking-tight mb-2 flex items-center gap-2">
                                     <div className="flex items-center gap-2">
                                         <Lock size={14} className="text-mintcom-red" />
                                         {t('security.deletion.confirm.yourPassword')}
@@ -527,20 +527,20 @@ export function EstablishmentDeletionWizard({
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-gray-200 dark:border-white/5 flex gap-3">
+            <div className="p-6 border-t border-stone-200 dark:border-zinc-800 flex gap-3">
                 {step !== 'warning' && (
                     <button
                         onClick={() =>
                             setStep(step === 'confirm' ? 'export' : 'warning')
                         }
-                        className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                        className="px-6 py-3 bg-stone-50 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 rounded-xl font-bold hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                     >
                         {t('common.back')}
                     </button>
                 )}
                 <button
                     onClick={onClose}
-                    className="px-6 py-3 bg-gray-50 dark:bg-white/5 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-100 dark:hover:bg-white/10 transition-colors ml-auto"
+                    className="px-6 py-3 bg-stone-50 dark:bg-zinc-800 text-stone-700 dark:text-zinc-300 rounded-xl font-bold hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors ml-auto"
                 >
                     {t('common.cancel')}
                 </button>
@@ -580,10 +580,10 @@ function StatCard({
     value: number;
 }) {
     return (
-        <div className="bg-gray-100 dark:bg-white/5 rounded-xl p-4 text-center">
+        <div className="bg-stone-100 dark:bg-zinc-800 rounded-xl p-4 text-center">
             <Icon size={20} className="text-mintcom-red mx-auto mb-2" />
             <StatValue value={value} isInteger={true} className="text-2xl" containerClassName="justify-center" />
-            <div className="text-xs text-gray-500 dark:text-gray-400 font-black tracking-widest mt-1">
+            <div className="text-xs text-stone-500 dark:text-zinc-400 font-black tracking-widest mt-1">
                 {label}
             </div>
         </div>
@@ -611,29 +611,29 @@ function ExportOption({
 }) {
     const { t } = useTranslation();
     return (
-        <div className={`rounded-xl p-4 flex items-center gap-4 ${disabled ? 'bg-gray-50 dark:bg-white/5 opacity-80' : 'bg-gray-100 dark:bg-white/5'}`}>
+        <div className={`rounded-xl p-4 flex items-center gap-4 ${disabled ? 'bg-stone-50 dark:bg-zinc-800 opacity-80' : 'bg-stone-100 dark:bg-zinc-800'}`}>
             <input
                 type="checkbox"
                 checked={checked}
                 onChange={(e) => !disabled && onChange(e.target.checked)}
                 disabled={disabled}
-                className={`w-5 h-5 rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                className={`w-5 h-5 rounded border-stone-300 text-mintcom-green focus:ring-mintcom-green ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
             />
-            <FileSpreadsheet size={20} className="text-gray-400" />
+            <FileSpreadsheet size={20} className="text-stone-400" />
             <div className="flex-1">
-                <div className="font-bold text-gray-900 dark:text-white text-sm">{label}</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">{description}</div>
+                <div className="font-bold text-stone-900 dark:text-zinc-100 text-sm">{label}</div>
+                <div className="text-xs text-stone-500 dark:text-zinc-400">{description}</div>
             </div>
             <div className="text-right">
                 <StatValue value={count} isInteger={true} className="text-sm" containerClassName="justify-end" />
-                <div className="text-xs text-gray-500 dark:text-gray-400">{countLabel}</div>
+                <div className="text-xs text-stone-500 dark:text-zinc-400">{countLabel}</div>
             </div>
             <button
                 onClick={onDownload}
-                className="p-2 bg-white dark:bg-white/10 rounded-lg hover:bg-gray-200 dark:hover:bg-white/20 transition-colors"
+                className="p-2 bg-white dark:bg-zinc-800 rounded-lg hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors"
                 title={t('security.deletion.export.download')}
             >
-                <Download size={16} className="text-gray-600 dark:text-gray-300" />
+                <Download size={16} className="text-stone-600 dark:text-zinc-300" />
             </button>
         </div>
     );
@@ -706,7 +706,7 @@ export function PendingDeletionBanner({
                     </div>
                     <div>
                         <h3 className="font-bold text-lg">{t('security.deletion.banner.title')}</h3>
-                        <p className="text-white/80 text-sm">
+                        <p className="text-zinc-300 text-sm">
                             {t('security.deletion.banner.desc', { date: scheduledDate })}
                         </p>
                         {!deletionStatus.canCancel && (
@@ -721,7 +721,7 @@ export function PendingDeletionBanner({
                 <div className="flex items-center gap-4">
                     <div className="text-center">
                         <StatValue value={deletionStatus.daysRemaining || 0} isInteger={true} className="text-2xl sm:text-3xl text-white" containerClassName="justify-center" />
-                        <div className="text-xs text-white/80">{t('security.deletion.banner.daysLeft')}</div>
+                        <div className="text-xs text-zinc-300">{t('security.deletion.banner.daysLeft')}</div>
                     </div>
                     <button
                         onClick={handleRecoveryAction}

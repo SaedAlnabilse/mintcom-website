@@ -57,10 +57,10 @@ export function SettingsOverviewHub({
           'Business name, address, contact email, logo, and legal tax registration number.',
         ),
         icon: Store,
-        iconBg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-        iconColor: 'text-emerald-600 dark:text-emerald-400',
-        glowColor: 'group-hover:shadow-emerald-500/10',
-        borderColor: 'hover:border-emerald-500/40 dark:hover:border-emerald-500/30',
+        iconBg: 'bg-mintcom-green/15 dark:bg-mintcom-green/20',
+        iconColor: 'text-emerald-700 dark:text-mintcom-green',
+        glowColor: '',
+        borderColor: 'hover:border-stone-300 dark:hover:border-zinc-700',
         badge: settings?.restaurantName || currentEstablishment?.name || undefined,
         statusType: 'neutral',
         keywords: [
@@ -89,10 +89,10 @@ export function SettingsOverviewHub({
           'Receipt logo, custom header notes, farewell message, and printed customer fields.',
         ),
         icon: Receipt,
-        iconBg: 'bg-amber-500/10 dark:bg-amber-500/20',
-        iconColor: 'text-amber-600 dark:text-amber-400',
-        glowColor: 'group-hover:shadow-amber-500/10',
-        borderColor: 'hover:border-amber-500/40 dark:hover:border-amber-500/30',
+        iconBg: 'bg-mintcom-green/15 dark:bg-mintcom-green/20',
+        iconColor: 'text-emerald-700 dark:text-mintcom-green',
+        glowColor: '',
+        borderColor: 'hover:border-stone-300 dark:hover:border-zinc-700',
         badge: settings?.receiptLogo ? t('settings.overview.quickGlance.configured', 'Logo Set') : undefined,
         statusType: settings?.receiptLogo ? 'success' : 'neutral',
         keywords: [
@@ -120,7 +120,7 @@ export function SettingsOverviewHub({
         ),
         icon: CreditCard,
         iconBg: 'bg-mintcom-green/15 dark:bg-mintcom-green/20',
-        iconColor: 'text-mintcom-green',
+        iconColor: 'text-emerald-700 dark:text-mintcom-green',
         glowColor: 'group-hover:shadow-mintcom-green/10',
         borderColor: 'hover:border-mintcom-green/40 dark:hover:border-mintcom-green/30',
         badge: `${settings?.taxRate ?? 0}% Tax · ${settings?.currency || currentEstablishment?.currency || 'USD'}`,
@@ -150,10 +150,10 @@ export function SettingsOverviewHub({
           'Universal electronic invoicing, country tax regulations, and QR verification.',
         ),
         icon: ShieldCheck,
-        iconBg: 'bg-purple-500/10 dark:bg-purple-500/20',
-        iconColor: 'text-purple-600 dark:text-purple-400',
-        glowColor: 'group-hover:shadow-purple-500/10',
-        borderColor: 'hover:border-purple-500/40 dark:hover:border-purple-500/30',
+        iconBg: 'bg-mintcom-green/15 dark:bg-mintcom-green/20',
+        iconColor: 'text-emerald-700 dark:text-mintcom-green',
+        glowColor: '',
+        borderColor: 'hover:border-stone-300 dark:hover:border-zinc-700',
         badge: settings?.fiscalEnabled
           ? t('settings.overview.quickGlance.active', 'Active')
           : t('settings.overview.quickGlance.inactive', 'Disabled'),
@@ -182,10 +182,10 @@ export function SettingsOverviewHub({
           'Automatic daily Z-Report sync with Xero & QuickBooks, UK VAT split, and ledger mapping.',
         ),
         icon: BookOpen,
-        iconBg: 'bg-sky-500/10 dark:bg-sky-500/20',
-        iconColor: 'text-sky-600 dark:text-sky-400',
-        glowColor: 'group-hover:shadow-sky-500/10',
-        borderColor: 'hover:border-sky-500/40 dark:hover:border-sky-500/30',
+        iconBg: 'bg-mintcom-green/15 dark:bg-mintcom-green/20',
+        iconColor: 'text-emerald-700 dark:text-mintcom-green',
+        glowColor: '',
+        borderColor: 'hover:border-stone-300 dark:hover:border-zinc-700',
         badge: 'Xero · QuickBooks',
         statusType: 'neutral',
         keywords: [
@@ -211,10 +211,10 @@ export function SettingsOverviewHub({
           'Held order capacity, table management limits, and multi-shift cashier settings.',
         ),
         icon: MonitorSmartphone,
-        iconBg: 'bg-teal-500/10 dark:bg-teal-500/20',
-        iconColor: 'text-teal-600 dark:text-teal-400',
-        glowColor: 'group-hover:shadow-teal-500/10',
-        borderColor: 'hover:border-teal-500/40 dark:hover:border-teal-500/30',
+        iconBg: 'bg-mintcom-green/15 dark:bg-mintcom-green/20',
+        iconColor: 'text-emerald-700 dark:text-mintcom-green',
+        glowColor: '',
+        borderColor: 'hover:border-stone-300 dark:hover:border-zinc-700',
         badge: `${settings?.holdOrderTableCount ?? 10} Tables`,
         statusType: 'neutral',
         keywords: [
@@ -241,10 +241,10 @@ export function SettingsOverviewHub({
           'Initiate permanent decommissioning and deletion of this store location.',
         ),
         icon: Trash2,
-        iconBg: 'bg-rose-500/10 dark:bg-rose-500/20',
-        iconColor: 'text-rose-600 dark:text-rose-400',
-        glowColor: 'group-hover:shadow-rose-500/10',
-        borderColor: 'hover:border-rose-500/40 dark:hover:border-rose-500/30',
+        iconBg: 'bg-mintcom-green/15 dark:bg-mintcom-green/20',
+        iconColor: 'text-emerald-700 dark:text-mintcom-green',
+        glowColor: '',
+        borderColor: 'hover:border-stone-300 dark:hover:border-zinc-700',
         keywords: [
           'delete',
           'remove',
@@ -317,10 +317,10 @@ export function SettingsOverviewHub({
           {categories.map((category) => (
             <div key={category.id} className="space-y-3.5">
               <div className="flex items-center gap-2">
-                <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-zinc-400">
                   {category.title}
                 </h2>
-                <div className="h-px flex-1 bg-gray-200 dark:bg-white/10" />
+                <div className="h-px flex-1 bg-stone-200 dark:bg-zinc-800" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -331,7 +331,7 @@ export function SettingsOverviewHub({
                       key={card.id}
                       type="button"
                       onClick={() => onNavigateToSection(card.id)}
-                      className={`group relative text-left p-5 rounded-2xl bg-white dark:bg-[#11161d] border border-gray-200 dark:border-white/10 hover:shadow-xl transition-all duration-300 flex flex-col justify-between ${card.borderColor} ${card.glowColor} focus:outline-none focus:ring-2 focus:ring-mintcom-green/50`}
+                      className={`group relative text-left p-5 rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 hover:shadow-xl transition-all duration-300 flex flex-col justify-between ${card.borderColor} ${card.glowColor} focus:outline-none focus:ring-2 focus:ring-mintcom-green/50`}
                       style={{ textAlign: isRTL ? 'right' : 'left' }}
                     >
                       <div className="space-y-3 w-full">
@@ -350,7 +350,7 @@ export function SettingsOverviewHub({
                                   ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
                                   : card.statusType === 'success'
                                   ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                                  : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10'
+                                  : 'bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 border border-stone-200 dark:border-zinc-800'
                               }`}
                             >
                               {card.badge}
@@ -359,16 +359,16 @@ export function SettingsOverviewHub({
                         </div>
 
                         <div>
-                          <h3 className="text-base font-bold text-gray-900 dark:text-white group-hover:text-mintcom-green transition-colors">
+                          <h3 className="text-base font-bold text-stone-900 dark:text-zinc-100 group-hover:text-mintcom-green transition-colors">
                             {card.title}
                           </h3>
-                          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed line-clamp-2">
+                          <p className="text-xs sm:text-sm text-stone-500 dark:text-zinc-400 mt-1 leading-relaxed line-clamp-2">
                             {card.description}
                           </p>
                         </div>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-xs font-semibold text-gray-600 dark:text-gray-400 group-hover:text-mintcom-green transition-colors">
+                      <div className="mt-4 pt-3 border-t border-stone-100 dark:border-zinc-800 flex items-center justify-between text-xs font-semibold text-stone-600 dark:text-zinc-400 group-hover:text-mintcom-green transition-colors">
                         <span>{t('settings.overview.viewScreen', 'Open')}</span>
                         <ArrowIcon
                           size={15}
@@ -384,8 +384,8 @@ export function SettingsOverviewHub({
         </div>
       ) : (
         /* Empty State */
-        <div className="py-16 text-center rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-white/10 space-y-3">
-          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+        <div className="py-16 text-center rounded-2xl bg-stone-50 dark:bg-zinc-800/40 border border-stone-200 dark:border-zinc-800 space-y-3">
+          <p className="text-sm text-stone-500 dark:text-zinc-400 max-w-sm mx-auto">
             {t(
               'settings.overview.noCategories',
               'No settings sections available for your account.',

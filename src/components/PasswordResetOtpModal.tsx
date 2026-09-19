@@ -240,10 +240,10 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
                                         <Mail className="w-8 h-8 text-blue-500" />
                                     </div>
-                                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2">
                                         {t('passwordReset.steps.verifyTitle')}
                                     </h3>
-                                    <p className="text-sm font-bold text-gray-500">
+                                    <p className="text-sm font-bold text-stone-500">
                                         {t('passwordReset.steps.verifyDesc')}
                                     </p>
                                 </div>
@@ -282,10 +282,10 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-mintcom-green/10 flex items-center justify-center mx-auto mb-4">
                                         <Shield className="w-8 h-8 text-mintcom-green" />
                                     </div>
-                                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2">
                                         {t('passwordReset.steps.enterCodeTitle')}
                                     </h3>
-                                    <p className="text-sm font-bold text-gray-500">
+                                    <p className="text-sm font-bold text-stone-500">
                                         {t('passwordReset.steps.enterCodeDesc', { email: maskedEmail })}
                                     </p>
                                 </div>
@@ -303,7 +303,7 @@ export function PasswordResetOtpModal({
                                             value={digit}
                                             onChange={(e) => handleOtpChange(index, e.target.value)}
                                             onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                                            className="w-12 h-14 text-center text-xl font-bold rounded-xl border-2 border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
+                                            className="w-12 h-14 text-center text-xl font-bold rounded-xl border-2 border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-stone-900 dark:text-zinc-100 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
                                         />
                                     ))}
                                 </div>
@@ -333,7 +333,7 @@ export function PasswordResetOtpModal({
                                 <button
                                     onClick={handleRequestOtp}
                                     disabled={isLoading}
-                                    className="w-full py-2 text-sm text-gray-500 hover:text-mintcom-green transition-colors"
+                                    className="w-full py-2 text-sm text-stone-500 hover:text-mintcom-green transition-colors"
                                 >
                                     {t('passwordReset.form.resend')}
                                 </button>
@@ -347,10 +347,10 @@ export function PasswordResetOtpModal({
                                     <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
                                         <Key className="w-8 h-8 text-blue-500" />
                                     </div>
-                                    <h3 className="font-barlow text-xl font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-xl font-bold text-stone-900 dark:text-zinc-100 mb-2">
                                         {t('passwordReset.steps.newPasswordTitle')}
                                     </h3>
-                                    <p className="text-sm font-bold text-gray-500">
+                                    <p className="text-sm font-bold text-stone-500">
                                         {t('passwordReset.steps.newPasswordDesc')}
                                     </p>
                                 </div>
@@ -364,13 +364,13 @@ export function PasswordResetOtpModal({
                                             type={showPassword ? 'text' : 'password'}
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
-                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
+                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-stone-900 dark:text-zinc-100 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
                                             placeholder={formatInputPlaceholder(t('passwordReset.form.passwordPlaceholder'), t('common.locale'))}
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
+                                            className="absolute right-3 top-9 text-stone-400 hover:text-stone-600"
                                         >
                                             {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                         </button>
@@ -384,28 +384,28 @@ export function PasswordResetOtpModal({
                                             type={showConfirmPassword ? 'text' : 'password'}
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 dark:border-white/[0.1] bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-white focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
+                                            className="w-full px-4 py-3 pr-12 rounded-xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 text-stone-900 dark:text-zinc-100 focus:border-mintcom-green focus:ring-2 focus:ring-mintcom-green/20 outline-none transition-all"
                                             placeholder={formatInputPlaceholder(t('passwordReset.form.confirmPlaceholder'), t('common.locale'))}
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                            className="absolute right-3 top-9 text-gray-400 hover:text-gray-600"
+                                            className="absolute right-3 top-9 text-stone-400 hover:text-stone-600"
                                         >
                                             {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                         </button>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-gray-50 dark:bg-white/[0.02] rounded-[12px] border border-gray-200 dark:border-white/[0.05]">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-4 bg-stone-50 dark:bg-zinc-800/40 rounded-[12px] border border-stone-200 dark:border-zinc-800">
                                     {criteria.map((item, index) => (
                                         <div key={index} className="flex items-center gap-2">
                                             {item.met ? (
                                                 <CheckCircle2 size={14} className="text-mintcom-green flex-shrink-0" />
                                             ) : (
-                                                <div className="w-3.5 h-3.5 rounded-full border-2 border-gray-300 dark:border-white/10 flex-shrink-0" />
+                                                <div className="w-3.5 h-3.5 rounded-full border-2 border-stone-300 dark:border-zinc-800 flex-shrink-0" />
                                             )}
-                                            <span className={`text-[10px] font-bold ${item.met ? 'text-mintcom-green' : 'text-gray-400'}`}>
+                                            <span className={`text-[10px] font-bold ${item.met ? 'text-mintcom-green' : 'text-stone-400'}`}>
                                                 {item.label}
                                             </span>
                                         </div>
@@ -443,10 +443,10 @@ export function PasswordResetOtpModal({
                                     <CheckCircle2 className="w-10 h-10 text-mintcom-green" />
                                 </div>
                                 <div>
-                                    <h3 className="font-barlow text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    <h3 className="font-barlow text-lg font-bold text-stone-900 dark:text-zinc-100 mb-2">
                                         {t('passwordReset.steps.successTitle')}
                                     </h3>
-                                    <p className="text-sm font-bold text-gray-500">
+                                    <p className="text-sm font-bold text-stone-500">
                                         {t('passwordReset.steps.successDesc')}
                                     </p>
                                 </div>

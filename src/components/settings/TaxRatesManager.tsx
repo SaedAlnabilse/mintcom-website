@@ -170,8 +170,8 @@ export function TaxRatesManager() {
   if (loading) {
     return (
       <div>
-        <div className="h-10 w-40 rounded-xl bg-gray-100 dark:bg-white/5 animate-pulse mb-3" />
-        <div className="h-28 rounded-2xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5 animate-pulse" />
+        <div className="h-10 w-40 rounded-xl bg-stone-100 dark:bg-zinc-800 animate-pulse mb-3" />
+        <div className="h-28 rounded-2xl bg-stone-50 dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800 animate-pulse" />
       </div>
     );
   }
@@ -185,10 +185,10 @@ export function TaxRatesManager() {
             <Percent size={18} />
           </div>
           <div className="min-w-0">
-            <h4 className="text-sm font-black tracking-tight text-gray-900 dark:text-white leading-none">
+            <h4 className="text-sm font-black tracking-tight text-stone-900 dark:text-zinc-100 leading-none">
               {t('settings.taxes.title', 'Taxes')}
             </h4>
-            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 leading-none mt-1">
+            <p className="text-xs font-semibold text-stone-500 dark:text-zinc-400 leading-none mt-1">
               {t('settings.taxes.subtitle', 'Standard default sales tax · add custom rates per product')}
             </p>
           </div>
@@ -211,14 +211,14 @@ export function TaxRatesManager() {
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder={t('settings.taxes.searchPlaceholder', 'Search tax rates…')}
-            className="w-full pl-9 pr-9 py-2.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-xs font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+            className="w-full pl-9 pr-9 py-2.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-xs font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
           />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" size={14} />
           {filter && (
             <button
               type="button"
               onClick={() => setFilter('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 grid place-items-center rounded-lg bg-gray-100 dark:bg-white/10 text-gray-400 hover:text-gray-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-6 h-6 grid place-items-center rounded-lg bg-stone-100 dark:bg-zinc-800 text-stone-400 hover:text-stone-600"
             >
               <X size={12} strokeWidth={2.5} />
             </button>
@@ -247,8 +247,8 @@ export function TaxRatesManager() {
 
       {/* No matches after filtering */}
       {taxes.length > 0 && filtered.length === 0 && (
-        <div className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-white/[0.02] px-6 py-6 text-center">
-          <p className="text-xs font-bold text-gray-400">
+        <div className="rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/40 px-6 py-6 text-center">
+          <p className="text-xs font-bold text-stone-400">
             {t('settings.taxes.noMatches', 'No rates match “{{q}}”', { q: filter })}
           </p>
           <button
@@ -263,24 +263,24 @@ export function TaxRatesManager() {
 
       {/* Table */}
       {filtered.length > 0 && (
-        <div className="overflow-hidden rounded-2xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#0F172A] shadow-sm">
-          <div className="hidden sm:grid grid-cols-[1fr_120px_100px] gap-4 px-5 py-2.5 bg-gray-50 dark:bg-white/[0.04] border-b border-gray-100 dark:border-white/5">
-            <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase">{t('settings.taxes.colName', 'Name')}</span>
-            <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase text-right">{t('settings.taxes.colRate', 'Rate')}</span>
-            <span className="text-[10px] font-black tracking-widest text-gray-400 uppercase text-right">{t('common.actions', 'Actions')}</span>
+        <div className="overflow-hidden rounded-2xl border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm">
+          <div className="hidden sm:grid grid-cols-[1fr_120px_100px] gap-4 px-5 py-2.5 bg-stone-50 dark:bg-zinc-800 border-b border-stone-100 dark:border-zinc-800">
+            <span className="text-[10px] font-black tracking-widest text-stone-400 uppercase">{t('settings.taxes.colName', 'Name')}</span>
+            <span className="text-[10px] font-black tracking-widest text-stone-400 uppercase text-right">{t('settings.taxes.colRate', 'Rate')}</span>
+            <span className="text-[10px] font-black tracking-widest text-stone-400 uppercase text-right">{t('common.actions', 'Actions')}</span>
           </div>
 
-          <div className="divide-y divide-gray-100 dark:divide-white/5">
+          <div className="divide-y divide-stone-100 dark:divide-zinc-800">
             {filtered.map((tax) => (
               <div
                 key={tax.id}
-                className="grid sm:grid-cols-[1fr_120px_100px] gap-2 sm:gap-4 px-5 py-3.5 items-center hover:bg-gray-50/60 dark:hover:bg-white/[0.02] transition-colors"
+                className="grid sm:grid-cols-[1fr_120px_100px] gap-2 sm:gap-4 px-5 py-3.5 items-center hover:bg-stone-50/60 dark:hover:bg-zinc-800/40 transition-colors"
               >
                 {/* Name + default text */}
                 <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="text-sm font-bold text-gray-900 dark:text-white truncate">{tax.name}</span>
+                  <span className="text-sm font-bold text-stone-900 dark:text-zinc-100 truncate">{tax.name}</span>
                   {tax.isDefault && (
-                    <span className="text-xs font-semibold text-gray-400 dark:text-gray-500 shrink-0">
+                    <span className="text-xs font-semibold text-stone-400 dark:text-zinc-500 shrink-0">
                       ({t('common.default', 'Default')})
                     </span>
                   )}
@@ -288,7 +288,7 @@ export function TaxRatesManager() {
 
                 {/* Rate */}
                 <div className="flex sm:justify-end items-center">
-                  <span className="text-sm font-black tracking-tight text-gray-900 dark:text-white tabular-nums">
+                  <span className="text-sm font-black tracking-tight text-stone-900 dark:text-zinc-100 tabular-nums">
                     {(Number(tax.rate) * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%
                   </span>
                 </div>
@@ -299,7 +299,7 @@ export function TaxRatesManager() {
                     type="button"
                     onClick={() => openEdit(tax)}
                     title={t('common.edit', 'Edit')}
-                    className="h-8 px-2.5 inline-flex items-center gap-1 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
+                    className="h-8 px-2.5 inline-flex items-center gap-1 rounded-xl bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-xs font-bold text-stone-700 dark:text-zinc-300 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors"
                   >
                     <Edit3 size={13} />
                     <span>{t('common.edit', 'Edit')}</span>
@@ -309,7 +309,7 @@ export function TaxRatesManager() {
                       type="button"
                       title={t('common.delete', 'Delete')}
                       onClick={() => handleDeleteRequest(tax)}
-                      className="w-8 h-8 grid place-items-center rounded-xl border border-red-200/60 dark:border-red-500/20 bg-white dark:bg-white/5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                      className="w-8 h-8 grid place-items-center rounded-xl border border-red-200/60 dark:border-red-500/20 bg-white dark:bg-zinc-800 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -319,8 +319,8 @@ export function TaxRatesManager() {
             ))}
           </div>
 
-          <div className="px-5 py-2.5 bg-gray-50/60 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5">
-            <p className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 leading-relaxed">
+          <div className="px-5 py-2.5 bg-stone-50/60 dark:bg-zinc-800/40 border-t border-stone-100 dark:border-zinc-800">
+            <p className="text-[11px] font-semibold text-stone-500 dark:text-zinc-400 leading-relaxed">
               {t('settings.taxes.footnote', 'The default tax rate applies automatically to new products. Custom tax rates can be selected on individual products.')}
             </p>
           </div>
@@ -331,15 +331,15 @@ export function TaxRatesManager() {
       {editor && (
         <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 font-sans">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !saving && setEditor(null)} />
-          <div className="relative w-full sm:max-w-[440px] bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-t-3xl sm:rounded-2xl shadow-2xl p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full sm:max-w-[440px] bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-t-3xl sm:rounded-2xl shadow-md p-6 space-y-5 max-h-[90vh] overflow-y-auto">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-base font-black tracking-tight text-gray-900 dark:text-white">
+                <h3 className="text-base font-black tracking-tight text-stone-900 dark:text-zinc-100">
                   {editor.id
                     ? (editor.isDefault ? t('settings.taxes.editDefaultTitle', 'Edit Default Sales Tax') : t('settings.taxes.editTitle', 'Edit Tax Rate'))
                     : t('settings.taxes.createTitle', 'New Tax Rate')}
                 </h3>
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-xs font-semibold text-stone-500 dark:text-zinc-400 mt-1">
                   {editor.isDefault
                     ? t('settings.taxes.defaultHint', 'This is the standard default tax rate used for all products unless a custom rate is assigned.')
                     : t('settings.taxes.customHint', 'Enter a custom tax rate for specific products.')}
@@ -352,7 +352,7 @@ export function TaxRatesManager() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-black tracking-wide text-gray-600 dark:text-gray-300">
+              <label className="text-xs font-black tracking-wide text-stone-600 dark:text-zinc-300">
                 {t('settings.taxes.fieldName', 'Tax Name')} <span className="text-red-500">*</span>
               </label>
               <input
@@ -361,12 +361,12 @@ export function TaxRatesManager() {
                 maxLength={60}
                 onChange={(e) => setEditor({ ...editor, name: e.target.value })}
                 placeholder={t('settings.taxes.namePlaceholder', 'e.g. Sales Tax')}
-                className="w-full h-11 px-3.5 bg-white dark:bg-[#0F172A] border border-gray-200 dark:border-white/15 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/25 focus:border-mintcom-green"
+                className="w-full h-11 px-3.5 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/25 focus:border-mintcom-green"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-black tracking-wide text-gray-600 dark:text-gray-300">
+              <label className="text-xs font-black tracking-wide text-stone-600 dark:text-zinc-300">
                 {t('settings.taxes.fieldRate', 'Rate %')} <span className="text-red-500">*</span>
               </label>
               <div className="relative">
@@ -376,9 +376,9 @@ export function TaxRatesManager() {
                   value={editor.ratePercent}
                   onChange={(e) => setEditor({ ...editor, ratePercent: sanitizePercentInput(e.target.value) })}
                   placeholder="16"
-                  className="w-full h-11 pl-3.5 pr-8 bg-white dark:bg-[#0F172A] border border-gray-200 dark:border-white/15 rounded-xl text-sm font-black tabular-nums text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/25 focus:border-mintcom-green"
+                  className="w-full h-11 pl-3.5 pr-8 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-black tabular-nums text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/25 focus:border-mintcom-green"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-gray-400 pointer-events-none">%</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-stone-400 pointer-events-none">%</span>
               </div>
             </div>
 
@@ -387,7 +387,7 @@ export function TaxRatesManager() {
                 type="button"
                 onClick={() => setEditor(null)}
                 disabled={saving}
-                className="px-4 h-10 rounded-xl text-sm font-black text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                className="px-4 h-10 rounded-xl text-sm font-black text-stone-600 dark:text-zinc-300 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
               >
                 {t('common.cancel', 'Cancel')}
               </button>

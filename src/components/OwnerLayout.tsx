@@ -12,6 +12,7 @@ import { ConfirmModal } from './ConfirmModal';
 import { DeletionRestorationBanner } from './DeletionRestorationBanner';
 import { AlertsBell } from './notifications/AlertsBell';
 import { useTranslation } from 'react-i18next';
+import { useIsCompactSidebar } from '../hooks/useIsCompactSidebar';
 import {
     LayoutDashboard,
     Store,
@@ -36,6 +37,7 @@ export function OwnerLayout() {
     const { t } = useTranslation();
     const { account, establishments, logout } = useAuth();
     const isRtl = t('common.locale') === 'ar';
+    const isCompact = useIsCompactSidebar();
     const ownerLocations = useMemo(
         () => establishments.map((establishment) => ({
             id: establishment.id,
@@ -131,17 +133,17 @@ export function OwnerLayout() {
                 ref={sidebarRef}
                 initial={false}
                 animate={{
-                    width: sidebarOpen ? 300 : 100,
+                    width: sidebarOpen ? (isCompact ? 260 : 300) : (isCompact ? 80 : 100),
                     transition: { duration: 0.4, type: "spring", damping: 25, stiffness: 200 }
                 }}
                 className={`
-                    relative z-[100] flex-col h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar
+                    dashboard-sidebar relative z-[100] flex-col h-full max-h-screen py-4 bg-white dark:bg-zinc-900/60 border-r border-stone-200 dark:border-zinc-800 transition-colors duration-500 group/sidebar overflow-hidden
                     hidden lg:flex
                 `}
             >
 
                 {/* Brand Header & Toggle */}
-                <div className="h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
+                <div className="dashboard-sidebar-header h-20 flex items-center justify-between px-6 mb-2 relative shrink-0">
                     <AnimatePresence mode="wait">
                         {sidebarOpen ? (
                             <motion.div
@@ -184,7 +186,7 @@ export function OwnerLayout() {
                                 className="mx-auto"
                             >
                                 <button
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
+                                    className="logo-icon-btn w-12 h-12 rounded-xl flex items-center justify-center cursor-pointer bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/40 text-mintcom-green transition-all group relative"
                                     onClick={() => setSidebarOpen(true)}
                                 >
                                     <img src={MintcomLeafIcon} width={32} height={32} loading="eager" decoding="async" className="w-8 h-8 object-contain transition-all duration-300 opacity-100 rotate-0 group-hover/sidebar:opacity-0 group-hover/sidebar:rotate-90 absolute" alt="P" />
@@ -212,10 +214,10 @@ export function OwnerLayout() {
 
                 {/* Navigation Section */}
                 <div
-                    className="flex-1 min-h-0 overflow-y-auto overflow-x-visible px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10"
+                    className="dashboard-sidebar-nav flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-3 space-y-1.5 scrollbar-none scroll-smooth pb-4 relative z-10"
                     onScroll={hideCollapsedNavTooltip}
                 >
-                    {sidebarOpen && <p className="px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
+                    {sidebarOpen && <p className="dashboard-sidebar-section-title px-3 py-2 text-xs font-semibold text-stone-500 dark:text-zinc-400 tracking-normal mb-4 mt-2">{t('owner.menu.mainMenu')}</p>}
                     {menuItems.map((item) => {
                         const Icon = item.icon;
 
@@ -234,9 +236,9 @@ export function OwnerLayout() {
                                 onBlur={hideCollapsedNavTooltip}
                                 aria-label={!sidebarOpen ? item.label : undefined}
                                 className={({ isActive }) =>
-                                    `relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
+                                    `dashboard-sidebar-item relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200 group
                                     ${isActive ? activeRowClass : inactiveRowClass}
-                                    ${!sidebarOpen ? 'justify-center w-12 h-12 mx-auto' : ''}`
+                                    ${!sidebarOpen ? 'dashboard-sidebar-collapsed-btn justify-center w-12 h-12 mx-auto' : ''}`
                                 }
                             >
                                 <Icon size={!sidebarOpen ? 24 : 20} />

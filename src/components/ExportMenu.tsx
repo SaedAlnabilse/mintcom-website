@@ -120,9 +120,9 @@ export function ExportMenu({
         disabled={disabled}
         onClick={() => setOpen(o => !o)}
         title={label || t('common.export')}
-        className={`flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-white/5 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${open ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green' : ''} ${className}`}
+        className={`flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-zinc-800 text-stone-900 dark:text-zinc-100 font-bold text-sm border border-stone-200 dark:border-zinc-800 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${open ? 'ring-[3px] ring-mintcom-green/10 border-mintcom-green' : ''} ${className}`}
       >
-        <Download size={18} className="text-gray-900 dark:text-white" />
+        <Download size={18} className="text-stone-900 dark:text-zinc-100" />
         <span>{label || t('common.export')}</span>
         <ChevronDown size={16} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -145,7 +145,7 @@ export function ExportMenu({
                 minWidth: 220,
                 zIndex: 9999,
               }}
-              className="bg-white dark:bg-[#1E293B] rounded-xl border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden py-1"
+              className="bg-white dark:bg-zinc-900/60 rounded-xl border border-stone-200 dark:border-zinc-800 shadow-md overflow-hidden py-1"
             >
               {formats.map(format => {
                 const meta = FORMAT_META[format];
@@ -155,7 +155,7 @@ export function ExportMenu({
                     key={format}
                     type="button"
                     onClick={() => handleSelect(format)}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-start whitespace-nowrap"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-stone-700 dark:text-zinc-200 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors text-start whitespace-nowrap"
                   >
                     <Icon size={16} className="text-mintcom-green flex-shrink-0" />
                     <span>{t(meta.i18nKey)}</span>

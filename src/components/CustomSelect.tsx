@@ -153,10 +153,10 @@ export function CustomSelect({
                     exit={{ opacity: 0, y: smartDirection === 'up' ? 5 : -5 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={dropdownStyle}
-                    className={`bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5`}
+                    className={`bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-stone-100 dark:border-zinc-800 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-stone-200`}
                 >
                     {formattedOptions.length === 0 ? (
-                        <div className="px-5 py-4 text-sm font-normal text-gray-500 italic text-center">{t('common.noOptions')}</div>
+                        <div className="px-5 py-4 text-sm font-normal text-stone-500 italic text-center">{t('common.noOptions')}</div>
                     ) : (
                         formattedOptions.map((opt) => (
                             <button
@@ -167,7 +167,7 @@ export function CustomSelect({
                                     onChange(opt.value);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${value === opt.value ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-900 dark:text-gray-200'
+                                className={`w-full px-5 py-3.5 text-left flex items-center justify-between hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors ${value === opt.value ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-stone-900 dark:text-zinc-200'
                                     }`}
                             >
                                 <span className={`text-sm ${value === opt.value ? 'font-normal' : 'font-normal'}`}>{opt.label}</span>
@@ -202,11 +202,11 @@ export function CustomSelect({
                 disabled={disabled}
                 className={`w-full min-w-0 border text-left flex items-center justify-between transition-[color,background-color,border-color,box-shadow,ring] outline-none
                     ${size === 'compact'
-                        ? 'h-11 px-3.5 py-0 rounded-xl shadow-sm bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10'
-                        : 'px-5 py-3.5 rounded-2xl shadow-sm bg-white dark:bg-white/[0.03] backdrop-blur-sm border-gray-200 dark:border-white/[0.08]'}
+                        ? 'h-11 px-3.5 py-0 rounded-xl shadow-sm bg-white dark:bg-zinc-900/60 border-stone-200 dark:border-zinc-800'
+                        : 'px-5 py-3.5 rounded-2xl shadow-sm bg-white dark:bg-zinc-800/40 backdrop-blur-sm border-stone-200 dark:border-zinc-800'}
                     ${disabled
-                        ? 'cursor-not-allowed opacity-70 bg-gray-50 dark:bg-white/[0.03] text-gray-500'
-                        : 'hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
+                        ? 'cursor-not-allowed opacity-70 bg-stone-50 dark:bg-zinc-800/40 text-stone-500'
+                        : 'hover:border-mintcom-green/50 hover:bg-stone-50/50 dark:hover:bg-zinc-800'}
                     ${error
                         ? 'ring-2 ring-mintcom-red border-mintcom-red'
                         : !disabled && (isOpen || isFilterActive)
@@ -214,12 +214,12 @@ export function CustomSelect({
                             : ''
                     } ${buttonClassName}`.trim()}
             >
-                <span className={`text-sm ${size === 'compact' ? 'font-semibold' : 'font-normal'} truncate pr-2 ${selectedOption ? (disabled ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white') : 'text-gray-400'}`}>
+                <span className={`text-sm ${size === 'compact' ? 'font-semibold' : 'font-normal'} truncate pr-2 ${selectedOption ? (disabled ? 'text-stone-700 dark:text-zinc-300' : 'text-stone-900 dark:text-zinc-100') : 'text-stone-400'}`}>
                     {selectedOption ? selectedOption.label : displayPlaceholder}
                 </span>
                 <ChevronDown
                     size={size === 'compact' ? 16 : 18}
-                    className={`transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''} ${!disabled && (isOpen || isFilterActive) ? 'text-mintcom-green' : 'text-gray-400'}`}
+                    className={`transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''} ${!disabled && (isOpen || isFilterActive) ? 'text-mintcom-green' : 'text-stone-400'}`}
                 />
             </button>
 

@@ -27,7 +27,7 @@ export function DeletionRestorationBanner() {
       <button
         type="button"
         onClick={() => navigate(ACCOUNT_RECOVERY_PATH)}
-        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg label-strong font-sans hover:bg-gray-100 transition-all shadow-sm"
+        className="flex items-center gap-2 px-4 py-1.5 bg-white text-red-600 rounded-lg label-strong font-sans hover:bg-stone-100 transition-all shadow-sm"
       >
         {t('account.restoreAction')}
       </button>

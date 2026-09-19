@@ -292,7 +292,7 @@ export function SecurityVerificationModal({
     return (
         <Modal isOpen={isOpen} onClose={onClose} size="md">
             {/* Header */}
-            <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-gray-100 dark:border-white/5 flex items-start justify-between gap-3 bg-gray-50/50 dark:bg-black/20">
+            <div className="px-5 sm:px-8 py-5 sm:py-6 border-b border-stone-100 dark:border-zinc-800 flex items-start justify-between gap-3 bg-stone-50/50 dark:bg-black/20">
                 <div className="flex items-center gap-4 min-w-0">
                     <div
                         className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl ${config.bg} flex items-center justify-center ${config.color} shadow-sm`}
@@ -300,10 +300,10 @@ export function SecurityVerificationModal({
                         {React.createElement(config.icon, { size: 26 })}
                     </div>
                     <div>
-                        <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
+                        <h2 className="text-xl font-black text-stone-900 dark:text-zinc-100 tracking-tight leading-tight">
                             {config.title}
                         </h2>
-                        <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">
+                        <p className="text-xs font-bold text-stone-400 mt-1 uppercase tracking-widest">
                             {t('security.highImpact')}
                         </p>
                     </div>
@@ -353,11 +353,11 @@ export function SecurityVerificationModal({
             </div>
 
             {/* Footer */}
-            <div className="px-8 pt-6 pb-10 border-t border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-black/20 sticky bottom-0">
+            <div className="px-8 pt-6 pb-10 border-t border-stone-100 dark:border-zinc-800 bg-stone-50/50 dark:bg-black/20 sticky bottom-0">
                 <button
                     type="button"
                     onClick={onClose}
-                    className="w-full py-4 rounded-xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 text-[11px] font-black text-gray-500 tracking-[0.15em] uppercase hover:text-gray-900 dark:hover:text-white transition-all shadow-sm active:scale-95"
+                    className="w-full py-4 rounded-xl bg-white dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-[11px] font-black text-stone-500 tracking-[0.15em] uppercase hover:text-stone-900 dark:hover:text-zinc-100 transition-all shadow-sm active:scale-95"
                 >
                     {t('common.cancel')}
                 </button>

@@ -123,11 +123,11 @@ export function RestoreLocationModal({
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                        <label className="block text-xs font-normal text-stone-500 dark:text-zinc-400  tracking-normal mb-2 ml-1">
                                             {formatInputLabel(t('security.restore.ownerEmail'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <User size={18} />
                                             </div>
                                             <input
@@ -137,17 +137,17 @@ export function RestoreLocationModal({
                                                 value={formData.accountEmail}
                                                 onChange={(e) => setFormData({ ...formData, accountEmail: e.target.value })}
                                                 placeholder={formatInputPlaceholder("owner@example.com", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-2xl text-sm font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                        <label className="block text-xs font-normal text-stone-500 dark:text-zinc-400  tracking-normal mb-2 ml-1">
                                             {formatInputLabel(t('security.restore.ownerPassword'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <Lock size={18} />
                                             </div>
                                             <input
@@ -157,7 +157,7 @@ export function RestoreLocationModal({
                                                 value={formData.password}
                                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-2xl text-sm font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
@@ -191,11 +191,11 @@ export function RestoreLocationModal({
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                    <label className="block text-xs font-normal text-stone-500 dark:text-zinc-400  tracking-normal mb-2 ml-1">
                                         {formatInputLabel(t('security.restore.ownerEmail'), t('common.locale'))}
                                     </label>
                                     <div className="relative group">
-                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors">
                                             <User size={18} />
                                         </div>
                                         <input
@@ -205,7 +205,7 @@ export function RestoreLocationModal({
                                             value={formData.accountEmail}
                                             onChange={(e) => setFormData({ ...formData, accountEmail: e.target.value })}
                                             placeholder={formatInputPlaceholder("owner@example.com", t('common.locale'))}
-                                            className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                            className="w-full pl-12 pr-4 py-3.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-2xl text-sm font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                         />
                                     </div>
                                 </div>
@@ -245,11 +245,11 @@ export function RestoreLocationModal({
 
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                        <label className="block text-xs font-normal text-stone-500 dark:text-zinc-400  tracking-normal mb-2 ml-1">
                                             {formatInputLabel(t('security.restore.newLoginId'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <User size={18} />
                                             </div>
                                             <input
@@ -259,17 +259,17 @@ export function RestoreLocationModal({
                                                 value={formData.newLocationLoginId}
                                                 onChange={(e) => setFormData({ ...formData, newLocationLoginId: e.target.value })}
                                                 placeholder={formatInputPlaceholder("E.g. shop_01", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-2xl text-sm font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-normal text-gray-500 dark:text-gray-400  tracking-normal mb-2 ml-1">
+                                        <label className="block text-xs font-normal text-stone-500 dark:text-zinc-400  tracking-normal mb-2 ml-1">
                                             {formatInputLabel(t('security.restore.newPassword'), t('common.locale'))}
                                         </label>
                                         <div className="relative group">
-                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors">
+                                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors">
                                                 <Lock size={18} />
                                             </div>
                                             <input
@@ -279,7 +279,7 @@ export function RestoreLocationModal({
                                                 value={formData.newLocationPassword}
                                                 onChange={(e) => setFormData({ ...formData, newLocationPassword: e.target.value })}
                                                 placeholder={formatInputPlaceholder("••••••••", t('common.locale'))}
-                                                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-2xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
+                                                className="w-full pl-12 pr-4 py-3.5 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-2xl text-sm font-bold text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all"
                                             />
                                         </div>
                                     </div>
@@ -289,7 +289,7 @@ export function RestoreLocationModal({
                                     <button
                                         type="button"
                                         onClick={() => setStep(1)}
-                                        className="flex-1 py-4 bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-gray-200 dark:hover:bg-white/10 transition-all"
+                                        className="flex-1 py-4 bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-300 font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all"
                                     >
                                         {t('common.back')}
                                     </button>

@@ -75,11 +75,11 @@ export function ConfirmModal({
             transition={{ type: "spring", duration: 0.35, bounce: 0.15 }}
             role="dialog"
             aria-modal="true"
-            className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-2xl bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 shadow-2xl transition-colors duration-300 z-10"
+            className="relative w-full sm:max-w-md max-h-[92dvh] overflow-y-auto overscroll-contain custom-scrollbar rounded-t-3xl sm:rounded-2xl bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 shadow-md transition-colors duration-300 z-10"
           >
             {/* Mobile drag handle */}
             <div className="sm:hidden flex justify-center pt-3">
-              <div className="w-10 h-1 bg-gray-300 dark:bg-white/20 rounded-full" />
+              <div className="w-10 h-1 bg-stone-300 dark:bg-zinc-800 rounded-full" />
             </div>
 
             {/* Close Button */}
@@ -93,15 +93,15 @@ export function ConfirmModal({
                 <div className="space-y-2 sm:space-y-3">
                   {title ? (
                     <>
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                      <h3 className="text-xl sm:text-2xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                         {title}
                       </h3>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 leading-relaxed max-w-sm mx-auto">
+                      <p className="text-sm font-medium text-stone-500 dark:text-zinc-400 leading-relaxed max-w-sm mx-auto">
                         {message}
                       </p>
                     </>
                   ) : (
-                    <p className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white tracking-tight max-w-sm mx-auto">
+                    <p className="text-lg sm:text-xl font-bold text-stone-900 dark:text-zinc-100 tracking-tight max-w-sm mx-auto">
                       {message}
                     </p>
                   )}
@@ -114,7 +114,7 @@ export function ConfirmModal({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 sm:px-6 py-3 rounded-xl text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-transparent transition-all duration-200 active:scale-95 touch-target"
+                    className="px-4 sm:px-6 py-3 rounded-xl text-sm font-bold text-stone-700 dark:text-zinc-300 hover:text-stone-900 dark:hover:text-zinc-100 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-800 border border-transparent transition-all duration-200 active:scale-95 touch-target"
                   >
                     {cancelText || t('common.cancel')}
                   </button>
@@ -126,7 +126,7 @@ export function ConfirmModal({
                       onSecondary();
                       onClose();
                     }}
-                    className="px-4 sm:px-6 py-3 rounded-xl text-sm font-bold text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 transition-all duration-200 active:scale-95 touch-target"
+                    className="px-4 sm:px-6 py-3 rounded-xl text-sm font-bold text-stone-700 dark:text-zinc-200 hover:text-stone-900 dark:hover:text-zinc-100 bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 transition-all duration-200 active:scale-95 touch-target"
                   >
                     {secondaryText || t('common.continue', { defaultValue: 'Continue' })}
                   </button>

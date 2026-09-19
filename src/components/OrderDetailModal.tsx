@@ -363,7 +363,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
             case 'PARTIALLY_REFUNDED':
                 return 'bg-mintcom-red/10 text-mintcom-red border-mintcom-red/20';
             default:
-                return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+                return 'bg-stone-500/10 text-stone-500 border-stone-500/20';
         }
     };
 
@@ -415,17 +415,17 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                 <div className="space-y-5">
                         {/* Meta grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                            <div className="rounded-xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-3">
-                                <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                            <div className="rounded-xl border border-stone-100 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-3">
+                                <p className="text-xs text-stone-500 mb-1 flex items-center gap-1">
                                     {t('orders.details.date')}
                                     <QuickInfo text={t('orders.details.dateTip')} />
                                 </p>
-                                <p className="text-sm font-semibold text-gray-900 dark:text-white leading-snug">
+                                <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100 leading-snug">
                                     {formatDate(order.createdAt)}
                                 </p>
                             </div>
-                            <div className="rounded-xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-3">
-                                <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                            <div className="rounded-xl border border-stone-100 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-3">
+                                <p className="text-xs text-stone-500 mb-1 flex items-center gap-1">
                                     {t('orders.details.status')}
                                     <QuickInfo text={t('orders.details.statusTip')} />
                                 </p>
@@ -437,17 +437,17 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                     {getOrderStatusLabel()}
                                 </span>
                             </div>
-                            <div className="rounded-xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-3">
-                                <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                            <div className="rounded-xl border border-stone-100 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-3">
+                                <p className="text-xs text-stone-500 mb-1 flex items-center gap-1">
                                     {t('orders.details.payment')}
                                     <QuickInfo text={t('orders.details.paymentTip')} />
                                 </p>
                                 {order.tenders && order.tenders.length > 1 ? (
                                     <div className="space-y-1">
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                        <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100">
                                             {t('orders.payment.splitCount', { count: order.tenders.length, defaultValue: `Split (${order.tenders.length})` })}
                                         </p>
-                                        <div className="text-xs text-gray-600 dark:text-gray-300 space-y-0.5 pt-1 border-t border-gray-200 dark:border-white/10">
+                                        <div className="text-xs text-stone-600 dark:text-zinc-300 space-y-0.5 pt-1 border-t border-stone-200 dark:border-zinc-800">
                                             {order.tenders.map((tItem, idx) => (
                                                 <div key={idx} className="flex justify-between items-center">
                                                     <span>{tItem.label}</span>
@@ -457,23 +457,23 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         </div>
                                     </div>
                                 ) : (
-                                    <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                    <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100">
                                         {paymentLabel}
                                     </p>
                                 )}
                             </div>
-                            <div className="rounded-xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-3">
-                                <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                            <div className="rounded-xl border border-stone-100 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-3">
+                                <p className="text-xs text-stone-500 mb-1 flex items-center gap-1">
                                     {t('orders.details.staff')}
                                     <QuickInfo text={t('orders.details.staffTip')} />
                                 </p>
-                                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100 truncate">
                                     {order.employeeName || order.user?.username || t('common.pos')}
                                 </p>
                             </div>
                             {order.refundedByName && (
                                 <div className="rounded-xl border border-red-100 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/5 p-3">
-                                    <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                                    <p className="text-xs text-stone-500 mb-1 flex items-center gap-1">
                                         {t('orders.details.refundedBy')}
                                         <QuickInfo text={t('orders.details.refundedByTip')} />
                                     </p>
@@ -497,7 +497,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             )}
                             {((order.paymentStatus || order.status) === 'REFUNDED') && (
                                 <div className="col-span-2 sm:col-span-4 rounded-xl border border-red-100 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/5 p-3">
-                                    <p className="text-xs text-gray-500 mb-1">
+                                    <p className="text-xs text-stone-500 mb-1">
                                         {t('orders.details.refundReason', { defaultValue: 'Refund Reason' })}
                                     </p>
                                     <p className="text-sm font-semibold text-mintcom-red break-words">
@@ -507,19 +507,19 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             )}
                             {order.customer && (
                                 <>
-                                    <div className="col-span-2 rounded-xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-3">
-                                        <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                                    <div className="col-span-2 rounded-xl border border-stone-100 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-3">
+                                        <p className="text-xs text-stone-500 mb-1 flex items-center gap-1">
                                             {t('orders.details.customer')}
                                             <QuickInfo text={t('orders.details.customerTip')} />
                                         </p>
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{order.customer.name}</p>
+                                        <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100">{order.customer.name}</p>
                                     </div>
-                                    <div className="col-span-2 rounded-xl border border-gray-100 dark:border-white/10 bg-gray-50/80 dark:bg-white/[0.03] p-3">
-                                        <p className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+                                    <div className="col-span-2 rounded-xl border border-stone-100 dark:border-zinc-800 bg-stone-50/80 dark:bg-zinc-800/40 p-3">
+                                        <p className="text-xs text-stone-500 mb-1 flex items-center gap-1">
                                             {t('orders.details.contact')}
                                             <QuickInfo text={t('orders.details.contactTip')} />
                                         </p>
-                                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{order.customer.phone}</p>
+                                        <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100">{order.customer.phone}</p>
                                     </div>
                                 </>
                             )}
@@ -527,11 +527,11 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
 
                         {/* Items */}
                         <div>
-                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                            <h3 className="text-sm font-semibold text-stone-900 dark:text-zinc-100 mb-2">
                                 {t('orders.details.items')}
                             </h3>
-                            <div className="rounded-xl border border-gray-200 dark:border-white/10 overflow-hidden">
-                                <div className="divide-y divide-gray-100 dark:divide-white/10">
+                            <div className="rounded-xl border border-stone-200 dark:border-zinc-800 overflow-hidden">
+                                <div className="divide-y divide-stone-100 dark:divide-zinc-800">
                                     {order.items?.map((item) => {
                                         const qty = Math.max(1, Number(item.quantity) || 1);
                                         const unitPrice = getItemUnitPrice(item);
@@ -540,15 +540,15 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                                         return (
                                             <div key={item.id} className="px-3.5 py-3 flex items-start justify-between gap-3">
                                                 <div className="min-w-0">
-                                                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{stripNameMarkers(item.name)}</p>
-                                                    <p className="text-xs text-gray-500 mt-0.5">
+                                                    <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100">{stripNameMarkers(item.name)}</p>
+                                                    <p className="text-xs text-stone-500 mt-0.5">
                                                         {t('orders.details.qty')}: {qty.toLocaleString(t('common.locale'))} × {formatCurrency(unitPrice)}
                                                     </p>
                                                 </div>
                                                 <StatValue
                                                     value={lineTotal}
                                                     currency={currencySymbol}
-                                                    className="text-sm font-semibold text-gray-900 dark:text-white"
+                                                    className="text-sm font-semibold text-stone-900 dark:text-zinc-100"
                                                     containerClassName="justify-end shrink-0"
                                                 />
                                             </div>
@@ -559,13 +559,13 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                         </div>
 
                         {/* Totals — clean receipt style */}
-                        <div className="rounded-xl border border-gray-200 dark:border-white/10 p-4 space-y-2.5">
+                        <div className="rounded-xl border border-stone-200 dark:border-zinc-800 p-4 space-y-2.5">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">{summaryLabels.subtotalLabel}</span>
+                                <span className="text-stone-500">{summaryLabels.subtotalLabel}</span>
                                 <StatValue
                                     value={order.subtotal || 0}
                                     currency={currencySymbol}
-                                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                    className="text-sm font-medium text-stone-700 dark:text-zinc-300"
                                     containerClassName="justify-end"
                                 />
                             </div>
@@ -584,16 +584,16 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             {(order.serviceChargeAmount || 0) > 0 && (
                                 <div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-500">{summaryLabels.serviceChargeLabel}</span>
+                                        <span className="text-stone-500">{summaryLabels.serviceChargeLabel}</span>
                                         <StatValue
                                             value={order.serviceChargeAmount || 0}
                                             currency={currencySymbol}
-                                            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                            className="text-sm font-medium text-stone-700 dark:text-zinc-300"
                                             containerClassName="justify-end"
                                         />
                                     </div>
                                     {summaryLabels.serviceChargeReason && (
-                                        <p className="text-xs text-gray-400 mt-1 ps-1">
+                                        <p className="text-xs text-stone-400 mt-1 ps-1">
                                             {summaryLabels.serviceChargeReason}
                                         </p>
                                     )}
@@ -601,23 +601,23 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             )}
                             {summaryLabels.taxSummaryLines.map((line) => (
                                 <div key={line.id} className="flex justify-between text-sm">
-                                    <span className="text-gray-500">{line.label}</span>
+                                    <span className="text-stone-500">{line.label}</span>
                                     <StatValue
                                         value={line.amount}
                                         currency={currencySymbol}
-                                        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                        className="text-sm font-medium text-stone-700 dark:text-zinc-300"
                                         containerClassName="justify-end"
                                     />
                                 </div>
                             ))}
-                            <div className="flex justify-between items-center pt-3 mt-1 border-t border-gray-100 dark:border-white/10">
-                                <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                            <div className="flex justify-between items-center pt-3 mt-1 border-t border-stone-100 dark:border-zinc-800">
+                                <span className="text-sm font-semibold text-stone-900 dark:text-zinc-100">
                                     {summaryLabels.totalLabel}
                                 </span>
                                 <StatValue
                                     value={order.total || 0}
                                     currency={currencySymbol}
-                                    className={`text-lg font-bold ${isNegativeTotal ? 'text-mintcom-red' : 'text-gray-900 dark:text-white'}`}
+                                    className={`text-lg font-bold ${isNegativeTotal ? 'text-mintcom-red' : 'text-stone-900 dark:text-zinc-100'}`}
                                     containerClassName="justify-end"
                                 />
                             </div>
@@ -626,8 +626,8 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                         {/* Notes */}
                         {order.note && (
                             <div>
-                                <p className="text-xs font-medium text-gray-500 mb-1.5">{t('orders.details.notes')}</p>
-                                <p className="text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-white/[0.03] p-3 rounded-xl border border-gray-100 dark:border-white/10 leading-relaxed">
+                                <p className="text-xs font-medium text-stone-500 mb-1.5">{t('orders.details.notes')}</p>
+                                <p className="text-sm text-stone-700 dark:text-zinc-300 bg-stone-50 dark:bg-zinc-800/40 p-3 rounded-xl border border-stone-100 dark:border-zinc-800 leading-relaxed">
                                     {order.note}
                                 </p>
                             </div>
@@ -649,7 +649,7 @@ export function OrderDetailModal({ order, onClose, onRefundSuccess, canRefund = 
                             disabled={!canRefund}
                             className={`w-full py-2.5 px-4 rounded-xl text-sm font-semibold border transition-colors ${canRefund
                                 ? 'bg-mintcom-red text-white border-mintcom-red hover:bg-mintcom-red/90'
-                                : 'bg-gray-100 dark:bg-white/5 text-gray-400 border-gray-200 dark:border-white/10 cursor-not-allowed'
+                                : 'bg-stone-100 dark:bg-zinc-800 text-stone-400 border-stone-200 dark:border-zinc-800 cursor-not-allowed'
                                 }`}
                         >
                             {t('orders.actions.refund')}

@@ -149,6 +149,26 @@ export const stockLevel = {
   },
 } as const;
 
+/* ── Third-party brand colours ────────────────────────────────
+ * Accounting providers and card networks own these; they are not ours to
+ * restyle, and a Xero tile in stone would stop reading as Xero. Written as
+ * complete literal class strings so Tailwind's scanner can see them.
+ *
+ * design-token-exempt: third-party brand colours, see above
+ */
+export const brandColor = {
+  // design-token-exempt: Xero brand blue
+  xero: { bg: 'bg-[#13B5EA]', text: 'text-[#13B5EA]', border: 'border-[#13B5EA]' },
+  // design-token-exempt: QuickBooks brand green
+  quickbooks: { bg: 'bg-[#2CA01C]', text: 'text-[#2CA01C]' },
+  // design-token-exempt: Mastercard brand colours
+  mastercard: { red: 'bg-[#EB001B]', amber: 'bg-[#F79E1B]' },
+  // design-token-exempt: Visa brand blue
+  visa: { text: 'text-[#1434CB]' },
+  // design-token-exempt: Amex brand blue
+  amex: { bg: 'bg-[#2E77BC]' },
+} as const;
+
 /* ── Recharts ─────────────────────────────────────────────────
  * Recharts takes raw colors via props/inline style, so it cannot read the
  * Tailwind tokens above. These are the same stone/zinc ramp as hex, so charts

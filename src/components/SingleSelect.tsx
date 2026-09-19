@@ -193,27 +193,27 @@ export function SingleSelect({
                     exit={{ opacity: 0, y: 5 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                     style={dropdownStyle}
-                    className={`bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl border border-gray-100 dark:border-white/[0.08] rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-black/5 flex flex-col`}
+                    className={`bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-stone-100 dark:border-zinc-800 rounded-2xl shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden max-h-80 overflow-y-auto custom-scrollbar ring-1 ring-stone-200 flex flex-col`}
                 >
                     {/* Search Bar */}
                     {isSearchable && (
-                        <div className="p-2 border-b border-gray-50 dark:border-white/5 sticky top-0 bg-white/95 dark:bg-[#1E293B]/95 backdrop-blur-xl z-10">
+                        <div className="p-2 border-b border-stone-50 dark:border-zinc-800 sticky top-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl z-10">
                             <div className="relative flex items-center">
-                                <Search size={14} className="absolute left-3 text-gray-400" />
+                                <Search size={14} className="absolute left-3 text-stone-400" />
                                 <input maxLength={255}
                                     ref={searchInputRef}
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder={formatInputPlaceholder(t('common.searchPlaceholder'), t('common.locale'))}
-                                    className="w-full pl-9 pr-9 py-2 bg-gray-50 dark:bg-white/5 border-none rounded-lg text-base sm:text-sm font-normal text-gray-700 dark:text-gray-300 placeholder-gray-400 outline-none transition-all"
+                                    className="w-full pl-9 pr-9 py-2 bg-stone-50 dark:bg-zinc-800 border-none rounded-lg text-base sm:text-sm font-normal text-stone-700 dark:text-zinc-300 placeholder-stone-400 outline-none transition-all"
                                 />
                                 {searchQuery && (
                                     <button
                                         type="button"
                                         onClick={() => setSearchQuery('')}
                                         aria-label={t('common.clearSearch', 'Clear search')}
-                                        className="absolute right-1.5 inline-flex h-6 w-6 items-center justify-center rounded-md border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/10 transition-colors"
+                                        className="absolute right-1.5 inline-flex h-6 w-6 items-center justify-center rounded-md border border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-800 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 hover:bg-stone-50 dark:hover:bg-zinc-800 transition-colors"
                                     >
                                         <X size={12} strokeWidth={2.75} />
                                     </button>
@@ -229,10 +229,10 @@ export function SingleSelect({
                                 type="button"
                                 onClick={() => handleSelect(null)}
                                 data-selected={!value}
-                                className={`w-full px-5 py-3.5 text-start flex items-center justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${!value ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-900 dark:text-gray-200'
+                                className={`w-full px-5 py-3.5 text-start flex items-center justify-between hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors ${!value ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-stone-900 dark:text-zinc-200'
                                     }`}
                             >
-                                <span className={`text-sm font-semibold ${!value ? 'text-mintcom-green' : 'text-gray-900 dark:text-gray-200'}`}>
+                                <span className={`text-sm font-semibold ${!value ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-200'}`}>
                                     {effectiveAllLabel}
                                 </span>
                                 {!value && <Check size={16} className="text-mintcom-green" />}
@@ -240,7 +240,7 @@ export function SingleSelect({
                         )}
 
                         {filteredOptions.length === 0 ? (
-                            <div className="px-5 py-8 text-sm font-normal text-gray-500 italic text-center">
+                            <div className="px-5 py-8 text-sm font-normal text-stone-500 italic text-center">
                                 {searchQuery ? t('common.noResults') : t('common.noOptions')}
                             </div>
                         ) : (
@@ -252,19 +252,19 @@ export function SingleSelect({
                                         type="button"
                                         onClick={() => handleSelect(opt.value)}
                                         data-selected={isSelected}
-                                        className={`w-full px-5 py-3.5 text-start flex items-start justify-between hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors ${isSelected ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-gray-900 dark:text-gray-200'
+                                        className={`w-full px-5 py-3.5 text-start flex items-start justify-between hover:bg-stone-50 dark:hover:bg-zinc-800/40 transition-colors ${isSelected ? 'bg-mintcom-green/10 text-mintcom-green' : 'text-stone-900 dark:text-zinc-200'
                                             }`}
                                     >
                                         <div className="flex items-center gap-3 min-w-0">
                                             {opt.icon && (
-                                                <div className={`p-2 rounded-lg shrink-0 ${isSelected ? 'bg-mintcom-green/20' : 'bg-gray-100 dark:bg-white/5'}`}>
+                                                <div className={`p-2 rounded-lg shrink-0 ${isSelected ? 'bg-mintcom-green/20' : 'bg-stone-100 dark:bg-zinc-800'}`}>
                                                     {opt.icon}
                                                 </div>
                                             )}
                                              <div className="flex flex-col">
-                                                 <span className={`text-sm font-semibold ${isSelected ? 'text-mintcom-green' : 'text-gray-900 dark:text-gray-200'}`}>{opt.label}</span>
+                                                 <span className={`text-sm font-semibold ${isSelected ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-200'}`}>{opt.label}</span>
                                                  {opt.subtitle && (
-                                                     <span className={`text-xs mt-0.5 ${isSelected ? 'text-mintcom-green/80' : 'text-gray-500 dark:text-gray-400'}`}>{opt.subtitle}</span>
+                                                     <span className={`text-xs mt-0.5 ${isSelected ? 'text-mintcom-green/80' : 'text-stone-500 dark:text-zinc-400'}`}>{opt.subtitle}</span>
                                                  )}
                                              </div>
                                         </div>
@@ -291,17 +291,17 @@ export function SingleSelect({
                 ref={buttonRef}
                 type="button"
                 onClick={toggleOpen}
-                className={`w-full px-5 py-3.5 bg-white dark:bg-white/[0.03] backdrop-blur-sm border border-gray-200 dark:border-white/[0.08] rounded-lg text-start flex items-center transition-colors duration-150 ease-out outline-none
-                    ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-mintcom-green/50 hover:bg-gray-50/50 dark:hover:bg-white/[0.06]'}
-                    ${buttonClassName} ${isOpen || isFilterActive ? '!bg-mintcom-green/10 !border-mintcom-green/30 !text-gray-900 dark:!text-white' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
+                className={`w-full px-5 py-3.5 bg-white dark:bg-zinc-800/40 backdrop-blur-sm border border-stone-200 dark:border-zinc-800 rounded-lg text-start flex items-center transition-colors duration-150 ease-out outline-none
+                    ${disabled ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:border-mintcom-green/50 hover:bg-stone-50/50 dark:hover:bg-zinc-800'}
+                    ${buttonClassName} ${isOpen || isFilterActive ? '!bg-mintcom-green/10 !border-mintcom-green/30 !text-stone-900 dark:!text-zinc-100' : ''} ${buttonClassName.includes('justify-center') ? 'justify-center' : 'justify-between'}`}
             >
                 <div className={`flex items-center gap-2 overflow-hidden ${buttonClassName.includes('justify-center') ? 'flex-none' : 'flex-1'}`}>
                      {selectedOption?.icon && (
-                         <div className="text-gray-500 dark:text-gray-400 shrink-0">
+                         <div className="text-stone-500 dark:text-zinc-400 shrink-0">
                              {selectedOption.icon}
                          </div>
                     )}
-                    <span className={`truncate ${value ? 'font-bold text-gray-900 dark:text-white' : 'font-normal text-gray-400'}`}>
+                    <span className={`truncate ${value ? 'font-bold text-stone-900 dark:text-zinc-100' : 'font-normal text-stone-400'}`}>
                         {selectedOption?.label || effectivePlaceholder}
                     </span>
                     {value && allowClear && (
@@ -310,15 +310,15 @@ export function SingleSelect({
                                 e.stopPropagation();
                                 onChange(null);
                             }}
-                            className="bg-gray-100 dark:bg-white/10 p-0.5 rounded-full hover:bg-gray-200 dark:hover:bg-white/20 transition-colors mx-1"
+                            className="bg-stone-100 dark:bg-zinc-800 p-0.5 rounded-full hover:bg-stone-200 dark:hover:bg-zinc-800 transition-colors mx-1"
                         >
-                            <X size={10} className="text-gray-500 dark:text-gray-400" />
+                            <X size={10} className="text-stone-500 dark:text-zinc-400" />
                         </div>
                     )}
                 </div>
                 <ChevronDown
                     size={18}
-                    className={`transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? accentTextClass : 'text-gray-400'} ${buttonClassName.includes('justify-center') ? 'absolute right-5' : ''}`}
+                    className={`transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isOpen || isFilterActive ? accentTextClass : 'text-stone-400'} ${buttonClassName.includes('justify-center') ? 'absolute right-5' : ''}`}
                 />
             </button>
 

@@ -91,11 +91,11 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                 }}
                 className={`
           flex items-center gap-2 w-full bg-transparent p-0 text-sm font-semibold border-none focus:ring-0 cursor-pointer transition-colors
-          ${(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-600 dark:text-white/60'}
+          ${(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-stone-600 dark:text-zinc-300'}
           ${buttonClassName}
         `}
             >
-                {showIcon && <Clock size={14} className={(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-400'} />}
+                {showIcon && <Clock size={14} className={(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-stone-400'} />}
                 <span>
                     {hour.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })}:{minute.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })} <span className="text-xs ml-0.5">{period === 'AM' ? t('common.time.am') : t('common.time.pm')}</span>
                 </span>
@@ -110,11 +110,11 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                         transition={{ duration: 0.1 }}
                         style={{ opacity: 1 }}
                         onClick={(e) => e.stopPropagation()}
-                        className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-2 z-[9999] !bg-white dark:!bg-[#0F172A] !bg-opacity-100 !opacity-100 !backdrop-blur-none border border-gray-100 dark:border-white/10 rounded-xl shadow-2xl w-[176px] p-1.5 flex gap-1 h-[190px] overflow-hidden`}
+                        className={`absolute top-full ${align === 'right' ? 'right-0' : 'left-0'} mt-2 z-[9999] !bg-white dark:!bg-zinc-900 !bg-opacity-100 !opacity-100 !backdrop-blur-none border border-stone-100 dark:border-zinc-800 rounded-xl shadow-md w-[176px] p-1.5 flex gap-1 h-[190px] overflow-hidden`}
                     >
                         {/* Hours */}
                         <div data-scroll-column className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin pb-1">
-                            <div className="text-[9px] !bg-gray-50 dark:!bg-[#0F172A] !bg-opacity-100 text-center py-[3px] font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">{t('common.time.hourAbbr')}</div>
+                            <div className="text-[9px] !bg-stone-50 dark:!bg-zinc-900 !bg-opacity-100 text-center py-[3px] font-bold sticky top-0 z-10 text-stone-500 border-b border-stone-100 dark:border-zinc-800">{t('common.time.hourAbbr')}</div>
                             <div className="px-0.5">
                                 {hours.map(h => (
                                     <div
@@ -126,7 +126,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                                         }}
                                         className={`
                     text-center py-[3px] text-xs cursor-pointer rounded-md transition-colors
-                    ${h === hour ? 'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
+                    ${h === hour ? 'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 font-semibold' : 'hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-200'}
                   `}
                                     >
                                         {h.toLocaleString(t('common.locale'))}
@@ -136,8 +136,8 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                         </div>
 
                         {/* Minutes */}
-                        <div data-scroll-column className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin border-l border-r border-gray-100 dark:border-white/5 pb-1">
-                            <div className="text-[9px] !bg-gray-50 dark:!bg-[#0F172A] !bg-opacity-100 text-center py-[3px] font-bold sticky top-0 z-10 text-gray-500 border-b border-gray-100 dark:border-white/5">{t('common.time.minuteAbbr')}</div>
+                        <div data-scroll-column className="flex-1 overflow-y-auto scrollbar-none hover:scrollbar-thin border-l border-r border-stone-100 dark:border-zinc-800 pb-1">
+                            <div className="text-[9px] !bg-stone-50 dark:!bg-zinc-900 !bg-opacity-100 text-center py-[3px] font-bold sticky top-0 z-10 text-stone-500 border-b border-stone-100 dark:border-zinc-800">{t('common.time.minuteAbbr')}</div>
                             <div className="px-0.5">
                                 {minutes.map(m => (
                                     <div
@@ -149,7 +149,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                                         }}
                                         className={`
                     text-center py-[3px] text-xs cursor-pointer rounded-md transition-colors
-                    ${m === minute ? 'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold' : 'hover:bg-gray-100 dark:hover:bg-white/10 text-gray-700 dark:text-gray-200'}
+                    ${m === minute ? 'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 font-semibold' : 'hover:bg-stone-100 dark:hover:bg-zinc-800 text-stone-700 dark:text-zinc-200'}
                   `}
                                     >
                                         {m.toLocaleString(t('common.locale'), { minimumIntegerDigits: 2 })}
@@ -169,7 +169,7 @@ export function CustomTimePicker({ value, onChange, className = '', showIcon = f
                                     }}
                                     className={`
                      text-center py-1.5 text-[11px] font-bold cursor-pointer rounded-md transition-colors
-                     ${p === period ? 'bg-mintcom-green/12 text-gray-900 dark:text-white font-semibold' : 'bg-gray-50 dark:bg-white/5 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10'}
+                     ${p === period ? 'bg-mintcom-green/12 text-stone-900 dark:text-zinc-100 font-semibold' : 'bg-stone-50 dark:bg-zinc-800 text-stone-500 hover:bg-stone-100 dark:hover:bg-zinc-800'}
                    `}
                                 >
                                     {p === 'AM' ? t('common.time.am') : t('common.time.pm')}

@@ -312,7 +312,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete, onStepChange }: 
               animate={{ opacity: 1, y: 0, scale: 1 }}
               key={currentStepIndex}
               dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-              className="absolute z-[10000] bg-white dark:bg-[#1E293B] rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 p-5"
+              className="absolute z-[10000] bg-white dark:bg-zinc-900/60 rounded-2xl shadow-md border border-stone-200 dark:border-zinc-800 p-5"
               style={{
                 width: responsiveTooltipWidth,
                 maxWidth: `calc(100vw - ${TOOLTIP_PADDING * 2}px)`,
@@ -327,17 +327,17 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete, onStepChange }: 
                 </div>
                 <button
                   onClick={handleClose}
-                  className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                  className="text-stone-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-colors"
                 >
                   <X size={16} />
                 </button>
               </div>
 
-              <h3 className="text-lg font-sans font-bold text-gray-900 dark:text-white mb-2 leading-tight">
+              <h3 className="text-lg font-sans font-bold text-stone-900 dark:text-zinc-100 mb-2 leading-tight">
                 {currentStep.title}
               </h3>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 font-medium leading-relaxed">
+              <p className="text-sm text-stone-500 dark:text-zinc-400 mb-6 font-medium leading-relaxed">
                 {currentStep.description}
               </p>
 
@@ -346,7 +346,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete, onStepChange }: 
                   {steps.map((_, idx) => (
                     <div
                       key={idx}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentStepIndex ? 'w-6 bg-mintcom-green' : 'w-1.5 bg-gray-200 dark:bg-white/10'
+                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentStepIndex ? 'w-6 bg-mintcom-green' : 'w-1.5 bg-stone-200 dark:bg-zinc-800'
                         }`}
                     />
                   ))}
@@ -356,7 +356,7 @@ export const TourGuide = ({ steps, isOpen, onClose, onComplete, onStepChange }: 
                   {currentStepIndex > 0 && (
                     <button
                       onClick={handleBack}
-                      className="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
+                      className="p-2 rounded-xl text-stone-500 hover:bg-stone-100 dark:hover:bg-zinc-800 transition-colors"
                     >
                       {isRTL ? null : <ChevronLeft size={20} />}
                       {/* Back button logic in RTL: Arrow on Left means Text on Right, but here it's just an icon. 

@@ -77,10 +77,10 @@ export const LanguageSwitcher = ({
     <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 transition-all text-gray-700 dark:text-gray-300 ${buttonClassName}`}
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl bg-stone-100 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all text-stone-700 dark:text-zinc-300 ${buttonClassName}`}
         aria-label={t('common.aria.changeLanguage')}
       >
-        {showGlobeIcon && <Globe size={iconSize} className="text-gray-500 dark:text-gray-400" />}
+        {showGlobeIcon && <Globe size={iconSize} className="text-stone-500 dark:text-zinc-400" />}
         {iconOnly ? null : label ? (
           <span>{label}</span>
         ) : compact ? (
@@ -101,7 +101,7 @@ export const LanguageSwitcher = ({
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
             dir={t('common.locale') === 'ar' ? 'rtl' : 'ltr'}
-            className={`absolute ${menuPositionClass} w-40 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden p-1.5 shadow-xl z-[90] ${menuClassName}`}
+            className={`absolute ${menuPositionClass} w-40 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-2xl overflow-hidden p-1.5 shadow-xl z-[90] ${menuClassName}`}
           >
             {languages.map((lang) => (
               <button
@@ -111,10 +111,10 @@ export const LanguageSwitcher = ({
                 aria-disabled={lang.comingSoon}
                 className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl label-strong font-sans transition-all ${
                   lang.comingSoon
-                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-60'
+                    ? 'text-stone-400 dark:text-zinc-600 cursor-not-allowed opacity-60'
                     : normalizedLanguage === lang.code
                       ? 'bg-mintcom-green/10 text-mintcom-green'
-                      : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
+                      : 'text-stone-500 hover:bg-stone-50 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export const LanguageSwitcher = ({
                   <span>{lang.nativeName}</span>
                 </div>
                 {lang.comingSoon ? (
-                  <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-400 dark:text-gray-500">
+                  <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-stone-100 dark:bg-zinc-800 text-stone-400 dark:text-zinc-500">
                     {t('common.comingSoon')}
                   </span>
                 ) : (

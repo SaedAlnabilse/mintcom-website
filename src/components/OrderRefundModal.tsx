@@ -479,12 +479,12 @@ const generateClientRequestId = (): string => {
 
       <ModalBody>
         <div>
-            <p className="mb-4 text-sm font-semibold text-gray-600 dark:text-gray-300">
+            <p className="mb-4 text-sm font-semibold text-stone-600 dark:text-zinc-300">
               {t('orders.details.refundConfirmMessage')}
             </p>
 
             {canRefundByItem && (
-              <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-white/10 dark:bg-white/5">
+              <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl border border-stone-200 bg-stone-50 p-1 dark:border-zinc-800 dark:bg-zinc-800">
                 <button
                   type="button"
                   onClick={selectItemMode}
@@ -492,7 +492,7 @@ const generateClientRequestId = (): string => {
                   className={`flex min-h-10 items-center justify-center gap-2 rounded-lg px-2 text-xs font-black transition-all ${
                     refundMode === 'item'
                       ? 'bg-mintcom-red/10 text-mintcom-red shadow-sm'
-                      : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                      : 'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                   }`}
                 >
                   <List size={15} />
@@ -507,7 +507,7 @@ const generateClientRequestId = (): string => {
                   className={`flex min-h-10 items-center justify-center gap-2 rounded-lg px-2 text-xs font-black transition-all ${
                     refundMode === 'order'
                       ? 'bg-mintcom-green/10 text-mintcom-green shadow-sm'
-                      : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                      : 'text-stone-500 hover:text-stone-900 dark:text-zinc-400 dark:hover:text-zinc-100'
                   }`}
                 >
                   <ShoppingBag size={15} />
@@ -521,14 +521,14 @@ const generateClientRequestId = (): string => {
             {refundMode === 'item' && canRefundByItem && (
               <div className="mb-4 space-y-3">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-sm font-bold text-gray-900 dark:text-white">
+                  <span className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                     {t('orders.details.items')}
                   </span>
                   <div className="text-right">
                     <span className="block text-sm font-black text-mintcom-red">
                       {formatAmount(selectedRefundItemsAmount)}
                     </span>
-                    <span className="block text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+                    <span className="block text-[11px] font-semibold text-stone-500 dark:text-zinc-400">
                       {t('orders.details.selectedItems', {
                         count: selectedRefundItemsCount,
                       })}
@@ -554,23 +554,23 @@ const generateClientRequestId = (): string => {
                         className={`w-full rounded-xl border p-3 text-left transition-colors ${
                           isSelected
                             ? 'border-mintcom-red bg-mintcom-red/5'
-                            : 'border-gray-200 bg-gray-50 hover:border-gray-300 dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20'
+                            : 'border-stone-200 bg-stone-50 hover:border-stone-300 dark:border-zinc-800 dark:bg-zinc-800 dark:hover:border-zinc-800'
                         }`}
                       >
                         <div className="flex items-start gap-3">
                           {isSelected ? (
                             <CheckCircle2 className="mt-0.5 shrink-0 text-mintcom-red" size={20} />
                           ) : (
-                            <Circle className="mt-0.5 shrink-0 text-gray-400" size={20} />
+                            <Circle className="mt-0.5 shrink-0 text-stone-400" size={20} />
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-bold text-gray-900 dark:text-white">
+                            <p className="truncate text-sm font-bold text-stone-900 dark:text-zinc-100">
                               {getRefundItemName(
                                 item,
                                 t('common.notAvailable', { defaultValue: 'N/A' }),
                               )}
                             </p>
-                            <p className="mt-1 text-xs font-semibold text-gray-500 dark:text-gray-400">
+                            <p className="mt-1 text-xs font-semibold text-stone-500 dark:text-zinc-400">
                               {t('orders.details.remaining')}: {remaining}
                             </p>
 
@@ -583,11 +583,11 @@ const generateClientRequestId = (): string => {
                                     updateRefundItemQuantity(item, clampedQuantity - 1);
                                   }}
                                   disabled={clampedQuantity <= 1 || isRefundSubmitting}
-                                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 text-gray-700 disabled:opacity-40 dark:border-white/15 dark:text-gray-200"
+                                  className="flex h-8 w-8 items-center justify-center rounded-full border border-stone-300 text-stone-700 disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-200"
                                 >
                                   <Minus size={14} />
                                 </button>
-                                <span className="min-w-6 text-center text-sm font-black text-gray-900 dark:text-white">
+                                <span className="min-w-6 text-center text-sm font-black text-stone-900 dark:text-zinc-100">
                                   {clampedQuantity}
                                 </span>
                                 <button
@@ -597,7 +597,7 @@ const generateClientRequestId = (): string => {
                                     updateRefundItemQuantity(item, clampedQuantity + 1);
                                   }}
                                   disabled={clampedQuantity >= remaining || isRefundSubmitting}
-                                  className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 text-gray-700 disabled:opacity-40 dark:border-white/15 dark:text-gray-200"
+                                  className="flex h-8 w-8 items-center justify-center rounded-full border border-stone-300 text-stone-700 disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-200"
                                 >
                                   <Plus size={14} />
                                 </button>
@@ -644,8 +644,8 @@ const generateClientRequestId = (): string => {
               </div>
             )}
             {!isLoadingShifts && activeShifts.length > 1 && (
-              <div className="mb-4 rounded-xl border border-gray-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-white/5">
-                <p className="mb-3 text-sm font-bold text-gray-900 dark:text-white">
+              <div className="mb-4 rounded-xl border border-stone-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800">
+                <p className="mb-3 text-sm font-bold text-stone-900 dark:text-zinc-100">
                   {t('orders.details.selectShiftTitle', { defaultValue: 'Select Register for Refund:' })}
                 </p>
                 {activeShifts.map((s) => (
@@ -656,21 +656,21 @@ const generateClientRequestId = (): string => {
                     className={`mb-2 flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-start transition-colors ${
                       selectedShiftId === s.id
                         ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950'
-                        : 'border-gray-200 hover:bg-gray-50 dark:border-white/10 dark:hover:bg-white/5'
+                        : 'border-stone-200 hover:bg-stone-50 dark:border-zinc-800 dark:hover:bg-zinc-800'
                     }`}
                   >
                     <div className={`flex h-4 w-4 shrink-0 rounded-full border-2 ${
-                      selectedShiftId === s.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300 dark:border-gray-500'
+                      selectedShiftId === s.id ? 'border-blue-500 bg-blue-500' : 'border-stone-300 dark:border-zinc-500'
                     }`}>
                       {selectedShiftId === s.id && (
                         <div className="mx-auto my-auto h-1.5 w-1.5 rounded-full bg-white" />
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                      <p className="text-sm font-semibold text-stone-900 dark:text-zinc-100 truncate">
                         {s.employeeName}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-stone-500 dark:text-zinc-400">
                         {s.registerId ? `Register ${s.registerId} • ` : ''}
                         Started {new Date(s.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
@@ -680,13 +680,13 @@ const generateClientRequestId = (): string => {
               </div>
             )}
             {hasStockTrackedItems && (
-              <label className="mb-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-white/10 dark:bg-white/5">
+              <label className="mb-4 flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-stone-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-800">
                 <span className="min-w-0">
-                  <span className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
-                    <Package size={17} className={restockItems ? 'text-mintcom-green' : 'text-gray-400'} />
+                  <span className="flex items-center gap-2 text-sm font-bold text-stone-900 dark:text-zinc-100">
+                    <Package size={17} className={restockItems ? 'text-mintcom-green' : 'text-stone-400'} />
                     {t('orders.reports.restockItems')}
                   </span>
-                  <span className="mt-1 block text-xs font-medium text-gray-500 dark:text-gray-400">
+                  <span className="mt-1 block text-xs font-medium text-stone-500 dark:text-zinc-400">
                     {t('orders.reports.restockDescription')}
                   </span>
                 </span>
@@ -695,12 +695,12 @@ const generateClientRequestId = (): string => {
                   checked={restockItems}
                   onChange={event => setRestockItems(event.target.checked)}
                   disabled={isRefundSubmitting}
-                  className="h-5 w-5 rounded border-gray-300 text-mintcom-green focus:ring-mintcom-green"
+                  className="h-5 w-5 rounded border-stone-300 text-mintcom-green focus:ring-mintcom-green"
                 />
               </label>
             )}
 
-            <label className="block text-sm font-bold text-gray-800 dark:text-gray-100">
+            <label className="block text-sm font-bold text-stone-800 dark:text-zinc-100">
               {formatInputLabel('Refund Reason', t('common.locale'))}
             </label>
             <textarea
@@ -715,10 +715,10 @@ const generateClientRequestId = (): string => {
               placeholder={formatInputPlaceholder('Enter refund reason', t('common.locale'))}
               rows={4}
               disabled={isRefundSubmitting}
-              className={`mt-2 w-full resize-none rounded-xl border bg-white px-3 py-2 text-sm text-gray-900 outline-none transition-shadow focus:ring-2 focus:ring-mintcom-green/40 disabled:opacity-60 dark:bg-[#0F172A] dark:text-white ${
+              className={`mt-2 w-full resize-none rounded-xl border bg-white px-3 py-2 text-sm text-stone-900 outline-none transition-shadow focus:ring-2 focus:ring-mintcom-green/40 disabled:opacity-60 dark:bg-zinc-900 dark:text-zinc-100 ${
                 refundReasonError
                   ? 'border-mintcom-red'
-                  : 'border-gray-300 dark:border-white/15'
+                  : 'border-stone-300 dark:border-zinc-800'
               }`}
             />
             {refundReasonError && (

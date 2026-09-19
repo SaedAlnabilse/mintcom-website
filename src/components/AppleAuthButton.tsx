@@ -237,7 +237,7 @@ export function AppleAuthButton({
       onClick={handleClick}
       disabled={disabled || isLoading || !isScriptLoaded}
       aria-label={buttonText}
-      className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm transition-all hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-white dark:hover:bg-white/[0.08]"
+      className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-900 shadow-sm transition-all hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-800"
     >
       <AppleIcon />
       <span>{isLoading ? t('common.connecting') : buttonText}</span>

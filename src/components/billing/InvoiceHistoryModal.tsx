@@ -306,12 +306,12 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
           {isLoading ? (
             <div className="space-y-2">
               {[0, 1, 2].map((row) => (
-                <div key={row} className="h-14 animate-pulse rounded-xl bg-gray-100 dark:bg-white/5" />
+                <div key={row} className="h-14 animate-pulse rounded-xl bg-stone-100 dark:bg-zinc-800" />
               ))}
             </div>
           ) : loadError ? (
             <div className="py-12 text-center">
-              <p className="text-sm font-bold text-gray-900 dark:text-white">
+              <p className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                 {t('owner.billing.invoice.loadFailed', { defaultValue: 'Could not load invoices' })}
               </p>
               <button
@@ -324,11 +324,11 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
             </div>
           ) : !hasInvoices ? (
             <div className="py-12 text-center">
-              <FileText size={32} className="mx-auto text-gray-300 dark:text-white/20" />
-              <p className="mt-3 text-sm font-bold text-gray-900 dark:text-white">
+              <FileText size={32} className="mx-auto text-stone-300 dark:text-zinc-700" />
+              <p className="mt-3 text-sm font-bold text-stone-900 dark:text-zinc-100">
                 {t('owner.billing.invoice.emptyTitle', { defaultValue: 'No Invoices Yet' })}
               </p>
-              <p className="mx-auto mt-1 max-w-md text-xs font-medium text-gray-500 dark:text-gray-400">
+              <p className="mx-auto mt-1 max-w-md text-xs font-medium text-stone-500 dark:text-zinc-400">
                 {t('owner.billing.invoice.emptyBody', {
                   defaultValue:
                     'A numbered invoice is issued automatically the first time a payment for this location settles.',
@@ -338,7 +338,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
                 <button
                   type="button"
                   onClick={() => setOpenInvoice(fallbackSummary)}
-                  className="mt-4 inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl border border-stone-200 px-4 py-2 text-xs font-bold text-stone-600 transition hover:bg-stone-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
                 >
                   <Eye size={14} />
                   {t('owner.billing.invoice.viewSummary', { defaultValue: 'View Subscription Summary' })}
@@ -350,7 +350,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px] text-left">
                   <thead>
-                    <tr className="border-b border-gray-100 dark:border-white/5">
+                    <tr className="border-b border-stone-100 dark:border-zinc-800">
                       {[
                         t('owner.billing.invoice.colNumber', { defaultValue: 'Invoice' }),
                         t('owner.billing.invoice.colDate', { defaultValue: 'Date' }),
@@ -361,7 +361,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
                       ].map((header, index) => (
                         <th
                           key={`${header}-${index}`}
-                          className={`px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 ${
+                          className={`px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-stone-400 ${
                             index === 4 ? 'text-right' : ''
                           }`}
                         >
@@ -374,15 +374,15 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
                     {invoices.map((invoice) => (
                       <tr
                         key={invoice.id}
-                        className="border-b border-gray-50 transition hover:bg-gray-50 dark:border-white/5 dark:hover:bg-white/5"
+                        className="border-b border-stone-50 transition hover:bg-stone-50 dark:border-zinc-800 dark:hover:bg-zinc-800"
                       >
-                        <td className="px-3 py-3 text-xs font-bold tabular-nums text-gray-900 dark:text-white">
+                        <td className="px-3 py-3 text-xs font-bold tabular-nums text-stone-900 dark:text-zinc-100">
                           {invoice.number}
                         </td>
-                        <td className="px-3 py-3 text-xs font-medium text-gray-600 dark:text-gray-300">
+                        <td className="px-3 py-3 text-xs font-medium text-stone-600 dark:text-zinc-300">
                           {formatDate(invoice.issueDate, locale)}
                         </td>
-                        <td className="px-3 py-3 text-xs font-medium text-gray-500 dark:text-gray-400">
+                        <td className="px-3 py-3 text-xs font-medium text-stone-500 dark:text-zinc-400">
                           {invoice.periodStart && invoice.periodEnd
                             ? `${formatDate(invoice.periodStart, locale)} – ${formatDate(invoice.periodEnd, locale)}`
                             : '—'}
@@ -392,14 +392,14 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
                             {invoice.status}
                           </span>
                         </td>
-                        <td className="px-3 py-3 text-right text-xs font-bold tabular-nums text-gray-900 dark:text-white">
+                        <td className="px-3 py-3 text-right text-xs font-bold tabular-nums text-stone-900 dark:text-zinc-100">
                           {money(invoice.total, invoice.currency)}
                         </td>
                         <td className="px-3 py-3 text-right">
                           <button
                             type="button"
                             onClick={() => setOpenInvoice(invoice)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-2.5 py-1.5 text-[11px] font-bold text-gray-600 transition hover:bg-white dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-stone-200 px-2.5 py-1.5 text-[11px] font-bold text-stone-600 transition hover:bg-white dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
                           >
                             <Eye size={13} />
                             {t('owner.billing.invoice.view', { defaultValue: 'View' })}
@@ -412,7 +412,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
               </div>
 
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                <p className="text-xs font-medium text-stone-500 dark:text-zinc-400">
                   {t('owner.billing.invoice.pageTotal', {
                     defaultValue: 'This page: {{amount}}',
                     amount: money(summaryTotal, currency),
@@ -436,7 +436,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
               type="button"
               onClick={handleDownloadCsv}
               disabled={!hasInvoices || isExporting}
-              className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+              className="flex items-center gap-2 rounded-xl border border-stone-200 px-3 py-2 text-xs font-bold text-stone-600 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               <Table size={15} />
               <span className="hidden sm:inline">
@@ -447,7 +447,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
               type="button"
               onClick={handleDownloadHistory}
               disabled={!hasInvoices || isExporting}
-              className="flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5"
+              className="flex items-center gap-2 rounded-xl border border-stone-200 px-3 py-2 text-xs font-bold text-stone-600 transition hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               <Download size={15} />
               <span className="hidden sm:inline">
@@ -477,7 +477,7 @@ export function InvoiceHistoryModal({ establishment, fallbackSummary, onClose }:
             type="button"
             onClick={() => setOpenInvoice(null)}
             aria-label={t('common.back', { defaultValue: 'Back' })}
-            className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-white/5 dark:hover:text-white"
+            className="rounded-lg p-2 text-stone-400 transition hover:bg-stone-100 hover:text-stone-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
           >
             <ArrowLeft size={18} />
           </button>

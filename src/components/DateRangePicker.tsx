@@ -174,13 +174,13 @@ export function DateRangePicker({
                     aria-label={t('common.aria.previousMonth')}
                     className={`p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg transition-colors ${
                         isPrevDisabled
-                            ? 'opacity-40 cursor-not-allowed bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500'
+                            ? 'opacity-40 cursor-not-allowed bg-stone-100 dark:bg-zinc-800 text-stone-400 dark:text-zinc-500'
                             : 'bg-mintcom-green text-white hover:bg-mintcom-green/90'
                     }`}
                 >
                     <ChevronLeft size={18} className={t('common.locale') === 'ar' ? 'rotate-180' : ''} />
                 </button>
-                <span className="text-base font-bold text-gray-800 dark:text-white">
+                <span className="text-base font-bold text-stone-800 dark:text-zinc-100">
                     {format(currentMonth, 'MMMM yyyy', { locale: getDateLocale(t('common.locale')) })}
                 </span>
                 <button
@@ -190,7 +190,7 @@ export function DateRangePicker({
                     aria-label={t('common.aria.nextMonth')}
                     className={`p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg transition-colors ${
                         isNextDisabled
-                            ? 'opacity-40 cursor-not-allowed bg-gray-100 dark:bg-white/5 text-gray-400 dark:text-gray-500'
+                            ? 'opacity-40 cursor-not-allowed bg-stone-100 dark:bg-zinc-800 text-stone-400 dark:text-zinc-500'
                             : 'bg-mintcom-green text-white hover:bg-mintcom-green/90'
                     }`}
                 >
@@ -214,7 +214,7 @@ export function DateRangePicker({
 
         for (let i = 0; i < 7; i++) {
             days.push(
-                <div key={i} className="text-sm font-bold text-gray-500 dark:text-gray-400 text-center py-2">
+                <div key={i} className="text-sm font-bold text-stone-500 dark:text-zinc-400 text-center py-2">
                     {dayNames[i]}
                 </div>
             );
@@ -254,11 +254,11 @@ export function DateRangePicker({
                 let roundedClass = '';
 
                 if (!isCurrentMonth) {
-                    textClass = 'text-gray-300 dark:text-gray-600 cursor-default';
+                    textClass = 'text-stone-300 dark:text-zinc-600 cursor-default';
                 } else if (isDisabled) {
-                    textClass = 'text-gray-300 dark:text-gray-600 cursor-not-allowed select-none opacity-40';
+                    textClass = 'text-stone-300 dark:text-zinc-600 cursor-not-allowed select-none opacity-40';
                 } else {
-                    textClass = 'text-gray-700 dark:text-gray-200 cursor-pointer';
+                    textClass = 'text-stone-700 dark:text-zinc-200 cursor-pointer';
                 }
 
                 // Range styling
@@ -343,13 +343,13 @@ export function DateRangePicker({
                 className={`
                     flex items-center gap-3 w-full h-12 px-4 text-sm font-semibold rounded-lg border transition-colors
                     ${(isOpen || isActive)
-                        ? 'border-mintcom-green/30 bg-mintcom-green/10 text-gray-900 dark:text-white'
-                        : 'border-gray-200 dark:border-white/10 bg-white dark:bg-[#1E293B] text-gray-900 dark:text-white hover:border-mintcom-green/50'
+                        ? 'border-mintcom-green/30 bg-mintcom-green/10 text-stone-900 dark:text-zinc-100'
+                        : 'border-stone-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 text-stone-900 dark:text-zinc-100 hover:border-mintcom-green/50'
                     }
                     ${buttonClassName}
                 `}
             >
-                <CalendarIcon size={18} className={(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-gray-400'} />
+                <CalendarIcon size={18} className={(isOpen || isActive) ? 'text-emerald-700 dark:text-mintcom-green' : 'text-stone-400'} />
                 <span className="truncate">{displayValue()}</span>
             </button>
 
@@ -360,13 +360,13 @@ export function DateRangePicker({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className={`absolute top-full ${getAlignClass()} mt-2 z-[9999] bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl w-[min(320px,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] p-4`}
+                        className={`absolute top-full ${getAlignClass()} mt-2 z-[9999] bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl shadow-md w-[min(320px,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] p-4`}
                     >
                         {renderHeader()}
                         {renderDays()}
                         {renderCells()}
 
-                        <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/5 flex justify-center">
+                        <div className="mt-4 pt-3 border-t border-stone-100 dark:border-zinc-800 flex justify-center">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -384,7 +384,7 @@ export function DateRangePicker({
                                     setIsOpen(false);
                                     setSelectionState('start');
                                 }}
-                                className="px-6 py-2 text-[10px] font-black tracking-widest uppercase text-gray-400 hover:text-mintcom-green bg-gray-100 dark:bg-white/5 hover:bg-mintcom-green/10 rounded-xl transition-all"
+                                className="px-6 py-2 text-[10px] font-black tracking-widest uppercase text-stone-400 hover:text-mintcom-green bg-stone-100 dark:bg-zinc-800 hover:bg-mintcom-green/10 rounded-xl transition-all"
                             >
                                 {t('common.clear')}
                             </button>

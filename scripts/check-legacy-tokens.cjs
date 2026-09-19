@@ -83,6 +83,19 @@ const RULES = [
     re: /\b(?:bg|text|border|divide|ring|from|to|via)-(?:white|black)\d+|\b(?:stone|zinc|gray|slate|neutral)-(?:0|1000|\d{4,})\b/,
   },
   {
+    // Catches a colour utility whose PALETTE NAME is not real — `text-endigo-600`
+    // from a careless prefix replace. Tailwind drops it silently, and neither the
+    // malformed nor the truncated rule sees it: the shade is valid, the name is
+    // not. This rule is the generalisation of both.
+    name: 'unknown-palette-name',
+    hint: 'not a real palette — check for a botched find-and-replace',
+    re: new RegExp(
+      '\\b(?:[a-z-]+:)*!?(?:bg|text|border|divide|ring|from|to|via|shadow|outline|decoration|placeholder|caret|accent|fill|stroke)-' +
+        '(?!(?:inherit|current|transparent|black|white|opacity|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|mintcom|cream|text|surface|brand)-)' +
+        '[a-z]+-(?:50|100|200|300|400|500|600|700|800|900|950)\\b'
+    ),
+  },
+  {
     // A stone/zinc utility must be followed by a real shade. A truncated sweep
     // pattern leaves things like `dark:border-zinc/5` or `dark:border-zinc-5`,
     // which no legacy rule above would ever match — the class is simply dropped
@@ -113,10 +126,20 @@ function collectFiles(dir) {
 }
 
 /**
- * Files held to the design system. Grow this list one area at a time — each
- * area added here is locked in and can no longer regress.
+ * Files held to the design system.
+ *
+ * The ROOTS are the app surfaces. Everything they import, transitively, is
+ * guarded too — because a clean screen rendering a legacy component is still a
+ * legacy screen. That is not hypothetical: the dark-mode date filter kept its
+ * slate-navy `dark:bg-[#1E293B]` through the entire sweep purely because
+ * DateRangePicker sits at src/components/ and nobody thought to add it to a
+ * hand-written list.
+ *
+ * Deriving the list from imports means adding a component to a guarded screen
+ * guards it automatically. Marketing and POS-demo surfaces stay out simply by
+ * not being reachable from these roots.
  */
-const targetFiles = [
+const ROOTS = [
   ...collectFiles(path.join(ROOT, 'src', 'pages', 'owner')),
   ...collectFiles(path.join(ROOT, 'src', 'pages', 'brand')),
   ...collectFiles(path.join(ROOT, 'src', 'pages', 'support')),
@@ -124,12 +147,49 @@ const targetFiles = [
   ...collectFiles(path.join(ROOT, 'src', 'components', 'dashboard')),
   ...collectFiles(path.join(ROOT, 'src', 'components', 'forms')),
   ...collectFiles(path.join(ROOT, 'src', 'components', 'layout')),
+  ...collectFiles(path.join(ROOT, 'src', 'components', 'notifications')),
+  ...collectFiles(path.join(ROOT, 'src', 'components', 'ui')),
   path.join(ROOT, 'src', 'components', 'OwnerLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'BrandLayout.tsx'),
   path.join(ROOT, 'src', 'components', 'DashboardLayout.tsx'),
-  ...collectFiles(path.join(ROOT, 'src', 'components', 'notifications')),
-  ...collectFiles(path.join(ROOT, 'src', 'components', 'ui')),
 ];
+
+/** Resolve a relative import specifier to a file on disk. */
+function resolveImport(fromFile, spec) {
+  if (!spec.startsWith('.')) return null;
+  const base = path.normalize(path.join(path.dirname(fromFile), spec));
+  for (const candidate of [
+    `${base}.tsx`,
+    `${base}.ts`,
+    path.join(base, 'index.tsx'),
+    path.join(base, 'index.ts'),
+  ]) {
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
+function reachableFrom(roots) {
+  const seen = new Set(roots.filter((f) => fs.existsSync(f)));
+  let frontier = [...seen];
+  while (frontier.length) {
+    const next = [];
+    for (const file of frontier) {
+      for (const m of fs.readFileSync(file, 'utf8').matchAll(/from '([^']+)'/g)) {
+        const resolved = resolveImport(file, m[1]);
+        if (resolved && !seen.has(resolved)) {
+          seen.add(resolved);
+          next.push(resolved);
+        }
+      }
+    }
+    frontier = next;
+  }
+  // Only .tsx carries classNames; .ts modules are pulled in but have nothing to check.
+  return [...seen].filter((f) => f.endsWith('.tsx'));
+}
+
+const targetFiles = reachableFrom(ROOTS);
 
 const failures = [];
 

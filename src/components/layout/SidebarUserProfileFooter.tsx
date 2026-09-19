@@ -26,7 +26,7 @@ export const SidebarUserProfileFooter: React.FC<SidebarUserProfileFooterProps> =
   const navigate = useNavigate();
 
   return (
-    <div className="p-3 border-t border-stone-100 dark:border-zinc-800 relative shrink-0">
+    <div className="dashboard-sidebar-footer p-3 border-t border-stone-100 dark:border-zinc-800 relative shrink-0">
       {sidebarOpen ? (
         <div className="space-y-1">
           <div className="flex items-center justify-between gap-3 px-3 py-1">

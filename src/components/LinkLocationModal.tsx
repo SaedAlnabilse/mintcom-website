@@ -163,7 +163,7 @@ export function LinkLocationModal({
         switch (role?.toUpperCase()) {
             case 'ADMIN': return 'bg-mintcom-green/10 text-mintcom-green border-mintcom-green/20';
             case 'MANAGER': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-            default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+            default: return 'bg-stone-500/10 text-stone-500 border-stone-500/20';
         }
     };
 
@@ -181,7 +181,7 @@ export function LinkLocationModal({
             />
 
             {/* Progress Bar */}
-            <div className="h-1.5 bg-gray-100 dark:bg-white/5 overflow-hidden shrink-0">
+            <div className="h-1.5 bg-stone-100 dark:bg-zinc-800 overflow-hidden shrink-0">
                 <motion.div
                     initial={{ width: "50%" }}
                     animate={{ width: step === 1 ? "50%" : "100%" }}
@@ -197,14 +197,14 @@ export function LinkLocationModal({
                                 {/* Search */}
                                 {availableEstablishments.length > 0 && (
                                     <div className="relative group">
-                                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
+                                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={20} />
                                         <input
                                             maxLength={255}
                                             type="text"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             placeholder={formatInputPlaceholder(t('owner.locations.searchPlaceholder'), t('common.locale'))}
-                                            className="w-full pl-14 pr-5 py-4.5 bg-gray-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
+                                            className="w-full pl-14 pr-5 py-4.5 bg-stone-50 dark:bg-black/20 border border-transparent focus:border-mintcom-green/30 rounded-2xl text-[15px] font-sans font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 transition-all h-[60px]"
                                         />
                                     </div>
                                 )}
@@ -212,21 +212,21 @@ export function LinkLocationModal({
                                 {availableEstablishments.length === 0 ? (
                                     <div className="pt-4 pb-0">
                                         <div className="flex flex-col items-center text-center space-y-6">
-                                            <div className="w-20 h-20 rounded-[1.5rem] bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
+                                            <div className="w-20 h-20 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm">
                                                 <Store size={40} />
                                             </div>
                                             
                                             <div className="space-y-2 px-4">
-                                                <h2 className="text-xl font-sans font-bold text-gray-900 dark:text-white tracking-tight">
+                                                <h2 className="text-xl font-sans font-bold text-stone-900 dark:text-zinc-100 tracking-tight">
                                                     {t('owner.brands.disclaimerTitle')}
                                                 </h2>
-                                                <p className="text-[15px] font-sans font-medium text-gray-500">
+                                                <p className="text-[15px] font-sans font-medium text-stone-500">
                                                     {t('owner.brands.disclaimerSubtitle')}
                                                 </p>
                                             </div>
 
-                                            <div className="bg-gray-50 dark:bg-black/20 rounded-3xl p-6 border border-gray-100 dark:border-white/5">
-                                                <p className="text-[14px] font-sans font-medium text-gray-600 dark:text-gray-400 leading-relaxed">
+                                            <div className="bg-stone-50 dark:bg-black/20 rounded-2xl p-6 border border-stone-100 dark:border-zinc-800">
+                                                <p className="text-[14px] font-sans font-medium text-stone-600 dark:text-zinc-400 leading-relaxed">
                                                     {t('owner.brands.disclaimerDesc')}
                                                 </p>
                                             </div>
@@ -249,17 +249,17 @@ export function LinkLocationModal({
                                                     key={est.id}
                                                     onClick={() => toggleEstablishment(est.id)}
                                                     className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
-                                                        isSelected ? 'border-mintcom-green bg-mintcom-green/5 ring-1 ring-mintcom-green' : 'border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-white/[0.02] hover:border-mintcom-green/30'
+                                                        isSelected ? 'border-mintcom-green bg-mintcom-green/5 ring-1 ring-mintcom-green' : 'border-stone-100 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800/40 hover:border-mintcom-green/30'
                                                     }`}
                                                 >
-                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-white/5 text-gray-400 group-hover:text-mintcom-green'}`}>
+                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-zinc-800 text-stone-400 group-hover:text-mintcom-green'}`}>
                                                         <Icon size={24} />
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">{est.name}</h4>
-                                                        <p className="text-[10px] font-black text-gray-400 tracking-widest uppercase mt-0.5">{est.type} • {est.currency}</p>
+                                                        <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 truncate">{est.name}</h4>
+                                                        <p className="text-[10px] font-black text-stone-400 tracking-widest uppercase mt-0.5">{est.type} • {est.currency}</p>
                                                     </div>
-                                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-gray-200 dark:border-white/10'}`}>
+                                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green border-mintcom-green' : 'border-stone-200 dark:border-zinc-800'}`}>
                                                         {isSelected && <Check size={14} className="text-black" strokeWidth={3} />}
                                                     </div>
                                                 </button>
@@ -280,7 +280,7 @@ export function LinkLocationModal({
                                 {isLoadingEmployees ? (
                                     <div className="py-20 flex flex-col items-center gap-4">
                                         <Loader2 className="animate-spin text-mintcom-green" size={32} />
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('owner.brands.wizard.scanningEmployees')}</p>
+                                        <p className="text-xs font-bold text-stone-400 uppercase tracking-widest">{t('owner.brands.wizard.scanningEmployees')}</p>
                                     </div>
                                 ) : (
                                     <div className="space-y-8">
@@ -288,14 +288,14 @@ export function LinkLocationModal({
                                             <div key={group.establishmentId} className="space-y-4">
                                                 <div className="flex items-center gap-2 px-1">
                                                     <Store size={14} className="text-mintcom-green" />
-                                                    <h3 className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-widest">
+                                                    <h3 className="text-xs font-black text-stone-900 dark:text-zinc-100 uppercase tracking-widest">
                                                         {group.establishmentName}
                                                     </h3>
                                                 </div>
                                                     {group.employees.length === 0 ? (
-                                                        <div className="p-6 bg-gray-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-gray-200 dark:border-white/10 flex flex-col items-center justify-center gap-3">
-                                                            <Users className="text-gray-300 dark:text-gray-600" size={24} />
-                                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{t('owner.staff.noStaff')}</p>
+                                                        <div className="p-6 bg-stone-50/50 dark:bg-black/20 rounded-2xl border border-dashed border-stone-200 dark:border-zinc-800 flex flex-col items-center justify-center gap-3">
+                                                            <Users className="text-stone-300 dark:text-zinc-600" size={24} />
+                                                            <p className="text-xs font-bold text-stone-400 uppercase tracking-widest">{t('owner.staff.noStaff')}</p>
                                                         </div>
                                                     ) : (
                                                         <div className="grid grid-cols-1 gap-2">
@@ -306,15 +306,15 @@ export function LinkLocationModal({
                                                                         key={emp.employeeId}
                                                                         onClick={() => toggleEmployee(emp.employeeId)}
                                                                         className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left group ${
-                                                                            isSelected ? 'border-mintcom-green bg-mintcom-green/5' : 'border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-black/10'
+                                                                            isSelected ? 'border-mintcom-green bg-mintcom-green/5' : 'border-stone-50 dark:border-zinc-800 bg-stone-50 dark:bg-black/10'
                                                                         }`}
                                                                     >
-                                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-white/5 text-gray-400'}`}>
+                                                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-mintcom-green text-black' : 'bg-white dark:bg-zinc-800 text-stone-400'}`}>
                                                                             <CheckCircle2 size={20} />
                                                                         </div>
                                                                         <div className="flex-1 min-w-0">
-                                                                            <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">{getPersonDisplayName(emp, t('common.unknown'))}</h4>
-                                                                            <p className="text-[10px] font-medium text-gray-500 truncate">{emp.email}</p>
+                                                                            <h4 className="text-sm font-bold text-stone-900 dark:text-zinc-100 truncate">{getPersonDisplayName(emp, t('common.unknown'))}</h4>
+                                                                            <p className="text-[10px] font-medium text-stone-500 truncate">{emp.email}</p>
                                                                         </div>
                                                                         <span className={`px-2 py-1 rounded-lg border text-[10px] font-black tracking-widest ${getRoleBadgeColor(emp.role)}`}>
                                                                             {emp.role}

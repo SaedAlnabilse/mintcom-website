@@ -161,7 +161,7 @@ export function StepUpVerifier({
 
     if (isPreparing) {
         return (
-            <div className="flex items-center justify-center gap-3 py-10 text-gray-400">
+            <div className="flex items-center justify-center gap-3 py-10 text-stone-400">
                 <Loader2 className="animate-spin" size={20} />
                 <span className="text-sm font-bold">
                     {t('security.stepUp.preparing', 'Preparing verification…')}
@@ -203,13 +203,13 @@ export function StepUpVerifier({
                 <div className="space-y-4">
                     <div className="space-y-2">
                         <div className="flex items-center gap-2 px-1">
-                            <label className="text-[10px] font-normal text-gray-400 tracking-[0.2em] block">
+                            <label className="text-[10px] font-normal text-stone-400 tracking-[0.2em] block">
                                 {formatInputLabel(t('security.passwordLabel'), t('common.locale'))}
                             </label>
                             <QuickInfo text={t('security.masterKeyInfo.description')} />
                         </div>
                         <div className="relative group">
-                            <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-mintcom-green transition-colors" size={18} />
+                            <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-mintcom-green transition-colors" size={18} />
                             <input
                                 maxLength={255}
                                 type={showPassword ? 'text' : 'password'}
@@ -217,14 +217,14 @@ export function StepUpVerifier({
                                 onChange={(e) => setPassword(e.target.value)}
                                 autoFocus
                                 disabled={busy}
-                                className="w-full pl-12 pr-12 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 transition-all shadow-sm"
+                                className="w-full pl-12 pr-12 py-4 bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-bold text-stone-900 dark:text-zinc-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 transition-all shadow-sm"
                                 placeholder={formatInputPlaceholder('********', t('common.locale'))}
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 disabled={busy}
-                                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                className="absolute right-5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-300 transition-colors"
                             >
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
@@ -259,7 +259,7 @@ export function StepUpVerifier({
                     {codeSentTo ? (
                         <>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-normal text-gray-400 tracking-[0.2em] px-1 block">
+                                <label className="text-[10px] font-normal text-stone-400 tracking-[0.2em] px-1 block">
                                     {formatInputLabel(
                                         t('security.stepUp.codeLabel', 'Verification code'),
                                         t('common.locale')
@@ -273,7 +273,7 @@ export function StepUpVerifier({
                                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                     autoFocus
                                     disabled={busy}
-                                    className="w-full px-5 py-4 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl text-center text-2xl font-black tracking-[0.5em] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 transition-all"
+                                    className="w-full px-5 py-4 bg-stone-50 dark:bg-black/20 border border-stone-200 dark:border-zinc-800 rounded-xl text-center text-2xl font-black tracking-[0.5em] text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/30 transition-all"
                                     placeholder="000000"
                                 />
                                 <button
@@ -306,7 +306,7 @@ export function StepUpVerifier({
 
             {activeMethod === 'google' && (
                 <div className="space-y-3">
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="text-sm font-bold text-stone-500 dark:text-zinc-400 leading-relaxed">
                         {t('security.stepUp.googleHint', 'Sign in with Google again to confirm it is really you.')}
                     </p>
                     <GoogleAuthButton
@@ -322,7 +322,7 @@ export function StepUpVerifier({
 
             {activeMethod === 'apple' && (
                 <div className="space-y-3">
-                    <p className="text-sm font-bold text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <p className="text-sm font-bold text-stone-500 dark:text-zinc-400 leading-relaxed">
                         {t('security.stepUp.appleHint', 'Sign in with Apple again to confirm it is really you.')}
                     </p>
                     <AppleAuthButton
@@ -342,8 +342,8 @@ export function StepUpVerifier({
             )}
 
             {alternatives.length > 0 && (
-                <div className="pt-4 border-t border-gray-100 dark:border-white/5 space-y-2">
-                    <p className="text-[10px] font-black text-gray-400 tracking-[0.2em] uppercase">
+                <div className="pt-4 border-t border-stone-100 dark:border-zinc-800 space-y-2">
+                    <p className="text-[10px] font-black text-stone-400 tracking-[0.2em] uppercase">
                         {t('security.stepUp.otherWays', 'Another way to verify')}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -353,7 +353,7 @@ export function StepUpVerifier({
                                 type="button"
                                 onClick={() => chooseMethod(method)}
                                 disabled={busy}
-                                className="px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-white/5 text-[12px] font-black text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-all active:scale-95 disabled:opacity-50"
+                                className="px-4 py-2.5 rounded-xl bg-stone-100 dark:bg-zinc-800 text-[12px] font-black text-stone-600 dark:text-zinc-300 hover:bg-stone-200 dark:hover:bg-zinc-800 transition-all active:scale-95 disabled:opacity-50"
                             >
                                 {methodLabel(method)}
                             </button>

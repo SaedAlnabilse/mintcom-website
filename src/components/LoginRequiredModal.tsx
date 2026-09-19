@@ -30,7 +30,7 @@ export const LoginRequiredModal = ({ open, onClose, redirectTo = '/support/ticke
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 16 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.25)] dark:border-white/10 dark:bg-[#161616]"
+            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-stone-100 bg-white shadow-[0_24px_80px_-16px_rgba(0,0,0,0.25)] dark:border-zinc-800 dark:bg-zinc-900"
           >
             <ModalCloseButton onClose={onClose} autoPositionAbsolute />
 
@@ -40,21 +40,21 @@ export const LoginRequiredModal = ({ open, onClose, redirectTo = '/support/ticke
                 <LogIn size={26} className="text-mintcom-green" />
               </div>
 
-              <h2 className="font-barlow text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              <h2 className="font-barlow text-2xl font-bold tracking-tight text-stone-900 dark:text-zinc-100">
                 {t('support.loginModal.title', 'Sign in to continue')}
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+              <p className="mt-2 text-sm leading-relaxed text-stone-500 dark:text-zinc-400">
                 {t('support.loginModal.desc', 'You need to be logged in to submit a support ticket. It only takes a moment.')}
               </p>
 
               {/* benefits */}
-              <div className="mt-5 space-y-2.5 rounded-2xl border border-gray-100 bg-gray-50 p-4 dark:border-white/8 dark:bg-white/[0.03]">
+              <div className="mt-5 space-y-2.5 rounded-2xl border border-stone-100 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-800/40">
                 {[
                   t('support.loginModal.benefit1', 'Track your ticket status in real time'),
                   t('support.loginModal.benefit2', 'Get email notifications on replies'),
                   t('support.loginModal.benefit3', 'View your full support history'),
                 ].map((b, i) => (
-                  <div key={i} className="flex items-center gap-2.5 text-sm text-gray-600 dark:text-gray-300">
+                  <div key={i} className="flex items-center gap-2.5 text-sm text-stone-600 dark:text-zinc-300">
                     <Check size={14} className="flex-shrink-0 text-mintcom-green" />
                     {b}
                   </div>
@@ -74,12 +74,12 @@ export const LoginRequiredModal = ({ open, onClose, redirectTo = '/support/ticke
                 <Link
                   to="/signup"
                   state={{ from: redirectTo }}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white py-3.5 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl border border-stone-200 bg-white py-3.5 text-sm font-bold text-stone-700 transition-colors hover:bg-stone-50 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-800"
                 >
                   {t('support.loginModal.signupBtn', "Don't have an account? Sign up")}
                 </Link>
                 <button onClick={onClose}
-                  className="text-sm font-medium text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-200">
+                  className="text-sm font-medium text-stone-400 transition-colors hover:text-stone-600 dark:hover:text-zinc-200">
                   {t('common.cancel', 'Cancel')}
                 </button>
               </div>

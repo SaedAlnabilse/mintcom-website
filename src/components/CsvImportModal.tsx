@@ -377,10 +377,10 @@ export function CsvImportModal({
                                 </button>
 
                                 {/* Format Info */}
-                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5">
+                                <div className="p-4 rounded-xl bg-stone-50 dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800">
                                     <div className="flex items-start gap-2 mb-3">
-                                        <Info size={14} className="text-gray-400 mt-0.5 shrink-0" />
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                        <Info size={14} className="text-stone-400 mt-0.5 shrink-0" />
+                                        <p className="text-xs text-stone-500 dark:text-zinc-400 font-medium">
                                             Your CSV file should have the following columns:
                                         </p>
                                     </div>
@@ -390,7 +390,7 @@ export function CsvImportModal({
                                                 key={col.key}
                                                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${col.required
                                                     ? 'bg-mintcom-green/10 text-mintcom-green border border-mintcom-green/20'
-                                                    : 'bg-gray-100 dark:bg-white/5 text-gray-500 border border-gray-200 dark:border-white/10'
+                                                    : 'bg-stone-100 dark:bg-zinc-800 text-stone-500 border border-stone-200 dark:border-zinc-800'
                                                     }`}
                                             >
                                                 {col.label}
@@ -398,7 +398,7 @@ export function CsvImportModal({
                                             </span>
                                         ))}
                                     </div>
-                                    <p className="mt-2 text-[10px] text-gray-400 font-medium">
+                                    <p className="mt-2 text-[10px] text-stone-400 font-medium">
                                         <span className="text-mintcom-red">*</span> = Required field. Max {maxRows} rows per import.
                                     </p>
                                 </div>
@@ -411,7 +411,7 @@ export function CsvImportModal({
                                     onClick={() => fileInputRef.current?.click()}
                                     className={`relative cursor-pointer border-2 border-dashed rounded-2xl p-8 sm:p-12 text-center transition-all duration-300 ${dragOver
                                         ? 'border-mintcom-green bg-mintcom-green/5 scale-[1.02]'
-                                        : 'border-gray-200 dark:border-white/10 hover:border-mintcom-green/50 hover:bg-gray-50 dark:hover:bg-white/[0.02]'
+                                        : 'border-stone-200 dark:border-zinc-800 hover:border-mintcom-green/50 hover:bg-stone-50 dark:hover:bg-zinc-800/40'
                                         }`}
                                 >
                                     <input
@@ -421,14 +421,14 @@ export function CsvImportModal({
                                         onChange={handleFileSelect}
                                         className="hidden"
                                     />
-                                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center transition-all ${dragOver ? 'bg-mintcom-green text-black' : 'bg-gray-100 dark:bg-white/5 text-gray-400'
+                                    <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center transition-all ${dragOver ? 'bg-mintcom-green text-black' : 'bg-stone-100 dark:bg-zinc-800 text-stone-400'
                                         }`}>
                                         <Upload size={28} />
                                     </div>
-                                    <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">
+                                    <p className="text-sm font-bold text-stone-900 dark:text-zinc-100 mb-1">
                                         {dragOver ? t('csv.dragDropHover') : t('csv.dragDropPrompt')}
                                     </p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    <p className="text-xs text-stone-500 dark:text-zinc-400">
                                         {t('csv.supportsLimit')}
                                     </p>
                                 </div>
@@ -457,19 +457,19 @@ export function CsvImportModal({
                         {step === 'preview' && (
                             <div className="space-y-4">
                                 {/* File Info */}
-                                <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/5">
+                                <div className="flex items-center justify-between p-3 rounded-xl bg-stone-50 dark:bg-zinc-800/40 border border-stone-100 dark:border-zinc-800">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-lg bg-mintcom-green/10 flex items-center justify-center">
                                             <FileSpreadsheet size={18} className="text-mintcom-green" />
                                         </div>
                                         <div>
-                                            <p className="text-sm font-bold text-gray-900 dark:text-white">{fileName}</p>
-                                            <p className="text-xs text-gray-500">{t('csv.validRowsReady', { count: parsedData.length })}</p>
+                                            <p className="text-sm font-bold text-stone-900 dark:text-zinc-100">{fileName}</p>
+                                            <p className="text-xs text-stone-500">{t('csv.validRowsReady', { count: parsedData.length })}</p>
                                         </div>
                                     </div>
                                     <button
                                         onClick={resetState}
-                                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                                        className="p-2 text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                                         title={t('csv.removeFile')}
                                     >
                                         <Trash2 size={16} />
@@ -495,7 +495,7 @@ export function CsvImportModal({
                                 <div>
                                     <button
                                         onClick={() => setShowPreview(!showPreview)}
-                                        className="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-2"
+                                        className="flex items-center gap-2 text-xs font-bold text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-zinc-100 transition-colors mb-2"
                                     >
                                         {showPreview ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                                         {showPreview ? 'Hide' : 'Show'} Preview ({Math.min(parsedData.length, 10)} of {parsedData.length} rows)
@@ -509,26 +509,26 @@ export function CsvImportModal({
                                                 exit={{ height: 0, opacity: 0 }}
                                                 className="overflow-hidden"
                                             >
-                                                <div className="border border-gray-200 dark:border-white/5 rounded-xl overflow-hidden">
+                                                <div className="border border-stone-200 dark:border-zinc-800 rounded-xl overflow-hidden">
                                                     <div className="overflow-x-auto">
                                                         <table className="w-full text-xs">
                                                             <thead>
-                                                                <tr className="bg-gray-50 dark:bg-white/[0.02]">
-                                                                    <th className="px-3 py-2.5 text-left font-black text-gray-400 tracking-widest w-10">#</th>
+                                                                <tr className="bg-stone-50 dark:bg-zinc-800/40">
+                                                                    <th className="px-3 py-2.5 text-left font-black text-stone-400 tracking-widest w-10">#</th>
                                                                     {columns.map(col => (
-                                                                        <th key={col.key} className="px-3 py-2.5 text-left font-black text-gray-400 tracking-widest whitespace-nowrap">
+                                                                        <th key={col.key} className="px-3 py-2.5 text-left font-black text-stone-400 tracking-widest whitespace-nowrap">
                                                                             {col.label}
                                                                         </th>
                                                                     ))}
                                                                 </tr>
                                                             </thead>
-                                                            <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                                                            <tbody className="divide-y divide-stone-100 dark:divide-zinc-800">
                                                                 {parsedData.slice(0, 10).map((row, idx) => (
-                                                                    <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-white/[0.02]">
-                                                                        <td className="px-3 py-2 text-gray-400 font-mono">{idx + 1}</td>
+                                                                    <tr key={idx} className="hover:bg-stone-50 dark:hover:bg-zinc-800/40">
+                                                                        <td className="px-3 py-2 text-stone-400 font-mono">{idx + 1}</td>
                                                                         {columns.map(col => (
-                                                                            <td key={col.key} className="px-3 py-2 text-gray-700 dark:text-gray-300 max-w-[200px] truncate font-medium">
-                                                                                {row[col.key] || <span className="text-gray-300 dark:text-gray-600 italic">empty</span>}
+                                                                            <td key={col.key} className="px-3 py-2 text-stone-700 dark:text-zinc-300 max-w-[200px] truncate font-medium">
+                                                                                {row[col.key] || <span className="text-stone-300 dark:text-zinc-600 italic">empty</span>}
                                                                             </td>
                                                                         ))}
                                                                     </tr>
@@ -537,7 +537,7 @@ export function CsvImportModal({
                                                         </table>
                                                     </div>
                                                     {parsedData.length > 10 && (
-                                                        <div className="px-3 py-2 bg-gray-50 dark:bg-white/[0.02] text-center text-[11px] text-gray-400 font-medium border-t border-gray-100 dark:border-white/5">
+                                                        <div className="px-3 py-2 bg-stone-50 dark:bg-zinc-800/40 text-center text-[11px] text-stone-400 font-medium border-t border-stone-100 dark:border-zinc-800">
                                                             ...and {parsedData.length - 10} more row(s)
                                                         </div>
                                                     )}
@@ -572,14 +572,14 @@ export function CsvImportModal({
                                         )}
                                     </div>
 
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+                                    <h3 className="text-lg font-bold text-stone-900 dark:text-zinc-100 mb-1">
                                         {importResult.failed === 0
                                             ? t('csv.importSuccessful')
                                             : importResult.success === 0
                                                 ? t('csv.importFailed')
                                                 : t('csv.partialImport')}
                                     </h3>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    <p className="text-sm text-stone-500 dark:text-zinc-400">
                                         {t('csv.importedCount', { success: importResult.success })}
                                         {importResult.failed > 0 && `, ${t('csv.failedCount', { failed: importResult.failed })}`}
                                     </p>
@@ -620,10 +620,10 @@ export function CsvImportModal({
 
                                 {/* Created Add-ons */}
                                 {importResult.createdAddons && importResult.createdAddons.length > 0 && (
-                                    <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-200 dark:border-indigo-500/20">
+                                    <div className="p-4 rounded-xl bg-mintcom-green/10 border border-mintcom-green/20 dark:border-mintcom-green/20">
                                         <div className="flex items-center gap-2 mb-2">
-                                            <CheckCircle2 size={14} className="text-indigo-500" />
-                                            <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                                            <CheckCircle2 size={14} className="text-emerald-700 dark:text-mintcom-green" />
+                                            <p className="text-xs font-bold text-emerald-700 dark:text-mintcom-green">
                                                 {importResult.createdAddons.length === 1
                                                     ? t('csv.newAddonAutoCreated', { defaultValue: '1 new add-on group auto-created:' })
                                                     : t('csv.newAddonsAutoCreated', { count: importResult.createdAddons.length, defaultValue: `${importResult.createdAddons.length} new add-on groups auto-created:` })}
@@ -631,7 +631,7 @@ export function CsvImportModal({
                                         </div>
                                         <div className="flex flex-wrap gap-1.5">
                                             {importResult.createdAddons.map((addon, i) => (
-                                                <span key={i} className="px-2 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-xs font-bold">
+                                                <span key={i} className="px-2 py-0.5 rounded-md bg-mintcom-green/15 dark:bg-mintcom-green/20 text-emerald-700 dark:text-mintcom-green text-xs font-bold">
                                                     {addon}
                                                 </span>
                                             ))}

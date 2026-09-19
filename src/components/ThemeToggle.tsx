@@ -59,7 +59,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
     <div className={`relative ${showLabel ? 'w-full' : ''}`} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-400 hover:text-mintcom-green dark:hover:text-mintcom-green'} ${isOpen ? 'bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white' : ''}`}
+        className={`flex items-center transition-all active:scale-90 ${!showLabel && !className.includes('justify-') ? 'justify-center' : ''} ${className || 'w-9 h-9 rounded-xl bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-400 hover:text-mintcom-green dark:hover:text-mintcom-green'} ${isOpen ? 'bg-stone-100 dark:bg-zinc-800 text-stone-900 dark:text-zinc-100' : ''}`}
         title={t('theme.toggle')}
       >
         <div className="relative flex items-center justify-center" style={{ width: iconSize, height: iconSize }}>
@@ -91,7 +91,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
             <motion.div
               {...getAnimationProps()}
               style={{ position: 'absolute', zIndex: 9999 }}
-              className={`${getDropdownClasses()} w-40 bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden p-1.5 shadow-xl`}
+              className={`${getDropdownClasses()} w-40 bg-white dark:bg-zinc-900 border border-stone-200 dark:border-zinc-800 rounded-2xl overflow-hidden p-1.5 shadow-xl`}
             >
               {options.map((option) => (
                 <button
@@ -103,7 +103,7 @@ export const ThemeToggle = ({ dropdownDirection = 'down', className = '', iconSi
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl font-sans transition-all text-sm font-medium tracking-normal ${theme === option.id
                     ? 'bg-mintcom-green/10 text-mintcom-green'
-                    : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white'
+                    : 'text-stone-500 hover:bg-stone-50 dark:hover:bg-zinc-800 hover:text-stone-900 dark:hover:text-zinc-100'
                     }`}
                 >
                   <option.icon size={16} />

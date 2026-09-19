@@ -401,12 +401,12 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
           : status === 'attention'
             ? 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300'
             : status === 'off'
-              ? 'bg-gray-100 text-gray-500 dark:bg-white/10 dark:text-gray-400'
+              ? 'bg-stone-100 text-stone-500 dark:bg-zinc-800 dark:text-zinc-400'
               : 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300'
       }`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${
-        status === 'connected' ? 'bg-emerald-500' : status === 'attention' ? 'bg-red-500' : status === 'off' ? 'bg-gray-400' : 'bg-amber-500'
+        status === 'connected' ? 'bg-emerald-500' : status === 'attention' ? 'bg-red-500' : status === 'off' ? 'bg-stone-400' : 'bg-amber-500'
       }`} />
       {status === 'connected'
         ? t('settings.fiscal.connected', 'Connected')
@@ -428,7 +428,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/[0.03] rounded-2xl shadow-sm font-sans ${disabled ? 'opacity-60 pointer-events-none' : ''}`}
+      className={`bg-white dark:bg-zinc-900/60 border border-stone-200 dark:border-zinc-800 rounded-2xl shadow-sm font-sans ${disabled ? 'opacity-60 pointer-events-none' : ''}`}
     >
       {/* Header */}
       <div className="flex items-start sm:items-center justify-between gap-4 p-6 sm:p-8">
@@ -442,17 +442,17 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white truncate">
+              <h3 className="text-xl font-bold text-stone-900 dark:text-zinc-100 truncate">
                 {t('settings.fiscal.title', 'E-Invoicing & Tax Compliance')}
               </h3>
               {statusPill}
               <span title={t('settings.fiscal.quickInfo', "Connect your POS to your country's tax authority so every sale is reported and the receipt carries a verification QR code.")}>
-                <Info size={15} className="text-gray-400 shrink-0" />
+                <Info size={15} className="text-stone-400 shrink-0" />
               </span>
             </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1 truncate">{subtitle}</p>
+            <p className="text-sm text-stone-500 dark:text-zinc-400 font-medium mt-1 truncate">{subtitle}</p>
             {status === 'connected' && testedAt && (
-              <p className="text-[11px] text-gray-400 mt-0.5">
+              <p className="text-[11px] text-stone-400 mt-0.5">
                 {t('settings.fiscal.lastChecked', 'Last checked')}: {testedAt.toLocaleString()}
               </p>
             )}
@@ -464,7 +464,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
             <button
               type="button"
               onClick={() => setCollapsed(c => !c)}
-              className="w-9 h-9 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+              className="w-9 h-9 rounded-lg bg-stone-100 dark:bg-zinc-800 flex items-center justify-center text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200 transition-colors"
               aria-label={collapsed ? t('common.expand', 'Expand') : t('common.collapse', 'Collapse')}
             >
               {collapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
@@ -477,7 +477,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
               onChange={e => handleToggleEnabled(e.target.checked)}
               className="sr-only peer"
             />
-            <div className="h-7 w-12 rounded-full bg-slate-300/90 ring-1 ring-inset ring-slate-400/40 shadow-inner transition-all duration-200 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-mintcom-green/50 peer-focus-visible:ring-offset-2 dark:bg-white/15 dark:ring-white/20 peer-checked:bg-mintcom-green peer-checked:ring-mintcom-green/40 peer-checked:shadow-[0_0_0_3px_rgba(125,198,162,0.22)] after:absolute after:left-0.5 after:top-0.5 after:h-6 after:w-6 after:rounded-full after:bg-white after:shadow-[0_1px_3px_rgba(0,0,0,0.18)] after:transition-all after:content-[''] peer-checked:after:translate-x-5" />
+            <div className="h-7 w-12 rounded-full bg-stone-300/90 ring-1 ring-inset ring-stone-400/40 shadow-inner transition-all duration-200 peer-focus-visible:outline-none peer-focus-visible:ring-2 peer-focus-visible:ring-mintcom-green/50 peer-focus-visible:ring-offset-2 dark:bg-zinc-800 dark:ring-zinc-800 peer-checked:bg-mintcom-green peer-checked:ring-mintcom-green/40 peer-checked:shadow-[0_0_0_3px_rgba(125,198,162,0.22)] after:absolute after:left-0.5 after:top-0.5 after:h-6 after:w-6 after:rounded-full after:bg-white after:shadow-[0_1px_3px_rgba(0,0,0,0.18)] after:transition-all after:content-[''] peer-checked:after:translate-x-5" />
           </label>
         </div>
       </div>
@@ -491,7 +491,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-6 sm:px-8 pb-8 pt-2 space-y-6 border-t border-gray-100 dark:border-white/5">
+            <div className="px-6 sm:px-8 pb-8 pt-2 space-y-6 border-t border-stone-100 dark:border-zinc-800">
               {/* Stepper */}
               <div className="flex items-center gap-2 pt-6" role="tablist" aria-label="Setup steps">
                 {STEPS.map((s, i) => {
@@ -511,17 +511,17 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                             ? 'bg-mintcom-green text-black shadow-sm'
                             : done
                               ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300'
-                              : 'bg-gray-100 text-gray-500 dark:bg-white/5 dark:text-gray-400'
+                              : 'bg-stone-100 text-stone-500 dark:bg-zinc-800 dark:text-zinc-400'
                         }`}
                       >
                         <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${
-                          active ? 'bg-black/15' : done ? 'bg-emerald-500 text-white' : 'bg-gray-300 dark:bg-white/10'
+                          active ? 'bg-black/15' : done ? 'bg-emerald-500 text-white' : 'bg-stone-300 dark:bg-zinc-800'
                         }`}>
                           {done && !active ? <Check size={12} /> : s.n}
                         </span>
                         {t(s.labelKey, s.fallback)}
                       </button>
-                      {i < STEPS.length - 1 && <div className="flex-1 h-px bg-gray-200 dark:bg-white/10" />}
+                      {i < STEPS.length - 1 && <div className="flex-1 h-px bg-stone-200 dark:bg-zinc-800" />}
                     </div>
                   );
                 })}
@@ -530,14 +530,14 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
               {/* Country — locked to the establishment's onboarding country */}
               {isLocked ? (
                 <div className="space-y-3">
-                  <div className="w-full flex items-center gap-3 px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl">
+                  <div className="w-full flex items-center gap-3 px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl">
                     <span className="text-lg leading-none">{countryConfig.flag}</span>
                     <span className="flex-1 min-w-0">
-                      <span className="block text-sm font-bold text-gray-900 dark:text-white truncate">
+                      <span className="block text-sm font-bold text-stone-900 dark:text-zinc-100 truncate">
                         {countryConfig.name}
                         {countryConfig.platformName ? ` · ${countryConfig.platformName}` : ''}
                       </span>
-                      <span className="block text-[11px] text-gray-400">
+                      <span className="block text-[11px] text-stone-400">
                         {t('settings.fiscal.lockedToLocation', 'Set from your establishment country — no need to choose.')}
                       </span>
                     </span>
@@ -564,19 +564,19 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                 </div>
               ) : (
               <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block tracking-wide">
+                <label className="text-xs font-bold text-stone-500 dark:text-zinc-400 block tracking-wide">
                   {t('settings.fiscal.country', 'Country')}
                 </label>
                 <button
                   type="button"
                   onClick={() => setPickerOpen(true)}
-                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-semibold text-gray-900 dark:text-white hover:border-mintcom-green/40 transition-all"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-semibold text-stone-900 dark:text-zinc-100 hover:border-mintcom-green/40 transition-all"
                 >
                   <span className="flex items-center gap-2">
                     <span className="text-lg leading-none">{countryConfig.flag}</span>
                     {countryConfig.name}
                   </span>
-                  <ChevronDown size={18} className="text-gray-400" />
+                  <ChevronDown size={18} className="text-stone-400" />
                 </button>
               </div>
               )}
@@ -586,7 +586,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-mintcom-green/5 border border-mintcom-green/20">
                     <KeyRound size={18} className="text-mintcom-green mt-0.5 shrink-0" />
-                    <div className="text-sm leading-relaxed text-gray-700 dark:text-gray-200">
+                    <div className="text-sm leading-relaxed text-stone-700 dark:text-zinc-200">
                       <p className="font-bold">
                         {isJordan
                           ? t('settings.fiscal.jordanStep1Title', 'Get your 3 keys from the JoFotara portal (2 minutes)')
@@ -603,7 +603,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                           {t('settings.fiscal.genericS1', 'Register at your tax portal, then copy the keys it issues into step 2.')}
                         </p>
                       )}
-                      <p className="mt-2 text-[12px] text-gray-500 dark:text-gray-400">
+                      <p className="mt-2 text-[12px] text-stone-500 dark:text-zinc-400">
                         {t('settings.fiscal.secretNote', 'Your secret is encrypted on our server and never shown again. Never share it in chat or email.')}
                       </p>
                     </div>
@@ -657,7 +657,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                             : '';
                         return (
                           <div key={field.key} className="space-y-2">
-                            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 block tracking-wide">
+                            <label className="text-xs font-bold text-stone-500 dark:text-zinc-400 block tracking-wide">
                               {field.label}{field.required ? ' *' : ''}
                             </label>
                             <div className="relative">
@@ -673,20 +673,20 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                                   field.placeholder ||
                                   (savedSecret ? t('settings.fiscal.savedKeep', 'Saved. Re-enter to change') : example)
                                 }
-                                className="w-full px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-semibold text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all pr-11"
+                                className="w-full px-4 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-semibold text-stone-900 dark:text-zinc-100 placeholder-stone-400 placeholder:font-medium focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green transition-all pr-11"
                               />
                               {isSecret && (
                                 <button
                                   type="button"
                                   onClick={() => toggleReveal(field.key)}
-                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-zinc-200"
                                   aria-label={isRevealed ? t('common.hide', 'Hide') : t('common.show', 'Show')}
                                 >
                                   {isRevealed ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                               )}
                             </div>
-                            {field.hint && <p className="text-[11px] text-gray-400 font-medium">{field.hint}</p>}
+                            {field.hint && <p className="text-[11px] text-stone-400 font-medium">{field.hint}</p>}
                           </div>
                         );
                       })}
@@ -694,7 +694,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                         <button
                           type="button"
                           onClick={() => setStep(1)}
-                          className="px-5 py-3 rounded-xl border border-gray-200 dark:border-white/10 font-bold text-sm text-gray-500 dark:text-gray-300 hover:border-mintcom-green/40 transition-all"
+                          className="px-5 py-3 rounded-xl border border-stone-200 dark:border-zinc-800 font-bold text-sm text-stone-500 dark:text-zinc-300 hover:border-mintcom-green/40 transition-all"
                         >
                           ← {t('common.back', 'Back')}
                         </button>
@@ -796,9 +796,9 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                   )}
 
                   {testResult?.ok && (
-                    <div className="flex items-start gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border-l-[3px] border-mintcom-green">
+                    <div className="flex items-start gap-2 p-3 rounded-xl bg-stone-50 dark:bg-zinc-800 border-l-[3px] border-mintcom-green">
                       <Info size={15} className="text-mintcom-green mt-0.5 shrink-0" />
-                      <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <p className="text-xs text-stone-600 dark:text-zinc-300 leading-relaxed">
                         {t('settings.fiscal.doneHint', 'Done. Every new sale is reported automatically and the receipt carries the official QR. Rehearse once with a small invoice and a reversing credit note.')}
                       </p>
                     </div>
@@ -806,9 +806,9 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
 
                   {/* Clearance regimes: bookkeeping lives in the Accounting tab */}
                   {(countryCode === 'JO' || countryCode === 'SA') && (
-                    <div className="flex items-start gap-2 p-3 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10">
-                      <BookOpen size={15} className="text-gray-400 mt-0.5 shrink-0" />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                    <div className="flex items-start gap-2 p-3 rounded-xl bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800">
+                      <BookOpen size={15} className="text-stone-400 mt-0.5 shrink-0" />
+                      <p className="text-xs text-stone-500 dark:text-zinc-400 leading-relaxed">
                         {t('settings.fiscal.bookkeepingNote', 'Need books too? Xero / QuickBooks in the Accounting tab syncs daily totals for bookkeeping — it does not replace this tax clearance.')}
                       </p>
                     </div>
@@ -816,13 +816,13 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
 
                   {/* Submission preferences */}
                   {hasCredentialFields && (
-                    <div className="pt-2 border-t border-gray-100 dark:border-white/5 divide-y divide-gray-100 dark:divide-white/5">
+                    <div className="pt-2 border-t border-stone-100 dark:border-zinc-800 divide-y divide-stone-100 dark:divide-zinc-800">
                       <div className="flex items-center justify-between py-3">
                         <div className="pr-4">
-                          <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">
+                          <span className="block text-xs font-bold text-stone-700 dark:text-zinc-200">
                             {t('settings.fiscal.autoSubmit', 'Auto-submit invoices')}
                           </span>
-                          <span className="block text-[11px] text-gray-400 mt-0.5">
+                          <span className="block text-[11px] text-stone-400 mt-0.5">
                             {t('settings.fiscal.autoSubmitDesc', 'Report each sale to the tax authority automatically as it is completed.')}
                           </span>
                         </div>
@@ -835,10 +835,10 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                       </div>
                       <div className="flex items-center justify-between py-3">
                         <div className="pr-4">
-                          <span className="block text-xs font-bold text-gray-700 dark:text-gray-200">
+                          <span className="block text-xs font-bold text-stone-700 dark:text-zinc-200">
                             {t('settings.fiscal.blockOnFailure', 'Block sale on reporting failure')}
                           </span>
-                          <span className="block text-[11px] text-gray-400 mt-0.5">
+                          <span className="block text-[11px] text-stone-400 mt-0.5">
                             {t('settings.fiscal.blockOnFailureDesc', 'Prevent completing a sale if it cannot be reported. Leave off to queue and retry instead.')}
                           </span>
                         </div>
@@ -857,7 +857,7 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="px-5 py-3 rounded-xl border border-gray-200 dark:border-white/10 font-bold text-sm text-gray-500 dark:text-gray-300 hover:border-mintcom-green/40 transition-all"
+                      className="px-5 py-3 rounded-xl border border-stone-200 dark:border-zinc-800 font-bold text-sm text-stone-500 dark:text-zinc-300 hover:border-mintcom-green/40 transition-all"
                     >
                       ← {t('common.back', 'Back')}
                     </button>
@@ -889,36 +889,36 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
             onClick={() => { setPickerOpen(false); setSearch(''); }}
           >
             <motion.div
-              className="w-full max-w-lg max-h-[85vh] flex flex-col bg-white dark:bg-[#1E293B] rounded-2xl border border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden"
+              className="w-full max-w-lg max-h-[85vh] flex flex-col bg-white dark:bg-zinc-900/60 rounded-2xl border border-stone-200 dark:border-zinc-800 shadow-md overflow-hidden"
               initial={{ scale: 0.96, y: 10 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.96, y: 10 }}
               onClick={e => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-white/5">
+              <div className="flex items-center justify-between p-5 border-b border-stone-100 dark:border-zinc-800">
                 <div>
                   <p className="text-[11px] font-bold text-mintcom-green tracking-wide uppercase">
                     {t('settings.fiscal.selectCountry', 'Select Country')}
                   </p>
-                  <p className="text-lg font-extrabold text-gray-900 dark:text-white mt-0.5">
+                  <p className="text-lg font-extrabold text-stone-900 dark:text-zinc-100 mt-0.5">
                     {countryConfig.flag} {countryConfig.name}
                   </p>
                 </div>
                 <ModalCloseButton onClose={() => { setPickerOpen(false); setSearch(''); }} />
               </div>
 
-              <div className="p-4 border-b border-gray-100 dark:border-white/5">
+              <div className="p-4 border-b border-stone-100 dark:border-zinc-800">
                 <div className="relative">
-                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-400" />
                   <input
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder={t('settings.fiscal.searchCountry', 'Search countries')}
-                    className="w-full pl-10 pr-9 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-sm font-medium text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green"
+                    className="w-full pl-10 pr-9 py-3 bg-stone-50 dark:bg-zinc-800 border border-stone-200 dark:border-zinc-800 rounded-xl text-sm font-medium text-stone-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-mintcom-green/20 focus:border-mintcom-green"
                     autoFocus
                   />
                   {search && (
-                    <button type="button" onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <button type="button" onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600">
                       <X size={16} />
                     </button>
                   )}
@@ -938,20 +938,20 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                       className={`w-full flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${
                         selected
                           ? 'border-mintcom-green bg-mintcom-green/10'
-                          : 'border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.02] hover:border-mintcom-green/40'
+                          : 'border-stone-200 dark:border-zinc-800 bg-stone-50 dark:bg-zinc-800/40 hover:border-mintcom-green/40'
                       } ${supported ? '' : 'opacity-55 cursor-not-allowed'}`}
                     >
                       <span className="text-2xl leading-none shrink-0">{item.flag}</span>
                       <span className="flex-1 min-w-0">
-                        <span className={`block text-sm font-bold truncate ${selected ? 'text-mintcom-green' : 'text-gray-900 dark:text-white'}`}>
+                        <span className={`block text-sm font-bold truncate ${selected ? 'text-mintcom-green' : 'text-stone-900 dark:text-zinc-100'}`}>
                           {item.name}
                         </span>
                         {supported ? (
                           item.platformName && (
-                            <span className="block text-[11px] text-gray-400 truncate">{item.platformName}</span>
+                            <span className="block text-[11px] text-stone-400 truncate">{item.platformName}</span>
                           )
                         ) : (
-                          <span className="block text-[11px] text-gray-400 line-clamp-2">
+                          <span className="block text-[11px] text-stone-400 line-clamp-2">
                             {t('settings.fiscal.noConnectionYet', 'Tax Sync is unavailable due to unsupported country settings or pending Mintcom integration.')}
                           </span>
                         )}
@@ -962,11 +962,11 @@ export function FiscalComplianceCard({ initial, establishmentCountry, disabled, 
                 })}
                 {filteredCountries.length === 0 && (
                   <div className="py-16 text-center">
-                    <Search size={40} className="mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                    <Search size={40} className="mx-auto text-stone-300 dark:text-zinc-600 mb-3" />
+                    <p className="text-sm font-bold text-stone-900 dark:text-zinc-100">
                       {t('settings.fiscal.noCountries', 'No countries found')}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">{t('settings.fiscal.tryDifferentKeywords', 'Try different keywords')}</p>
+                    <p className="text-xs text-stone-400 mt-1">{t('settings.fiscal.tryDifferentKeywords', 'Try different keywords')}</p>
                   </div>
                 )}
               </div>

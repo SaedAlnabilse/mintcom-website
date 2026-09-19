@@ -108,15 +108,15 @@ export function OptimizedImage({
       {/* Soft placeholder while loading — image itself is not forced invisible forever */}
       {status === 'loading' && (
         <div
-          className="absolute inset-0 animate-pulse bg-gray-100 dark:bg-gray-800/80"
+          className="absolute inset-0 animate-pulse bg-stone-100 dark:bg-zinc-800/80"
           aria-hidden
         />
       )}
 
       {status === 'error' ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+        <div className="absolute inset-0 flex items-center justify-center bg-stone-100 dark:bg-zinc-800">
           <svg
-            className="w-8 h-8 text-gray-400"
+            className="w-8 h-8 text-stone-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
